@@ -27,3 +27,6 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0001](./0001-adopt-lightweight-adr-system.md) | Adopt a lightweight, self-built ADR system | Accepted |
 | [0002](./0002-data-and-retrieval-store-supabase.md) | Supabase (Postgres + pgvector + tsvector) as data + retrieval store | Accepted |
 | [0003](./0003-dataset-schema-mirrors-fo-max.md) | Dataset schema mirrors the FO-MAX sample, with a verifiability-first contact layer | Accepted |
+| [0004](./0004-sourcing-strategy-public-regulatory-data.md) | Sourcing family offices from public regulatory + disclosure data (ADV, 990-PF, 13F) | Accepted |
+| [0005](./0005-email-verification-and-honest-grading.md) | Email verification with a pluggable verifier and honest two-axis grading | Accepted |
+| [0006](./0006-medallion-pipeline-in-postgres.md) | Medallion pipeline (bronze/silver/gold) lightweight in Postgres | Accepted |

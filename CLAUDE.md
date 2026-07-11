@@ -37,7 +37,18 @@ what works/doesn't, improvements). Plus a half-page build session summary (actua
 - Data + retrieval: **Supabase** — Postgres (structured) + `pgvector` (semantic) + `tsvector` (lexical). [ADR-0002]
 - Schema: **mirrors FO-MAX sample**, extended with per-cell `*_source` + `*_verification`. [ADR-0003]
 - Reasoning trail: **self-built lightweight ADRs**; `/adr` to add one. [ADR-0001]
-- Pipeline / RAG API / UI / embedding model: **not yet decided** (record an ADR when chosen).
+- Pipeline shape: **medallion** bronze/silver/gold as Postgres schemas. [ADR-0006]
+- Sourcing: **SEC Form ADV + IRS 990-PF (ProPublica) + 13F**, all public/free/verified-live. [ADR-0004]
+- Email verification: **pluggable** (syntax+MX -> local SMTP probe, port 25 open here -> Reoon free API
+  fallback) with honest two-axis grading; catch-all never graded valid. [ADR-0005]
+- RAG API / UI / embedding model: **not yet decided** (record an ADR when chosen).
+
+## Feasibility (verified live 2026-07-12)
+
+Outbound **port 25 is OPEN** on the build machine (real SMTP banners from Google + MS MX). SEC ADV bulk feed,
+IRS 990-PF ProPublica API, and EDGAR 13F all reachable and return real data. Caveat: sample FO domains are on
+Microsoft 365 (catch-all prone), so email confirm rate will be modest; honest grading handles it. Principal
+names are NOT in the ADV bulk feed and need a separate enrichment step (website/990-XML/ADV-PDF).
 
 ## Reference: FO-MAX sample schema (32 cols)
 
@@ -54,3 +65,6 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0001](./adr/0001-adopt-lightweight-adr-system.md) | Adopt a lightweight, self-built ADR system | Accepted |
 | [0002](./adr/0002-data-and-retrieval-store-supabase.md) | Supabase as data + retrieval store | Accepted |
 | [0003](./adr/0003-dataset-schema-mirrors-fo-max.md) | Dataset schema mirrors FO-MAX, verifiability-first | Accepted |
+| [0004](./adr/0004-sourcing-strategy-public-regulatory-data.md) | Sourcing from public regulatory data (ADV, 990-PF, 13F) | Accepted |
+| [0005](./adr/0005-email-verification-and-honest-grading.md) | Pluggable email verification + honest two-axis grading | Accepted |
+| [0006](./adr/0006-medallion-pipeline-in-postgres.md) | Medallion pipeline (bronze/silver/gold) in Postgres | Accepted |

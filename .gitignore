@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.python-version
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# Secrets and env
+.env
+.env.*
+!.env.example
+*.key
+credentials.json
+service-account*.json
+
+# Data working files (raw scratch; validated deliverable is committed deliberately)
+data/raw/
+data/scratch/
+*.tmp
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

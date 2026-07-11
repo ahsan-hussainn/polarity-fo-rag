@@ -63,3 +63,16 @@ more defensible than fake uniformity. Pluggability keeps the pipeline reproducib
 
 If our observed confirm rate is far below estimate, we lean harder on the API cross-check and widen the
 honest-blank policy. If the host we ultimately run on has port 25 blocked, we switch to API-primary verification.
+
+## Measured update (2026-07-12) — belief revised by evidence
+
+We probed the 143 real FO domains from Stage 1 (see `docs/findings/email-verifiability-probe.md`). The
+pessimistic prior above did **not** hold:
+- **73% of FO domains are mailbox-verifiable** (reject a known-fake address), only **18% catch-all**.
+- **Microsoft 365 (49% of domains) is 0% catch-all** here, contradicting the "M365 is catch-all-prone" prior.
+  Catch-all is concentrated in Google Workspace (58%), Proofpoint (44%), and Barracuda (100%).
+
+Impact on the decision: the pluggable/honest-grading design stands unchanged, but the *expected distribution*
+shifts optimistic, and provider-aware handling matters (grade Google/Proofpoint/Barracuda domains as
+catch-all/B+ by default, treat M365 as verifiable). Still to confirm: verifier accuracy against a
+known-valid/known-invalid ground-truth set (ADR-0007 Stage 6) — the 73% is a ceiling, not a measured confirm rate.

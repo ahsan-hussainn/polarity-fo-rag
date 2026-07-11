@@ -68,3 +68,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0004](./adr/0004-sourcing-strategy-public-regulatory-data.md) | Sourcing from public regulatory data (ADV, 990-PF, 13F) | Accepted |
 | [0005](./adr/0005-email-verification-and-honest-grading.md) | Pluggable email verification + honest two-axis grading | Accepted |
 | [0006](./adr/0006-medallion-pipeline-in-postgres.md) | Medallion pipeline (bronze/silver/gold) in Postgres | Accepted |
+| [0007](./adr/0007-pipeline-architecture-staged-medallion-dag.md) | Pipeline: staged medallion DAG, over-discover then filter | Accepted |

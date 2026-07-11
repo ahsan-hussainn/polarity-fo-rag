@@ -30,3 +30,4 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0004](./0004-sourcing-strategy-public-regulatory-data.md) | Sourcing family offices from public regulatory + disclosure data (ADV, 990-PF, 13F) | Accepted |
 | [0005](./0005-email-verification-and-honest-grading.md) | Email verification with a pluggable verifier and honest two-axis grading | Accepted |
 | [0006](./0006-medallion-pipeline-in-postgres.md) | Medallion pipeline (bronze/silver/gold) lightweight in Postgres | Accepted |
+| [0007](./0007-pipeline-architecture-staged-medallion-dag.md) | Pipeline architecture: staged medallion DAG, over-discover then filter | Accepted |

@@ -7,6 +7,7 @@ Usage:
     python -m pipeline.cli load-bronze         # persist local captures into bronze.captures
     python -m pipeline.cli extract-test        # run the extraction seam on a sample (Stage 3)
     python -m pipeline.cli fetch-websites      # Stage 2: fetch firm websites -> bronze
+    python -m pipeline.cli build-silver        # Stage 3: bronze websites -> silver.firms + people
 """
 from __future__ import annotations
 import argparse
@@ -139,6 +140,29 @@ def cmd_fetch_websites(args):
             print(f"  {(f['name'] or '')[:38]:38} {f['website'][:32]:32} {f['error']}")
 
 
+def cmd_build_silver(args):
+    """Stage 3: resolve bronze website captures into silver.firms + silver.people (ADR-0009)."""
+    from pipeline.silver import load
+
+    print("=" * 64)
+    print(f"STAGE 3 - BUILD SILVER ({'WRITE' if args.write else 'dry-run'}, "
+          f"provider={args.provider or 'env/default'}, limit={args.limit})")
+    print("=" * 64)
+    result = load.run(args.provider, limit=args.limit, write=args.write)
+    firms = result.pop("firms")
+    for f in firms:
+        print(f"  {f['crd']:>8} {(f['firm_name'] or '')[:34]:34} "
+              f"{f['pages']}p -> {f['team']:>2} people ({f['principals']} principal) "
+              f"| {f['founded_year'] or '----'} | {', '.join(f['sectors'][:4])}")
+        if f["thesis"]:
+            print(f"           thesis: {f['thesis']}")
+    print("-" * 64)
+    print(json.dumps(result, indent=2))
+    if not args.write:
+        print("\n(dry-run: nothing persisted. add --write to load silver. "
+              "use --provider mock to avoid LLM cost.)")
+
+
 def main():
     p = argparse.ArgumentParser(prog="pipeline")
     sub = p.add_subparsers(required=True)
@@ -167,6 +191,12 @@ def main():
     w.add_argument("--delay", type=float, default=1.0, help="seconds between firms (politeness)")
     w.add_argument("--timeout", type=int, default=15, help="per-request timeout seconds")
     w.set_defaults(func=cmd_fetch_websites)
+
+    s = sub.add_parser("build-silver", help="Stage 3: bronze websites -> silver.firms + people")
+    s.add_argument("--provider", default=None, help="mock | openai (default: env EXTRACT_PROVIDER or openai)")
+    s.add_argument("--limit", type=int, default=None, help="max firms to process (default: all)")
+    s.add_argument("--write", action="store_true", help="persist to silver (default: dry-run)")
+    s.set_defaults(func=cmd_build_silver)
 
     args = p.parse_args()
     args.func(args)

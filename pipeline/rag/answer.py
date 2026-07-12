@@ -12,6 +12,12 @@ ANSWER_MODEL = os.getenv("ANSWER_MODEL", "gpt-4o-mini")
 
 _GRADE = {"A": "verified deliverable", "B": "catch-all domain, plausible but unconfirmable",
           "C": "inferred, unconfirmed", "D": "inferred address invalid", "F": "no mail server"}
+_GRADE_RANK = {"A": 0, "B": 1, "C": 2, "D": 3, "F": 4}  # ascending: best (verified) first
+
+
+def _grade_key(h: dict) -> tuple:
+    """Sort key: email grade ascending (A first), then retrieval score descending."""
+    return (_GRADE_RANK.get(h.get("primary_email_grade"), 9), -h.get("score", 0))
 
 SYSTEM = (
     "You are an analyst answering questions about family offices using ONLY the provided records.\n"
@@ -26,7 +32,8 @@ SYSTEM = (
     "- When you give a contact's email, state its verification status in plain words (verified / "
     "catch-all, plausible / inferred, unconfirmed / invalid / no mail server) so the reader knows the "
     "confidence. Never present an unverified email as confirmed.\n"
-    "- Write in clear, readable prose or a list. Be substantive, not padded."
+    "- When you list multiple firms, put those whose contact email is VERIFIED first.\n"
+    "- Write in clear, readable prose or a list (Markdown). Be substantive, not padded."
 )
 
 
@@ -71,5 +78,6 @@ def answer(query: str, k: int = 5) -> dict:
                      "contact": h.get("primary_contact_name"),
                      "email": h.get("primary_contact_email"),
                      "email_grade": h.get("primary_email_grade"),
-                     "matched": h["matched"], "score": h["score"]} for h in hits],
+                     "matched": h["matched"], "score": h["score"]}
+                    for h in sorted(hits, key=_grade_key)],  # A-grade contacts first
     }

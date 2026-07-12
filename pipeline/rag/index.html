@@ -30,8 +30,14 @@
     border-radius:20px; padding:6px 12px; font-size:13px; cursor:pointer; }
   .chip:hover { color:var(--ink); border-color:var(--acc); }
   #answer { margin:26px 0 0; background:var(--panel); border:1px solid var(--line);
-    border-radius:12px; padding:18px 20px; white-space:pre-wrap; display:none; }
+    border-radius:12px; padding:6px 20px; display:none; }
   #answer.show { display:block; }
+  #answer.muted { color:var(--mut); }
+  #answer p { margin:12px 0; }
+  #answer ul, #answer ol { margin:12px 0; padding-left:22px; }
+  #answer li { margin:4px 0; }
+  #answer strong { color:#fff; font-weight:650; }
+  #answer em { color:var(--ink); font-style:italic; }
   .srcH { color:var(--mut); font-size:12px; text-transform:uppercase; letter-spacing:.8px;
     margin:26px 0 10px; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:12px;
@@ -98,6 +104,29 @@ EXAMPLES.forEach(e => {
 
 function esc(s){ return (s||"").replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 
+// Minimal, self-contained Markdown -> HTML (bold, italic, ordered/unordered lists, paragraphs).
+function md(text){
+  const inline = s => esc(s)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+  let html = "", list = null;
+  const close = () => { if (list) { html += `</${list}>`; list = null; } };
+  for (const raw of (text||"").split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line) { close(); continue; }
+    let m;
+    if ((m = line.match(/^\d+[.)]\s+(.*)/))) {
+      if (list !== "ol") { close(); html += "<ol>"; list = "ol"; }
+      html += `<li>${inline(m[1])}</li>`;
+    } else if ((m = line.match(/^[-*]\s+(.*)/))) {
+      if (list !== "ul") { close(); html += "<ul>"; list = "ul"; }
+      html += `<li>${inline(m[1])}</li>`;
+    } else { close(); html += `<p>${inline(line)}</p>`; }
+  }
+  close();
+  return html;
+}
+
 async function ask() {
   const q = $("#q").value.trim();
   if (!q) return;
@@ -109,7 +138,7 @@ async function ask() {
                                      body: JSON.stringify({question:q, k:5})});
     const d = await r.json();
     if (d.error) { $("#answer").textContent = "Error: " + d.error; return; }
-    $("#answer").className = "show"; $("#answer").textContent = d.answer;
+    $("#answer").className = "show"; $("#answer").innerHTML = md(d.answer);
     if (d.sources && d.sources.length) {
       let h = '<div class="srcH">Sources</div>';
       for (const s of d.sources) {

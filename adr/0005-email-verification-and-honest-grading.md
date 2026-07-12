@@ -76,3 +76,23 @@ Impact on the decision: the pluggable/honest-grading design stands unchanged, bu
 shifts optimistic, and provider-aware handling matters (grade Google/Proofpoint/Barracuda domains as
 catch-all/B+ by default, treat M365 as verifiable). Still to confirm: verifier accuracy against a
 known-valid/known-invalid ground-truth set (ADR-0007 Stage 6) — the 73% is a ceiling, not a measured confirm rate.
+
+## Measured update 2 (2026-07-12) — the "verifiable" ceiling was optimistic; M365 RCPT is blocked
+
+Running the per-address verifier over the extracted principals exposed the gap the first probe could not
+see. Rejecting a *fake* address (5xx) does **not** imply a *real* one can be confirmed:
+- **Microsoft 365 tenants 5xx-reject every external RCPT probe**, verified directly: `info@`, `contact@`,
+  and `office@` on `flputnam.com` and `jfgfamilyoffice.com` (mailboxes that certainly exist) all return
+  `550`. So the "73% mailbox-verifiable" figure counts M365's fake-rejection, but M365 will not confirm a
+  real mailbox from an external host either — the actual SMTP confirm rate from this machine is ~0 for M365,
+  which is ~half of all FO domains.
+- Consequence for grading: "every inferred pattern rejected" must be graded **UNCONFIRMED (C), not
+  undeliverable (D)** — `550` under anti-harvesting says nothing about whether the mailbox exists, and
+  calling it undeliverable would overstate certainty (the disqualifying move, inverted). Code updated so
+  M365 verifiable domains short-circuit to C without per-address probing (evidence-based + polite).
+
+Impact on the decision: reinforces "never promote unconfirmed to valid" and vindicates the API-fallback
+leg (ADR-0005 step 3) as the *only* path to a real A-grade confirmation for M365 domains. The honest
+measured distribution from SMTP-alone is dominated by B (catch-all, plausible) and C (unconfirmable),
+with A reachable only on the minority of non-M365 servers that answer RCPT truthfully. That candid
+distribution — not a wall of fake "verified" — is the deliverable.

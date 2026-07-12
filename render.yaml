@@ -1,0 +1,18 @@
+# Render deploy config (ADR-0014). One free web service; state lives in Supabase, so this is stateless
+# compute. Connect this repo in the Render dashboard, then paste DATABASE_URL + OPENAI_API_KEY as env
+# vars (they are sync:false = not stored in git). Every push to the default branch auto-redeploys.
+services:
+  - type: web
+    name: polarity-fo-rag
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn pipeline.rag.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL          # Supabase Session pooler string (paste in dashboard)
+        sync: false
+      - key: OPENAI_API_KEY        # for query embeddings + grounding (paste in dashboard)
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.11.9"

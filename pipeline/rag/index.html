@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PolarityIQ · Family Office Intelligence</title>
+<style>
+  :root {
+    --bg:#0f1420; --panel:#171d2b; --panel2:#1f2637; --line:#2a3346; --ink:#e7ecf5;
+    --mut:#93a0b8; --acc:#5b8cff; --acc2:#3a66d6;
+    --A:#2f9e44; --B:#e8a13c; --C:#7b8aa5; --D:#e0533d; --F:#8a3ffc;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .wrap { max-width:820px; margin:0 auto; padding:32px 20px 80px; }
+  header h1 { font-size:22px; margin:0 0 4px; letter-spacing:-.2px; }
+  header h1 .dot { color:var(--acc); }
+  header p { color:var(--mut); margin:0 0 22px; font-size:14px; }
+  .box { display:flex; gap:10px; }
+  input { flex:1; background:var(--panel); border:1px solid var(--line); color:var(--ink);
+    border-radius:10px; padding:13px 15px; font-size:15px; outline:none; }
+  input:focus { border-color:var(--acc); }
+  button { background:var(--acc); color:#fff; border:0; border-radius:10px; padding:0 20px;
+    font-size:15px; font-weight:600; cursor:pointer; }
+  button:hover { background:var(--acc2); }
+  button:disabled { opacity:.55; cursor:default; }
+  .chips { margin:12px 0 0; display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { background:var(--panel2); border:1px solid var(--line); color:var(--mut);
+    border-radius:20px; padding:6px 12px; font-size:13px; cursor:pointer; }
+  .chip:hover { color:var(--ink); border-color:var(--acc); }
+  #answer { margin:26px 0 0; background:var(--panel); border:1px solid var(--line);
+    border-radius:12px; padding:18px 20px; white-space:pre-wrap; display:none; }
+  #answer.show { display:block; }
+  .srcH { color:var(--mut); font-size:12px; text-transform:uppercase; letter-spacing:.8px;
+    margin:26px 0 10px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:14px 16px; margin-bottom:10px; }
+  .card .firm { font-weight:600; }
+  .card .meta { color:var(--mut); font-size:13px; margin-top:3px; }
+  .card .contact { margin-top:8px; font-size:14px; }
+  .card .email { color:var(--acc); }
+  .badge { display:inline-block; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px;
+    margin-left:6px; color:#0b0f18; vertical-align:middle; }
+  .b-A{background:var(--A);color:#fff} .b-B{background:var(--B)} .b-C{background:var(--C)}
+  .b-D{background:var(--D);color:#fff} .b-F{background:var(--F);color:#fff}
+  .tag { font-size:11px; color:var(--mut); border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; margin-left:6px; }
+  .muted { color:var(--mut); }
+  footer { margin-top:34px; color:var(--mut); font-size:12px; border-top:1px solid var(--line);
+    padding-top:16px; }
+  .legend { margin-top:6px; font-size:11px; }
+  .legend b { color:var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Polarity<span class="dot">IQ</span> · Family Office Intelligence</h1>
+    <p>Ask about a decision-grade dataset of family offices — investment focus, senior contacts, and
+       <b>verified</b> emails. Answers are grounded only in the dataset; contact confidence is shown.</p>
+  </header>
+
+  <div class="box">
+    <input id="q" placeholder="e.g. Which family offices invest in real estate?" autocomplete="off">
+    <button id="go">Ask</button>
+  </div>
+  <div class="chips" id="chips"></div>
+
+  <div id="answer"></div>
+  <div id="sources"></div>
+
+  <footer>
+    Grounded over gold-tier records · emails graded
+    <span class="legend"><span class="badge b-A">A</span> verified
+      <span class="badge b-B">B</span> catch-all
+      <span class="badge b-C">C</span> unconfirmed
+      <span class="badge b-D">D</span> invalid
+      <span class="badge b-F">F</span> no mail server</span>
+  </footer>
+</div>
+
+<script>
+const EXAMPLES = [
+  "Which family offices invest in real estate?",
+  "Who runs Oak Hill Advisors and can I email them?",
+  "Family offices focused on private equity in California",
+  "Which firms do direct private-company investments?",
+];
+const $ = s => document.querySelector(s);
+const chips = $("#chips");
+EXAMPLES.forEach(e => {
+  const c = document.createElement("span");
+  c.className = "chip"; c.textContent = e;
+  c.onclick = () => { $("#q").value = e; ask(); };
+  chips.appendChild(c);
+});
+
+function esc(s){ return (s||"").replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+async function ask() {
+  const q = $("#q").value.trim();
+  if (!q) return;
+  const btn = $("#go"); btn.disabled = true; btn.textContent = "…";
+  $("#answer").className = "show muted"; $("#answer").textContent = "Retrieving…";
+  $("#sources").innerHTML = "";
+  try {
+    const r = await fetch("/query", {method:"POST", headers:{"Content-Type":"application/json"},
+                                     body: JSON.stringify({question:q, k:5})});
+    const d = await r.json();
+    if (d.error) { $("#answer").textContent = "Error: " + d.error; return; }
+    $("#answer").className = "show"; $("#answer").textContent = d.answer;
+    if (d.sources && d.sources.length) {
+      let h = '<div class="srcH">Sources</div>';
+      for (const s of d.sources) {
+        const g = s.email_grade || "";
+        const badge = g ? `<span class="badge b-${g}">${g}</span>` : "";
+        const email = s.email ? `<span class="email">${esc(s.email)}</span>${badge}` : '<span class="muted">no email</span>';
+        const contact = s.contact ? `${esc(s.contact)} — ${email}` : '<span class="muted">no contact</span>';
+        const tags = (s.matched||[]).map(m=>`<span class="tag">${m}</span>`).join("");
+        h += `<div class="card"><div class="firm">${esc(s.firm)}${tags}</div>
+                <div class="contact">${contact}</div></div>`;
+      }
+      $("#sources").innerHTML = h;
+    }
+  } catch(e) { $("#answer").textContent = "Request failed: " + e; }
+  finally { btn.disabled = false; btn.textContent = "Ask"; }
+}
+$("#go").onclick = ask;
+$("#q").addEventListener("keydown", e => { if (e.key === "Enter") ask(); });
+</script>
+</body>
+</html>

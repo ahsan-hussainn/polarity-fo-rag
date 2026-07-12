@@ -185,6 +185,31 @@ def cmd_validate_emails(args):
         print("\n(dry-run: nothing persisted. add --write to fill silver.people.)")
 
 
+def cmd_build_gold(args):
+    """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
+    from pipeline.gold import build as gb
+
+    print("=" * 64)
+    print(f"BUILD GOLD ({'WRITE' if args.write else 'dry-run'})")
+    print("=" * 64)
+    result = gb.build(write=args.write)
+    rows = result.pop("rows")
+    for r in rows:
+        print(f"  [{r['score']:>3}] {(r['firm'] or '')[:32]:32} -> "
+              f"{(r['primary'] or '(no principal)')[:24]:24} {(r['title'] or '')[:30]:30} "
+              f"{r['grade'] or ''}")
+    print("-" * 64)
+    print(json.dumps(result, indent=2))
+    if not args.write:
+        print("\n(dry-run: nothing persisted. add --write to build gold.records.)")
+
+
+def cmd_gold_export(args):
+    from pipeline.gold import build as gb
+
+    print(json.dumps(gb.export(), indent=2))
+
+
 def cmd_gt_export(args):
     from pipeline import eval as ev
 
@@ -272,6 +297,12 @@ def main():
     v.add_argument("--verifier", default=None,
                    help="domain (domain-level grade) | millionverifier | mock (default: SMTP-from-host)")
     v.set_defaults(func=cmd_validate_emails)
+
+    g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
+    g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")
+    g.set_defaults(func=cmd_build_gold)
+    sub.add_parser("gold-export", help="Export gold.records to a CSV deliverable").set_defaults(
+        func=cmd_gold_export)
 
     ge = sub.add_parser("gt-export", help="Ground truth: export a blind is_principal labelling CSV")
     ge.add_argument("--limit", type=int, default=None, help="max people to export")

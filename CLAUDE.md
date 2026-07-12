@@ -74,3 +74,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0008](./adr/0008-extraction-llm-openai-behind-pluggable-seam.md) | Extraction LLM: OpenAI gpt-4o-mini behind a provider-agnostic seam | Accepted |
 | [0009](./adr/0009-silver-schema-firm-and-people-split.md) | Silver schema: firm + person split, believed vs verified cells | Accepted |
 | [0010](./adr/0010-email-verification-api-millionverifier.md) | Email verification via API (MillionVerifier) behind the verifier seam | Accepted |
+| [0011](./adr/0011-gold-record-shape-and-primary-contact.md) | Gold record shape: FO-MAX-mirroring, primary contact by seniority | Accepted |

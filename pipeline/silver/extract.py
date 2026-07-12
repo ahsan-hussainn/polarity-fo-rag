@@ -67,6 +67,9 @@ SYSTEM_PROMPT = """You extract structured facts from a family office's website t
 Rules:
 - Extract ONLY what the text explicitly states. If a field is not present, return null (or an empty
   list). Never guess, infer, or fabricate. An honest blank is required; a made-up value is worse.
+- thesis: the firm's investment strategy or philosophy in one concise sentence -- how/what they invest
+  (e.g. horizon, concentration, direct vs. via managers, target types). null if not described.
+- description: a brief 1-2 sentence overview of the firm (who it serves, what it is). null if absent.
 - sectors: a clean, de-duplicated list of the asset classes / industries the firm invests in.
 - founded_year: a 4-digit year only if stated; else null.
 - team: every named person with their stated title.

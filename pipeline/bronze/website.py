@@ -220,16 +220,24 @@ def run(limit: int, *, max_pages: int = DEFAULT_MAX_PAGES, write: bool = False,
         delay: float = 1.0, timeout: int = DEFAULT_TIMEOUT) -> dict:
     """Fetch websites for `limit` firms (richest first). Writes to bronze only if write=True."""
     firms = _firms_with_websites(limit)
-    rows: list[dict] = []
+    total_pages_with_text = 0
     firms_with_content = 0
     pages_fetched = 0
+    stored = 0
     failures: list[dict] = []
+    if write:
+        from pipeline import db
 
     for i, (crd, name, website) in enumerate(firms, 1):
         pages = fetch_site(website, timeout=timeout, max_pages=max_pages)
         pages_fetched += len(pages)
         good = [p for p in pages if p.error is None and p.text_len > 0]
-        rows.extend(_page_to_bronze_row(crd, name, p) for p in good)
+        firm_rows = [_page_to_bronze_row(crd, name, p) for p in good]
+        total_pages_with_text += len(firm_rows)
+        # Write per firm so an interruption leaves partial progress and a re-run resumes
+        # (bronze dedupe on (source, content_hash) makes re-running idempotent).
+        if write and firm_rows:
+            stored += db.insert_captures(firm_rows)
         if good:
             firms_with_content += 1
         else:
@@ -240,16 +248,11 @@ def run(limit: int, *, max_pages: int = DEFAULT_MAX_PAGES, write: bool = False,
         if delay and i < len(firms):
             time.sleep(delay)
 
-    stored = 0
-    if write and rows:
-        from pipeline import db
-        stored = db.insert_captures(rows)
-
     return {
         "firms_attempted": len(firms),
         "firms_with_content": firms_with_content,
         "pages_fetched": pages_fetched,
-        "pages_with_text": len(rows),
+        "pages_with_text": total_pages_with_text,
         "pages_stored_new": stored if write else None,
         "written": write,
         "failures": failures,

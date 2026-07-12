@@ -6,6 +6,7 @@ Usage:
     python -m pipeline.cli db-migrate          # apply db/migrations/*.sql (idempotent)
     python -m pipeline.cli load-bronze         # persist local captures into bronze.captures
     python -m pipeline.cli extract-test        # run the extraction seam on a sample (Stage 3)
+    python -m pipeline.cli fetch-websites      # Stage 2: fetch firm websites -> bronze
 """
 from __future__ import annotations
 import argparse
@@ -119,6 +120,25 @@ def cmd_extract_test(args):
     print(json.dumps(result.to_dict(), indent=2, ensure_ascii=False))
 
 
+def cmd_fetch_websites(args):
+    """Stage 2: fetch candidate firm websites into bronze (ADR-0006)."""
+    from pipeline.bronze import website
+
+    print("=" * 64)
+    print(f"STAGE 2 - WEBSITE FETCH ({'WRITE' if args.write else 'dry-run'}, "
+          f"limit={args.limit}, max_pages={args.max_pages})")
+    print("=" * 64)
+    result = website.run(args.limit, max_pages=args.max_pages, write=args.write,
+                         delay=args.delay, timeout=args.timeout)
+    failures = result.pop("failures")
+    print("-" * 64)
+    print(json.dumps(result, indent=2))
+    if failures:
+        print(f"\n--- {len(failures)} firm(s) with no usable content ---")
+        for f in failures[:20]:
+            print(f"  {(f['name'] or '')[:38]:38} {f['website'][:32]:32} {f['error']}")
+
+
 def main():
     p = argparse.ArgumentParser(prog="pipeline")
     sub = p.add_subparsers(required=True)
@@ -139,6 +159,14 @@ def main():
     e.add_argument("--file", default=None, help="path to a text file to extract (default: built-in sample)")
     e.add_argument("--source-url", default=None, help="provenance URL to stamp on the result")
     e.set_defaults(func=cmd_extract_test)
+
+    w = sub.add_parser("fetch-websites", help="Stage 2: fetch firm websites into bronze")
+    w.add_argument("--limit", type=int, default=10, help="number of firms to fetch (richest first)")
+    w.add_argument("--max-pages", type=int, default=5, help="max pages per firm (home + internal)")
+    w.add_argument("--write", action="store_true", help="persist to bronze (default: dry-run)")
+    w.add_argument("--delay", type=float, default=1.0, help="seconds between firms (politeness)")
+    w.add_argument("--timeout", type=int, default=15, help="per-request timeout seconds")
+    w.set_defaults(func=cmd_fetch_websites)
 
     args = p.parse_args()
     args.func(args)

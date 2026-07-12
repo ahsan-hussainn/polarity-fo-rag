@@ -15,6 +15,10 @@ ADV_FEED_BASE = "https://reports.adviserinfo.sec.gov/reports/CompilationReports/
 # We want the SEC-registered firm feed (RIAs + ERAs), not the state or individuals feeds.
 ADV_FEED_PREFIX = "IA_FIRM_SEC_Feed_"
 
+# --- Website enrichment fetch (Stage 2) ---
+# Descriptive UA so a site operator can see who we are; we fetch only a few public pages per firm.
+WEB_UA = "PolarityIQ Research (ahsannhu17@gmail.com)"
+
 # --- Local working paths (all under gitignored data/raw) ---
 DATA_RAW = "data/raw"
 

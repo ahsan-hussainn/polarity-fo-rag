@@ -1,7 +1,9 @@
 # ADR-0004: Sourcing family offices from public regulatory + disclosure data
 
 - **Date:** 2026-07-12
-- **Status:** Accepted
+- **Status:** Accepted (scope extended by [ADR-0012](./0012-fo-max-parity-enrichment.md): a bounded,
+  provenance-tracked search-assisted lookup for corporate LinkedIn is now allowed alongside regulatory +
+  on-site data)
 
 ## Context
 

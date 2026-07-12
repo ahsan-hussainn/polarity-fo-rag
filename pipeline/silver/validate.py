@@ -34,9 +34,18 @@ def _connect_retry(attempts: int = 4):
             time.sleep(2 * (i + 1))
 
 
-def _people(scope: str, limit: int | None) -> list[tuple]:
-    """(person_id, name, firm_crd, firm_name, domain) for the chosen scope."""
-    where = "where p.is_principal" if scope == "principals" else ""
+def _people(scope: str, limit: int | None, only_grade: str | None = None) -> list[tuple]:
+    """(person_id, name, firm_crd, firm_name, domain) for the chosen scope. only_grade (a single
+    grade letter) restricts to people currently at that grade -- e.g. re-verify just the C's, so an
+    API pass does not spend credits reconfirming dead (F) or catch-all (B) domains it cannot improve."""
+    conds = []
+    if scope == "principals":
+        conds.append("p.is_principal")
+    if only_grade:
+        if only_grade not in ("A", "B", "C", "D", "F"):
+            raise ValueError(f"only_grade must be a grade letter, got {only_grade!r}")
+        conds.append(f"p.quality_grade = '{only_grade}'")
+    where = ("where " + " and ".join(conds)) if conds else ""
     sql = (
         "select p.id, p.name, p.firm_crd, f.firm_name, f.domain "
         "from silver.people p join silver.firms f on f.crd = p.firm_crd "
@@ -62,11 +71,13 @@ def _write(conn, person_id: int, r: em.EmailResolution) -> None:
 
 
 def run(scope: str = "principals", *, limit: int | None = None, write: bool = False,
-        delay: float = 1.0, timeout: float = 8.0, verifier: str | None = None) -> dict:
+        delay: float = 1.0, timeout: float = 8.0, verifier: str | None = None,
+        only_grade: str | None = None, max_candidates: int = 3) -> dict:
     """Resolve + grade emails for people in scope. Writes to silver.people only if write=True.
     verifier=None uses SMTP-from-host (free, but blind on anti-harvesting domains); verifier=
-    'millionverifier'|'mock' uses the API seam (authoritative valid/invalid -> reachable A/D grades)."""
-    people = _people(scope, limit)
+    'millionverifier'|'mock' uses the API seam (authoritative valid/invalid -> reachable A/D grades).
+    only_grade re-verifies just people at that grade; max_candidates caps API calls per person."""
+    people = _people(scope, limit, only_grade)
     vobj = None
     if verifier and verifier != "domain":  # 'domain' = domain-level grading, not an API verifier
         from pipeline.verify import api
@@ -89,7 +100,7 @@ def run(scope: str = "principals", *, limit: int | None = None, write: bool = Fa
                                    "No firm domain on record; cannot infer an address.", {})
         elif vobj is not None:
             # API path: the verifier handles catch-all + mailbox existence itself, so no SMTP probing.
-            r = em.resolve_via_api(name, domain, vobj)
+            r = em.resolve_via_api(name, domain, vobj, max_candidates=max_candidates)
             if delay:
                 time.sleep(delay)  # gentle pacing against the API's rate limit
         elif verifier == "domain":

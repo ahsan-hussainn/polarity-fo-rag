@@ -74,6 +74,14 @@ turning the 215 C's into A/D is a credit top-up (MillionVerifier) or a one-class
 (ZeroBounce ~100/mo, NeverBounce ~1k, Bouncer, Hunter) — no pipeline change. Vendor choice is deferred
 until an account with confirmed credits exists.
 
+**Update (same day):** a funded MillionVerifier key (499 credits) became available and the API pass ran
+over the C-grade principals (`validate-emails --verifier millionverifier --only-grade C`). Result:
+**88 A (verified), 27 B, 9 C, 109 D (authoritative invalid), 18 F** over the 251 principals; ~438 credits
+spent. The API confirms M365 mailboxes host SMTP cannot, so A is genuinely reached. `--only-grade` makes
+the pass resumable (upgraded rows drop out of the C filter) and credit-thrifty (dead/catch-all domains
+skipped). This validates the seam end-to-end; the remaining C's and a sourced-email A+ crawl are optional
+follow-ups, not blockers.
+
 ## What would change this
 
 Free-tier exhaustion or an accuracy shortfall against the ground-truth set would trigger a swap (to

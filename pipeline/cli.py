@@ -174,7 +174,8 @@ def cmd_validate_emails(args):
           f"verifier={args.verifier or 'smtp'}, limit={args.limit})")
     print("=" * 64)
     result = validate.run(scope, limit=args.limit, write=args.write, delay=args.delay,
-                          verifier=args.verifier)
+                          verifier=args.verifier, only_grade=args.only_grade,
+                          max_candidates=args.max_candidates)
     rows = result.pop("rows")
     for r in rows:
         print(f"  [{r['grade']:>2}] {(r['person'] or '')[:26]:26} {(r['email'] or '—')[:34]:34} "
@@ -296,6 +297,10 @@ def main():
     v.add_argument("--delay", type=float, default=1.0, help="seconds between probes (politeness)")
     v.add_argument("--verifier", default=None,
                    help="domain (domain-level grade) | millionverifier | mock (default: SMTP-from-host)")
+    v.add_argument("--only-grade", default=None,
+                   help="re-verify only people currently at this grade (e.g. C), to save API credits")
+    v.add_argument("--max-candidates", type=int, default=3,
+                   help="max address patterns probed per person (API credit control)")
     v.set_defaults(func=cmd_validate_emails)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")

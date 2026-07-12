@@ -98,24 +98,34 @@ That does **not** mean a *real* address can be confirmed. Verified directly: **M
 the reference product (FO-MAX, whose schema carries a validation code + explanation + quality grade per
 email) uses a verification *API*, not host SMTP.
 
-### What shipped, and the path to A
+### What shipped
 
-Two things are built (ADR-0010): a **domain-level grader** (shipped, below) and an **API-verifier seam**
-(`pipeline/verify/api.py`, MillionVerifier client + offline mock, tested end-to-end — A/B/D all reachable),
-which only awaits account credits to run. The A grade is *reached by code*, not asserted; it is simply
-gated on an API budget, the same way FO-MAX gates verified email as paid value.
+Two graders were built (ADR-0010): a **domain-level grader** (F/B/C, the credit-free interim) and the
+**API-verifier seam** (`pipeline/verify/api.py`, MillionVerifier client + offline mock). Once a funded
+key was available, the API pass ran over the live-domain principals, verifying up to three inferred
+patterns each and stopping at the first deliverable mailbox. Crucially, the API confirms **M365**
+mailboxes that host SMTP cannot (`info@wellspringfo.com` → `ok`), so the A grade is genuinely reached.
 
-### Result — domain-level grade distribution over the 251 principals
+### Result — grade distribution over the 251 principals (after the API pass)
 
 | Grade | Meaning | Count | Share |
 |---|---|---:|---:|
-| A | confirmed deliverable (API) | 0 | 0% |
-| B | catch-all domain — plausible, unconfirmable | 18 | 7% |
-| C | live domain, mailbox not yet verified | 215 | 86% |
+| A | confirmed deliverable (API `ok`) | 88 | 35% |
+| B | catch-all domain — plausible, unconfirmable | 27 | 11% |
+| C | API unknown / greylisted — inferred, unconfirmed | 9 | 4% |
+| D | every inferred pattern authoritatively invalid | 109 | 43% |
 | F | no MX — dead domain, address definitely bad | 18 | 7% |
 
-The distribution is honest and complete: **no fake "verified" anywhere**, 18 dead-domain addresses
-correctly flagged as bad (F), and 215 live-but-unconfirmed (C) that the API pass will resolve to A or D.
-That candid spread — not a wall of green checkmarks — is the decision-grade deliverable. Wiring any
-funded verifier behind the existing seam turns the 215 C's into measured A/D verdicts with zero pipeline
-change.
+**88 principals now carry a verified work email** (~438 MillionVerifier credits spent). Of the 42 gold
+firms with a team page, **13 lead with a senior principal *and* an A-grade email** — e.g. Wellspring's
+Michael Novak (Founder & CEO, `mnovak@wellspringfo.com`), Oak Hill's Glenn August (Founder & CEO,
+`gaugust@oakhilladvisors.com`). That is the decision-grade record the reference cannot produce: the
+actual founder, with a confirmed address.
+
+The large **D bucket (43%) is an honest finding, not a failure**: for nearly half the principals, none
+of the common patterns (`first.last`, `flast`, `first`) is their real address — FO principals use
+idiosyncratic addresses — and the API says so authoritatively rather than us presenting a guess as
+verified. The 9 A+ (sourced-and-verified) grades were unreachable because these FO sites do not publish
+individual principal emails (0 clean site-email→principal matches); inference+verification (A) is the
+realistic ceiling, which is exactly how FO-MAX operates too. Better inference (more patterns) or a
+sourced-email crawl (`mailto:` from raw HTML) would convert some D's — measurable with this same harness.

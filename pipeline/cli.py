@@ -186,6 +186,13 @@ def cmd_validate_emails(args):
         print("\n(dry-run: nothing persisted. add --write to fill silver.people.)")
 
 
+def cmd_load_linkedin(args):
+    """Apply committed corporate-LinkedIn enrichment results to silver.firms."""
+    from pipeline.silver import enrich
+
+    print(json.dumps(enrich.load_corporate_linkedin(), indent=2))
+
+
 def cmd_build_gold(args):
     """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
     from pipeline.gold import build as gb
@@ -302,6 +309,9 @@ def main():
     v.add_argument("--max-candidates", type=int, default=3,
                    help="max address patterns probed per person (API credit control)")
     v.set_defaults(func=cmd_validate_emails)
+
+    sub.add_parser("load-linkedin", help="Apply committed corporate-LinkedIn enrichment to silver").set_defaults(
+        func=cmd_load_linkedin)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

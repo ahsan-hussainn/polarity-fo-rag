@@ -31,3 +31,4 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0005](./0005-email-verification-and-honest-grading.md) | Email verification with a pluggable verifier and honest two-axis grading | Accepted |
 | [0006](./0006-medallion-pipeline-in-postgres.md) | Medallion pipeline (bronze/silver/gold) lightweight in Postgres | Accepted |
 | [0007](./0007-pipeline-architecture-staged-medallion-dag.md) | Pipeline architecture: staged medallion DAG, over-discover then filter | Accepted |
+| [0008](./0008-extraction-llm-openai-behind-pluggable-seam.md) | OpenAI (gpt-4o-mini) as the extraction LLM, behind a provider-agnostic seam | Accepted |

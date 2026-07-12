@@ -41,6 +41,8 @@ what works/doesn't, improvements). Plus a half-page build session summary (actua
 - Sourcing: **SEC Form ADV + IRS 990-PF (ProPublica) + 13F**, all public/free/verified-live. [ADR-0004]
 - Email verification: **pluggable** (syntax+MX -> local SMTP probe, port 25 open here -> Reoon free API
   fallback) with honest two-axis grading; catch-all never graded valid. [ADR-0005]
+- Extraction LLM: **OpenAI `gpt-4o-mini`** (Structured Outputs) behind a provider-agnostic `extract()`
+  seam; escalate hard sites to Claude Haiku / Gemini free tier without a rewrite. [ADR-0008]
 - RAG API / UI / embedding model: **not yet decided** (record an ADR when chosen).
 
 ## Feasibility (verified live 2026-07-12)
@@ -69,3 +71,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0005](./adr/0005-email-verification-and-honest-grading.md) | Pluggable email verification + honest two-axis grading | Accepted |
 | [0006](./adr/0006-medallion-pipeline-in-postgres.md) | Medallion pipeline (bronze/silver/gold) in Postgres | Accepted |
 | [0007](./adr/0007-pipeline-architecture-staged-medallion-dag.md) | Pipeline: staged medallion DAG, over-discover then filter | Accepted |
+| [0008](./adr/0008-extraction-llm-openai-behind-pluggable-seam.md) | Extraction LLM: OpenAI gpt-4o-mini behind a provider-agnostic seam | Accepted |

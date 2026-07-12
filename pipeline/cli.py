@@ -186,6 +186,35 @@ def cmd_validate_emails(args):
         print("\n(dry-run: nothing persisted. add --write to fill silver.people.)")
 
 
+def cmd_rag_index(args):
+    """Embed the gold dataset into gold.rag_docs for hybrid retrieval (ADR-0013)."""
+    from pipeline.rag import embed
+
+    print("=" * 64)
+    print(f"RAG INDEX ({'WRITE' if args.write else 'dry-run'})")
+    print("=" * 64)
+    result = embed.build_index(write=args.write)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    if not args.write:
+        print("\n(dry-run: nothing embedded. add --write to build the index.)")
+
+
+def cmd_rag_query(args):
+    """Ask the Micro-RAG a question over the gold dataset."""
+    from pipeline.rag import answer as ra
+
+    result = ra.answer(args.question, k=args.k)
+    print("=" * 64)
+    print(f"Q: {result['query']}")
+    print("=" * 64)
+    print(result["answer"])
+    print("\n--- sources ---")
+    for s in result["sources"]:
+        em = f"{s['email']} [{s['email_grade']}]" if s.get("email") else "—"
+        print(f"  {(s['firm'] or '')[:34]:34} {(s['contact'] or '')[:22]:22} {em:34} "
+              f"({'+'.join(s['matched'])}, {s['score']})")
+
+
 def cmd_load_linkedin(args):
     """Apply committed corporate-LinkedIn enrichment results to silver.firms."""
     from pipeline.silver import enrich
@@ -312,6 +341,14 @@ def main():
 
     sub.add_parser("load-linkedin", help="Apply committed corporate-LinkedIn enrichment to silver").set_defaults(
         func=cmd_load_linkedin)
+
+    ri = sub.add_parser("rag-index", help="Embed gold into gold.rag_docs for hybrid retrieval")
+    ri.add_argument("--write", action="store_true", help="persist embeddings (default: dry-run)")
+    ri.set_defaults(func=cmd_rag_index)
+    rq = sub.add_parser("rag-query", help="Ask the Micro-RAG a question over gold")
+    rq.add_argument("question", help="the question to ask")
+    rq.add_argument("--k", type=int, default=5, help="number of records to retrieve/ground on")
+    rq.set_defaults(func=cmd_rag_query)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

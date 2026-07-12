@@ -5,6 +5,7 @@ Usage:
     python -m pipeline.cli db-check            # verify Supabase connectivity + schema
     python -m pipeline.cli db-migrate          # apply db/migrations/*.sql (idempotent)
     python -m pipeline.cli load-bronze         # persist local captures into bronze.captures
+    python -m pipeline.cli extract-test        # run the extraction seam on a sample (Stage 3)
 """
 from __future__ import annotations
 import argparse
@@ -107,6 +108,17 @@ def cmd_load_bronze(args):
     print(f"\ninserted {total} new bronze rows (re-runs dedupe to 0).")
 
 
+def cmd_extract_test(args):
+    """Run the Stage 3 extraction seam on a sample (ADR-0008)."""
+    from pipeline.silver import extract as ex
+
+    text = open(args.file, encoding="utf-8").read() if args.file else ex.SAMPLE_TEXT
+    extractor = ex.get_extractor(args.provider)
+    print(f"provider seam -> {extractor.name}\n" + "-" * 64)
+    result = extractor.extract(text, source_url=args.source_url)
+    print(json.dumps(result.to_dict(), indent=2, ensure_ascii=False))
+
+
 def main():
     p = argparse.ArgumentParser(prog="pipeline")
     sub = p.add_subparsers(required=True)
@@ -121,6 +133,12 @@ def main():
         func=cmd_db_migrate)
     sub.add_parser("load-bronze", help="persist local captures into bronze.captures").set_defaults(
         func=cmd_load_bronze)
+
+    e = sub.add_parser("extract-test", help="Stage 3: run the extraction seam on a sample")
+    e.add_argument("--provider", default=None, help="mock | openai (default: env EXTRACT_PROVIDER or openai)")
+    e.add_argument("--file", default=None, help="path to a text file to extract (default: built-in sample)")
+    e.add_argument("--source-url", default=None, help="provenance URL to stamp on the result")
+    e.set_defaults(func=cmd_extract_test)
 
     args = p.parse_args()
     args.func(args)

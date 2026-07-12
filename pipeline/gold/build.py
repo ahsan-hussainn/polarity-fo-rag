@@ -20,10 +20,13 @@ GOLD_CSV = "data/gold/family_office_dataset.csv"
 # gold.records column -> human header for the shipped CSV (FO-MAX-style naming, in reading order).
 _EXPORT_COLUMNS = [
     ("family_office_name", "Family Office Name"), ("domain", "Domain"), ("website", "Website"),
-    ("city", "City"), ("state", "State"), ("country", "Country"),
-    ("founded_year", "Founded Year"), ("investment_thesis", "Investment Thesis"),
-    ("description", "Description"), ("investing_sectors", "Investing Sectors"),
+    ("url_quality", "URL Quality"), ("corporate_linkedin", "Corporate LinkedIn"),
+    ("street_address", "Street Address"), ("city", "City"), ("state", "State"),
+    ("country", "Country"), ("founded_year", "Founded Year"),
+    ("investment_thesis", "Investment Thesis"), ("description", "Description"),
+    ("investing_sectors", "Investing Sectors"),
     ("primary_contact_name", "Primary Contact"), ("primary_contact_title", "Primary Title"),
+    ("primary_contact_location", "Primary Contact Location"),
     ("primary_contact_email", "Primary Email"), ("primary_email_grade", "Primary Email Grade"),
     ("primary_email_code", "Primary Email Validation Code"),
     ("primary_email_explanation", "Primary Email Explanation"),
@@ -91,6 +94,36 @@ def _location(cur, crd: str) -> tuple[str | None, str | None, str | None]:
     return (r[0], r[1], r[2]) if r else (None, None, None)
 
 
+def _street(cur, crd: str) -> str | None:
+    """Street address from the ADV filing (data we already hold -- a free FO-MAX parity field)."""
+    cur.execute("select raw->>'street1', raw->>'street2' from bronze.captures "
+                "where source='sec_form_adv' and entity_key=%s limit 1", (crd,))
+    r = cur.fetchone()
+    if not r:
+        return None
+    parts = [p for p in (r[0], r[1]) if p]
+    return ", ".join(parts) if parts else None
+
+
+def _url_quality(cur, crd: str) -> str | None:
+    """Derive a FO-MAX-style URL Quality from our own fetch signals (pages, HTTP status, TLS)."""
+    cur.execute("select raw->>'http_status', raw->>'insecure', raw->>'page_type' from bronze.captures "
+                "where source='website' and entity_key=%s", (crd,))
+    rows = cur.fetchall()
+    if not rows:
+        return None
+    pages = len(rows)
+    home_ok = any(r[2] == "home" and str(r[0]) == "200" for r in rows)
+    insecure = any(str(r[1]).lower() == "true" for r in rows)
+    if home_ok and not insecure and pages >= 3:
+        return "Highest"
+    if home_ok and not insecure:
+        return "Medium"
+    if home_ok:
+        return "Medium-Low"
+    return "Lower"
+
+
 def _contacts(cur, crd: str) -> list[dict]:
     """A firm's principals, most-senior first, with their email grade chain."""
     cur.execute(
@@ -108,20 +141,24 @@ def build(write: bool = False) -> dict:
     out = {"written": write, "firms": 0, "with_primary": 0, "rows": []}
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
-                    "extracted_by, (select count(*) from silver.people p where p.firm_crd=f.crd) "
+                    "extracted_by, corporate_linkedin, "
+                    "(select count(*) from silver.people p where p.firm_crd=f.crd) "
                     "from silver.firms f order by firm_name")
         firms = cur.fetchall()
 
-        for crd, name, domain, thesis, desc, sectors, founded, by, people_ct in firms:
+        for crd, name, domain, thesis, desc, sectors, founded, by, linkedin, people_ct in firms:
             contacts = _contacts(cur, crd)
             city, state, country = _location(cur, crd)
             website = f"https://{domain}" if domain else None
             p = contacts[0] if len(contacts) > 0 else {}
             s = contacts[1] if len(contacts) > 1 else {}
+            contact_loc = ", ".join(x for x in (city, state) if x) if p else None
             row = {
                 "crd": crd, "family_office_name": name, "domain": domain, "website": website,
                 "description": desc, "investment_thesis": thesis, "investing_sectors": sectors or [],
                 "founded_year": founded, "city": city, "state": state, "country": country,
+                "street_address": _street(cur, crd), "url_quality": _url_quality(cur, crd),
+                "corporate_linkedin": linkedin, "primary_contact_location": contact_loc,
                 "primary_contact_name": p.get("name"), "primary_contact_title": p.get("title"),
                 "primary_contact_email": p.get("email"), "primary_email_grade": p.get("grade"),
                 "primary_email_code": p.get("code"), "primary_email_explanation": p.get("explanation"),

@@ -8,6 +8,7 @@ Usage:
     python -m pipeline.cli extract-test        # run the extraction seam on a sample (Stage 3)
     python -m pipeline.cli fetch-websites      # Stage 2: fetch firm websites -> bronze
     python -m pipeline.cli build-silver        # Stage 3: bronze websites -> silver.firms + people
+    python -m pipeline.cli validate-emails     # Validation: infer + SMTP-verify + grade emails
 """
 from __future__ import annotations
 import argparse
@@ -163,6 +164,71 @@ def cmd_build_silver(args):
               "use --provider mock to avoid LLM cost.)")
 
 
+def cmd_validate_emails(args):
+    """Validation layer: infer + SMTP-verify + grade emails into silver.people (ADR-0005)."""
+    from pipeline.silver import validate
+
+    scope = "all" if args.all else "principals"
+    print("=" * 64)
+    print(f"VALIDATION - EMAILS ({'WRITE' if args.write else 'dry-run'}, scope={scope}, "
+          f"verifier={args.verifier or 'smtp'}, limit={args.limit})")
+    print("=" * 64)
+    result = validate.run(scope, limit=args.limit, write=args.write, delay=args.delay,
+                          verifier=args.verifier)
+    rows = result.pop("rows")
+    for r in rows:
+        print(f"  [{r['grade']:>2}] {(r['person'] or '')[:26]:26} {(r['email'] or '—')[:34]:34} "
+              f"{r['code']}")
+    print("-" * 64)
+    print(json.dumps(result, indent=2))
+    if not args.write:
+        print("\n(dry-run: nothing persisted. add --write to fill silver.people.)")
+
+
+def cmd_gt_export(args):
+    from pipeline import eval as ev
+
+    n = ev.export(limit=args.limit)
+    print(f"wrote {n} people -> {ev.LABELS_CSV}\nfill in truth_is_principal (1/0), then: gt-score")
+
+
+def cmd_gt_label(args):
+    from pipeline import eval as ev
+
+    print(json.dumps(ev.label(), indent=2))
+    print("review data/ground_truth/principal_labels.csv, then: gt-score")
+
+
+def cmd_gt_score(args):
+    from pipeline import eval as ev
+
+    result = ev.score()
+    fps = result.pop("false_positives", [])
+    fns = result.pop("false_negatives", [])
+    print(json.dumps(result, indent=2))
+    if fps:
+        print(f"\n--- false positives (flagged principal, actually not): {len(fps)} ---")
+        for f in fps:
+            print(f"  {(f['name'] or '')[:26]:26} {f['title']}")
+    if fns:
+        print(f"\n--- false negatives (missed real principals): {len(fns)} ---")
+        for f in fns:
+            print(f"  {(f['name'] or '')[:26]:26} {f['title']}")
+
+
+def cmd_gt_crosscheck(args):
+    from pipeline import eval as ev
+
+    result = ev.crosscheck()
+    flagged = result.pop("flagged")
+    print(json.dumps(result, indent=2))
+    print(f"\n--- firms flagging >={int(result['ratio_threshold']*100)}% of their team as principals "
+          f"(over-inclusion signal; ADV employees = authoritative context) ---")
+    for f in flagged:
+        print(f"  {(f['firm'] or '')[:34]:34} principals={f['website_principals']:>2}/"
+              f"{f['website_people']:<2} ({int(f['principal_ratio']*100)}%)  ADV_employees={f['adv_employees']}")
+
+
 def main():
     p = argparse.ArgumentParser(prog="pipeline")
     sub = p.add_subparsers(required=True)
@@ -197,6 +263,25 @@ def main():
     s.add_argument("--limit", type=int, default=None, help="max firms to process (default: all)")
     s.add_argument("--write", action="store_true", help="persist to silver (default: dry-run)")
     s.set_defaults(func=cmd_build_silver)
+
+    v = sub.add_parser("validate-emails", help="Validation: infer + SMTP-verify + grade emails")
+    v.add_argument("--all", action="store_true", help="all people (default: principals only)")
+    v.add_argument("--limit", type=int, default=None, help="max people to process")
+    v.add_argument("--write", action="store_true", help="persist to silver.people (default: dry-run)")
+    v.add_argument("--delay", type=float, default=1.0, help="seconds between probes (politeness)")
+    v.add_argument("--verifier", default=None,
+                   help="domain (domain-level grade) | millionverifier | mock (default: SMTP-from-host)")
+    v.set_defaults(func=cmd_validate_emails)
+
+    ge = sub.add_parser("gt-export", help="Ground truth: export a blind is_principal labelling CSV")
+    ge.add_argument("--limit", type=int, default=None, help="max people to export")
+    ge.set_defaults(func=cmd_gt_export)
+    sub.add_parser("gt-label", help="Ground truth: adjudicate titles -> labelled CSV (rubric)").set_defaults(
+        func=cmd_gt_label)
+    sub.add_parser("gt-score", help="Ground truth: score model is_principal vs hand labels").set_defaults(
+        func=cmd_gt_score)
+    sub.add_parser("gt-crosscheck", help="Ground truth: website principals vs ADV employee counts").set_defaults(
+        func=cmd_gt_crosscheck)
 
     args = p.parse_args()
     args.func(args)

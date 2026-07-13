@@ -15,14 +15,41 @@ Two things are true of every part of this repo:
 2. **Reasoning is visible.** Why each decision was made, what was assumed vs verified, and what would
    change our mind, is recorded in [`adr/`](./adr/) as we go, not reconstructed at the end.
 
+**Live demo:** https://polarity-fo-rag.onrender.com (Render free tier — first request after idle
+cold-starts in ~30–60 s).
+
+## The deliverables, and where they live
+
+| Deliverable | Where |
+|---|---|
+| 50 validated family-office records (CSV) | [`data/gold/family_office_dataset.csv`](./data/gold/family_office_dataset.csv) |
+| Methodology summary | [`METHODOLOGY.md`](./METHODOLOGY.md) |
+| 3 records with full validation chains | [`docs/validation-chains.md`](./docs/validation-chains.md) |
+| Measured validation results (FP/FN, email grades) | [`docs/findings/validation-layer.md`](./docs/findings/validation-layer.md) |
+| RAG documentation note | [`docs/rag-note.md`](./docs/rag-note.md) |
+| Build session summary | [`BUILD_SESSION_SUMMARY.md`](./BUILD_SESSION_SUMMARY.md) |
+| Reasoning trail | [`adr/`](./adr/) (15 ADRs) + [`docs/findings/`](./docs/findings/) |
+
 ## Layout
 
 | Path | What it holds |
 |---|---|
+| `pipeline/` | The system: `bronze/` discovery+fetch, `silver/` extraction+validation, `gold/` product build, `verify/` email verification, `rag/` retrieval+serving, `eval.py` ground-truth measurement. |
+| `db/migrations/` | Postgres schema (medallion: bronze/silver/gold + RAG index). |
 | `adr/` | Architecture Decision Records. The "why this over that" trail. Start here to understand choices. |
-| `.claude/commands/` | Claude Code slash commands (e.g. `/adr` to scaffold a new decision record). |
+| `docs/findings/` | Measured results and belief updates per pipeline stage. |
 | `CLAUDE.md` | Project context loaded each session: constraints, schema, stack, ADR index. |
 
-## Status
+## Run it
 
-Scaffolding. Pipeline and RAG not yet built. See `adr/` for decisions made so far.
+```
+pip install -r requirements.txt          # then set DATABASE_URL + OPENAI_API_KEY (see .env.example)
+python -m pipeline.cli db-migrate        # schema
+python -m pipeline.cli discover-adv      # Stage 1: SEC ADV -> candidates
+python -m pipeline.cli fetch-websites --write
+python -m pipeline.cli build-silver --write
+python -m pipeline.cli validate-emails --write --verifier millionverifier
+python -m pipeline.cli build-gold --write && python -m pipeline.cli gold-export
+python -m pipeline.cli rag-index --write
+uvicorn pipeline.rag.app:app             # or use the live URL above
+```

@@ -7,6 +7,7 @@ lives in Supabase (already deployed); this service is stateless compute. Run loc
 """
 from __future__ import annotations
 
+import logging
 import pathlib
 
 from fastapi import FastAPI
@@ -40,9 +41,9 @@ def query(q: Query):
         return JSONResponse({"error": "empty question"}, status_code=400)
     try:
         return answer(q.question, k=min(max(q.k, 1), 10))
-    except Exception as e:  # never leak a stack trace to the browser, but keep the root cause
-        detail = f"{type(e).__name__}: {e}"
-        cause = e.__cause__ or e.__context__
-        if cause is not None:
-            detail += f" | cause: {type(cause).__name__}: {cause}"
-        return JSONResponse({"error": detail}, status_code=500)
+    except Exception:
+        # Log the full traceback server-side (Render logs); never echo error internals to the browser
+        # -- an exception message can contain secrets (e.g. an auth header), so keep it off the wire.
+        logging.getLogger("uvicorn.error").exception("query failed")
+        return JSONResponse({"error": "The service hit an internal error answering that query."},
+                            status_code=500)

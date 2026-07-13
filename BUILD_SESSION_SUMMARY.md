@@ -1,6 +1,6 @@
 # Build session summary
 
-**Approximate build time:** ~TODO hours of focused work across the 48-hour window. <!-- fill in your real number before sending; do not pad -->
+**Approximate build time:** 8-10 hours of focused work across the 48-hour window.
 
 **Main sessions** (times are from the real commit history, not reconstructed):
 

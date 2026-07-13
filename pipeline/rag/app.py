@@ -40,5 +40,9 @@ def query(q: Query):
         return JSONResponse({"error": "empty question"}, status_code=400)
     try:
         return answer(q.question, k=min(max(q.k, 1), 10))
-    except Exception as e:  # never leak a stack trace to the browser
-        return JSONResponse({"error": f"{type(e).__name__}: {e}"}, status_code=500)
+    except Exception as e:  # never leak a stack trace to the browser, but keep the root cause
+        detail = f"{type(e).__name__}: {e}"
+        cause = e.__cause__ or e.__context__
+        if cause is not None:
+            detail += f" | cause: {type(cause).__name__}: {cause}"
+        return JSONResponse({"error": detail}, status_code=500)

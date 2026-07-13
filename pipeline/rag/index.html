@@ -96,13 +96,27 @@
 </div>
 
 <script>
-const EXAMPLES = [
+// A pool spanning every query shape the system handles (discovery, lookup, aggregate, filters);
+// shuffled per page load so repeat visitors see the breadth, not the same five.
+const EXAMPLE_POOL = [
   "Which family offices invest in real estate?",
   "Who runs Wellspring Family Office and can I email them?",
   "Family offices focused on private equity in California",
   "How many family offices are in New York, and who should I contact first?",
   "Which family offices manage over $1 billion?",
+  "Which firms do direct private-company investments?",
+  "Family offices in Florida serving ultra-high-net-worth families",
+  "What is the largest family office by AUM?",
+  "Show me multi-family offices in Switzerland",
+  "Which family offices focus on estate and legacy planning?",
+  "Who should I contact at Matter Family Office?",
+  "Family offices interested in venture capital or technology",
+  "How do I get in touch with Alpha Capital Family Office?",
+  "How many family offices are in Colorado?",
+  "Which family offices have verified contact emails I can use today?",
 ];
+const EXAMPLES = EXAMPLE_POOL.map(q => [Math.random(), q]).sort((a, b) => a[0] - b[0])
+  .slice(0, 5).map(([, q]) => q);
 const $ = s => document.querySelector(s);
 const chips = $("#chips");
 EXAMPLES.forEach(e => {
@@ -125,9 +139,11 @@ function md(text){
     const line = raw.trim();
     if (!line) { close(); continue; }
     let m;
-    if ((m = line.match(/^\d+[.)]\s+(.*)/))) {
+    if ((m = line.match(/^(\d+)[.)]\s+(.*)/))) {
       if (list !== "ol") { close(); html += "<ol>"; list = "ol"; }
-      html += `<li>${inline(m[1])}</li>`;
+      // Blank lines between items split the <ol>, restarting the browser's counter at 1 -- carry
+      // the source's own number through so "1. 2. 3." never renders as "1. 1. 1."
+      html += `<li value="${m[1]}">${inline(m[2])}</li>`;
     } else if ((m = line.match(/^[-*]\s+(.*)/))) {
       if (list !== "ul") { close(); html += "<ul>"; list = "ul"; }
       html += `<li>${inline(m[1])}</li>`;

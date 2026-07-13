@@ -43,7 +43,9 @@ what works/doesn't, improvements). Plus a half-page build session summary (actua
   fallback) with honest two-axis grading; catch-all never graded valid. [ADR-0005]
 - Extraction LLM: **OpenAI `gpt-4o-mini`** (Structured Outputs) behind a provider-agnostic `extract()`
   seam; escalate hard sites to Claude Haiku / Gemini free tier without a rewrite. [ADR-0008]
-- RAG API / UI / embedding model: **not yet decided** (record an ADR when chosen).
+- RAG: **OpenAI text-embedding-3-small + hybrid RRF retrieval** [ADR-0013]; served by **one FastAPI
+  app on Render** (live URL) [ADR-0014]. Gold ships through a **curation gate** — non-FO / wrong-entity
+  firms excluded with auditable reasons in `gold.excluded_firms` [ADR-0015].
 
 ## Feasibility (verified live 2026-07-12)
 
@@ -78,3 +80,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0012](./adr/0012-fo-max-parity-enrichment.md) | FO-MAX parity enrichment: held-data fields + search-assisted LinkedIn | Accepted |
 | [0013](./adr/0013-rag-embeddings-and-hybrid-retrieval.md) | RAG index: OpenAI embeddings + hybrid (pgvector + tsvector) retrieval | Accepted |
 | [0014](./adr/0014-rag-serving-fastapi-and-render.md) | RAG serving: one FastAPI app (page + API), deployed on Render | Accepted |
+| [0015](./adr/0015-gold-curation-gate.md) | Gold curation gate: entity validity is validated, not assumed | Accepted |

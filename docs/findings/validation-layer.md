@@ -122,6 +122,13 @@ Michael Novak (Founder & CEO, `mnovak@wellspringfo.com`), Oak Hill's Glenn Augus
 `gaugust@oakhilladvisors.com`). That is the decision-grade record the reference cannot produce: the
 actual founder, with a confirmed address.
 
+> **Postscript (2026-07-13, ADR-0015):** the measurements above were taken over the full 59-firm
+> silver set. The pre-submission review concluded that several of those firms — including Oak Hill,
+> whose 15/15 principal ratio this very document flagged — are not family offices at all, and a
+> curation gate now excludes 9 firms from gold (reasons in `gold.excluded_firms`). The numbers here
+> are kept as-measured (they describe the extractor and verifier, which are unchanged); the shipped
+> file is the curated 50.
+
 The large **D bucket (43%) is an honest finding, not a failure**: for nearly half the principals, none
 of the common patterns (`first.last`, `flast`, `first`) is their real address — FO principals use
 idiosyncratic addresses — and the API says so authoritatively rather than us presenting a guess as

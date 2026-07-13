@@ -47,19 +47,28 @@ says so and offers nearest records, clearly labeled.
 
 ## What doesn't (known limits, stated plainly)
 
-- **No true structured-filter leg.** "Family offices in California under $1B AUM" is answered by
-  text-matching, not a SQL `WHERE`. Mitigated by rendering full state names and AUM into the indexed
-  prose; a filter-extraction step feeding typed SQL predicates is the right fix.
 - **Grounding is prompt-enforced, not verified post-hoc.** No automatic check that every cited firm was
   in the retrieved set. Spot-checked manually; a citation-verifier would make it measured.
 - **No retrieval gold set yet.** Unlike the dataset (measured FP/FN), the RAG has no recall@k number —
-  the honest gap in our own evidence standard, and the first improvement below.
+  the honest gap in our own evidence standard, and the first improvement below. The intent classifier
+  (ADR-0016) is likewise unmeasured.
 - Render free tier sleeps when idle: first request after a quiet period takes ~30–60s.
+
+## Post-submission upgrade (ADR-0016)
+
+The original build answered every query shape with the same top-k retrieval and recited facts. Now:
+a structured-output classifier routes **lookups** to direct name matching, **aggregates** to exact SQL
+over `gold.records` (so "how many FOs in New York?" reports the dataset's true count, not a top-5
+sample's), and **discovery** to hybrid retrieval with typed state/AUM constraints applied as hard
+`WHERE` pre-filters. The answer layer now sees the *full* gold record, and outreach routing is computed
+deterministically in Python from the email grades — a D-grade primary email routes the user to the
+A-grade secondary contact, the office phone, or LinkedIn instead of dead-ending. Answers are shaped as
+analyst advice: verdict first, why-each-firm, how to reach them with verification status in words, one
+concrete next step.
 
 ## What I would improve, in order
 
-1. A query→expected-record gold set with measured recall@k and a groundedness check (the same
-   "measured, not asserted" bar the dataset already meets).
-2. Filter extraction → SQL predicates (state, sector, AUM range) as a third retrieval leg.
-3. Post-answer citation verification (every named firm must appear in the retrieved set).
-4. Keep-warm ping or paid tier to remove the cold start.
+1. A query→expected-record gold set with measured recall@k, groundedness, and intent-classification
+   accuracy (the same "measured, not asserted" bar the dataset already meets).
+2. Post-answer citation verification (every named firm must appear in the retrieved set).
+3. Keep-warm ping or paid tier to remove the cold start.

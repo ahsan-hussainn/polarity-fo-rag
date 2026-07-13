@@ -46,6 +46,15 @@
   .card .meta { color:var(--mut); font-size:13px; margin-top:3px; }
   .card .contact { margin-top:8px; font-size:14px; }
   .card .email { color:var(--acc); }
+  .card .channel { margin-top:8px; font-size:13px; color:var(--mut); }
+  .card .channel b { color:var(--ink); font-weight:600; }
+  .card .links { margin-top:6px; font-size:12px; }
+  .card .links a { color:var(--mut); text-decoration:none; border:1px solid var(--line);
+    border-radius:5px; padding:1px 7px; margin-right:6px; }
+  .card .links a:hover { color:var(--acc); border-color:var(--acc); }
+  .chip-ch { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px;
+    border-radius:6px; margin-left:8px; background:var(--panel2); border:1px solid var(--acc);
+    color:var(--acc); vertical-align:middle; }
   .badge { display:inline-block; font-size:11px; font-weight:700; padding:2px 7px; border-radius:6px;
     margin-left:6px; color:#0b0f18; vertical-align:middle; }
   .b-A{background:var(--A);color:#fff} .b-B{background:var(--B)} .b-C{background:var(--C)}
@@ -91,7 +100,8 @@ const EXAMPLES = [
   "Which family offices invest in real estate?",
   "Who runs Wellspring Family Office and can I email them?",
   "Family offices focused on private equity in California",
-  "Which firms do direct private-company investments?",
+  "How many family offices are in New York, and who should I contact first?",
+  "Which family offices manage over $1 billion?",
 ];
 const $ = s => document.querySelector(s);
 const chips = $("#chips");
@@ -141,14 +151,36 @@ async function ask() {
     $("#answer").className = "show"; $("#answer").innerHTML = md(d.answer);
     if (d.sources && d.sources.length) {
       let h = '<div class="srcH">Sources</div>';
+      const CH = {email:"Email", phone:"Call", linkedin:"LinkedIn", research:"Research"};
       for (const s of d.sources) {
         const g = s.email_grade || "";
         const badge = g ? `<span class="badge b-${g}">${g}</span>` : "";
         const email = s.email ? `<span class="email">${esc(s.email)}</span>${badge}` : '<span class="muted">no email</span>';
-        const contact = s.contact ? `${esc(s.contact)} — ${email}` : '<span class="muted">no contact</span>';
+        const title = s.title ? ` <span class="muted">(${esc(s.title)})</span>` : "";
+        const contact = s.contact ? `${esc(s.contact)}${title} — ${email}` : '<span class="muted">no contact on record</span>';
         const tags = (s.matched||[]).map(m=>`<span class="tag">${m}</span>`).join("");
-        h += `<div class="card"><div class="firm">${esc(s.firm)}${tags}</div>
-                <div class="contact">${contact}</div></div>`;
+        const chip = s.best_channel ? `<span class="chip-ch">${CH[s.best_channel]||s.best_channel}</span>` : "";
+        const meta = [s.location, s.aum ? "AUM " + s.aum : null].filter(Boolean).join(" · ");
+        let secondary = "";
+        if (s.secondary_contact && s.secondary_email && s.best_channel === "email"
+            && s.best_channel_target === s.secondary_email) {
+          const sg = s.secondary_email_grade || "";
+          secondary = `<div class="contact">↳ via ${esc(s.secondary_contact)} — <span class="email">${esc(s.secondary_email)}</span><span class="badge b-${sg}">${sg}</span></div>`;
+        }
+        let channel = "";
+        if (s.best_channel === "phone" && s.phone)
+          channel = `<div class="channel">Best channel: <b>call ${esc(s.phone)}</b> (no deliverable email)</div>`;
+        else if (s.best_channel === "linkedin")
+          channel = `<div class="channel">Best channel: <b>LinkedIn outreach</b> (no verified email or phone)</div>`;
+        const links = [
+          s.website ? `<a href="${esc(s.website)}" target="_blank" rel="noopener">site</a>` : null,
+          s.linkedin ? `<a href="${esc(s.linkedin)}" target="_blank" rel="noopener">linkedin</a>` : null,
+          s.adv_filing_url ? `<a href="${esc(s.adv_filing_url)}" target="_blank" rel="noopener">SEC ADV filing</a>` : null,
+        ].filter(Boolean).join("");
+        h += `<div class="card"><div class="firm">${esc(s.firm)}${chip}${tags}</div>
+                ${meta ? `<div class="meta">${esc(meta)}</div>` : ""}
+                <div class="contact">${contact}</div>${secondary}${channel}
+                ${links ? `<div class="links">${links}</div>` : ""}</div>`;
       }
       $("#sources").innerHTML = h;
     }

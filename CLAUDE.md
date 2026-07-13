@@ -81,3 +81,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0013](./adr/0013-rag-embeddings-and-hybrid-retrieval.md) | RAG index: OpenAI embeddings + hybrid (pgvector + tsvector) retrieval | Accepted |
 | [0014](./adr/0014-rag-serving-fastapi-and-render.md) | RAG serving: one FastAPI app (page + API), deployed on Render | Accepted |
 | [0015](./adr/0015-gold-curation-gate.md) | Gold curation gate: entity validity is validated, not assumed | Accepted |
+| [0016](./adr/0016-rag-intent-routing-and-actionable-answers.md) | RAG: intent routing, typed filters, actionability-shaped answers | Accepted |

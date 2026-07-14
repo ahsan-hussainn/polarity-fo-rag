@@ -83,3 +83,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0015](./adr/0015-gold-curation-gate.md) | Gold curation gate: entity validity is validated, not assumed | Accepted |
 | [0016](./adr/0016-rag-intent-routing-and-actionable-answers.md) | RAG: intent routing, typed filters, actionability-shaped answers | Accepted |
 | [0017](./adr/0017-rag-latency-streaming-and-connection-reuse.md) | RAG latency: streaming answers, connection reuse, parallel calls | Accepted |
+| [0018](./adr/0018-ui-coverage-desk-presentation.md) | Presentation: "Coverage Desk" UI designed around grade + routing | Accepted |

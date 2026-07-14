@@ -289,6 +289,54 @@ function card(s, i){
   </div>`;
 }
 
+function renderMeta(d){
+  const ro = readout(d.intent);
+  if (ro) { $("#readout").className = "readout show"; $("#readout").innerHTML = ro; }
+  if (d.sources && d.sources.length) {
+    $("#sources").innerHTML =
+      `<div class="covH"><span>Coverage</span><span>${d.sources.length} target${d.sources.length>1?"s":""}</span></div>`
+      + d.sources.map((s,i)=>card(s,i)).join("");
+  }
+}
+
+// Streaming read of /query/stream (NDJSON): the meta line lands as soon as retrieval finishes,
+// so the coverage cards render while the brief is still being written. Falls back to the plain
+// /query endpoint if streaming isn't available.
+async function askStream(q){
+  const res = await fetch("/query/stream", {method:"POST", headers:{"Content-Type":"application/json"},
+                                            body: JSON.stringify({question:q, k:5})});
+  if (!res.ok || !res.body) throw new Error("stream unavailable");
+  const reader = res.body.getReader(), dec = new TextDecoder();
+  let buf = "", text = "", started = false;
+  for (;;) {
+    const {done, value} = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, {stream:true});
+    const lines = buf.split("\n"); buf = lines.pop();
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const ev = JSON.parse(line);
+      if (ev.type === "meta") renderMeta(ev);
+      else if (ev.type === "delta") {
+        if (!started) { $("#brief").className = "show"; started = true; }
+        text += ev.text;
+        $("#brief").innerHTML = md(text);
+      }
+      else if (ev.type === "error") { const err = new Error(ev.error); err.server = true; throw err; }
+    }
+  }
+  if (!started) throw new Error("empty stream");
+}
+
+async function askPlain(q){
+  const res = await fetch("/query", {method:"POST", headers:{"Content-Type":"application/json"},
+                                     body: JSON.stringify({question:q, k:5})});
+  const d = await res.json();
+  if (d.error) throw new Error(d.error);
+  renderMeta(d);
+  $("#brief").className = "show"; $("#brief").innerHTML = md(d.answer);
+}
+
 async function ask(){
   const q = $("#q").value.trim(); if (!q) return;
   const btn = $("#go"); btn.disabled = true; btn.textContent = "…";
@@ -296,19 +344,12 @@ async function ask(){
   $("#brief").className = "show load"; $("#brief").textContent = "Reading the desk…";
   $("#sources").innerHTML = "";
   try {
-    const res = await fetch("/query", {method:"POST", headers:{"Content-Type":"application/json"},
-                                       body: JSON.stringify({question:q, k:5})});
-    const d = await res.json();
-    if (d.error) { $("#brief").className = "show"; $("#brief").innerHTML = `<span class="err">${esc(d.error)}</span>`; return; }
-    const ro = readout(d.intent);
-    if (ro) { $("#readout").className = "readout show"; $("#readout").innerHTML = ro; }
-    $("#brief").className = "show"; $("#brief").innerHTML = md(d.answer);
-    if (d.sources && d.sources.length) {
-      $("#sources").innerHTML =
-        `<div class="covH"><span>Coverage</span><span>${d.sources.length} target${d.sources.length>1?"s":""}</span></div>`
-        + d.sources.map((s,i)=>card(s,i)).join("");
+    try { await askStream(q); }
+    catch (e) {
+      if (e.server) throw e;           // the server answered with an error: don't re-run the query
+      await askPlain(q);               // fallback: proxies/old servers that can't stream
     }
-  } catch(e) { $("#brief").className = "show"; $("#brief").innerHTML = `<span class="err">Request failed: ${esc(String(e))}</span>`; }
+  } catch(e) { $("#brief").className = "show"; $("#brief").innerHTML = `<span class="err">${esc(String(e.message||e))}</span>`; }
   finally { btn.disabled = false; btn.textContent = "Ask"; }
 }
 $("#go").onclick = ask;

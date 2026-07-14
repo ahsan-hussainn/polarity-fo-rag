@@ -44,6 +44,28 @@ def get_conn() -> psycopg.Connection:
     return psycopg.connect(get_dsn())
 
 
+# --- Pooled connections for the serving path (ADR-0017) -------------------------------------
+# Each psycopg.connect() to the Supabase pooler pays ~1s of TLS handshake -- fine for batch
+# pipeline stages, unacceptable per web request. The pool keeps connections open and hands them
+# out safely across FastAPI's worker threads (a bare cached connection would NOT be thread-safe).
+# Serving is read-only, so connections are autocommit: no transaction state to leak between
+# requests. check=idle-reconnect is handled by the pool itself.
+_pool = None
+
+
+def get_pool():
+    global _pool
+    if _pool is None:
+        from psycopg_pool import ConnectionPool
+
+        _pool = ConnectionPool(
+            get_dsn(), min_size=0, max_size=4, open=True,
+            kwargs={"autocommit": True},
+            check=ConnectionPool.check_connection,  # revalidate idle conns (pooler drops them)
+        )
+    return _pool
+
+
 def check() -> dict:
     """Verify connectivity and report extensions + medallion schemas present."""
     with get_conn() as conn, conn.cursor() as cur:

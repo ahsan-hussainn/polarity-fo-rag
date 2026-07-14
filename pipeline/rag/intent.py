@@ -52,10 +52,10 @@ Do not invent constraints the user did not state."""
 def classify(query: str) -> QueryIntent:
     """Classify + extract, failing open to unfiltered discovery on any error."""
     try:
-        from openai import OpenAI
+        from pipeline.rag.oai import client
 
-        parse = getattr(OpenAI().chat.completions, "parse", None) or \
-            OpenAI().beta.chat.completions.parse
+        c = client()  # shared, keep-alive (ADR-0017)
+        parse = getattr(c.chat.completions, "parse", None) or c.beta.chat.completions.parse
         completion = parse(
             model=INTENT_MODEL, temperature=0,
             messages=[{"role": "system", "content": _SYSTEM},

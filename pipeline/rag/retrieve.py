@@ -73,7 +73,7 @@ def records_by_crd(cur, crds: list[str]) -> dict[str, dict]:
 def by_name(name: str, limit: int = 3) -> list[dict]:
     """Lookup path: match a named firm directly (name or domain), no embedding round-trip."""
     like = f"%{name.strip()}%"
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(f"select {RECORD_COLUMNS} from gold.records "
                     "where family_office_name ilike %s or domain ilike %s "
                     "order by data_completion_score desc limit %s", (like, like, limit))
@@ -92,7 +92,7 @@ def by_filters(state: str | None = None, min_aum: int | None = None, max_aum: in
                  "or r.investment_thesis ilike %s or r.description ilike %s)")
         like = f"%{sector_term}%"
         params += [like, like, like]
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(f"select count(*) from gold.records r where true{fsql}", params)
         total = cur.fetchone()[0]
         cur.execute(f"select {RECORD_COLUMNS} from gold.records r where true{fsql} "
@@ -104,14 +104,17 @@ def by_filters(state: str | None = None, min_aum: int | None = None, max_aum: in
 
 
 def hybrid(query: str, k: int = 5, pool: int = 20, *, state: str | None = None,
-           min_aum: int | None = None, max_aum: int | None = None) -> list[dict]:
+           min_aum: int | None = None, max_aum: int | None = None,
+           qvec: list[float] | None = None) -> list[dict]:
     """Fuse semantic + lexical rankings (RRF), optionally pre-filtered by typed constraints,
-    and return the top-k FULL gold records with provenance."""
+    and return the top-k FULL gold records with provenance. Pass qvec when the query embedding
+    was already computed (the answer layer embeds speculatively, in parallel with intent
+    classification -- ADR-0017) to skip a second embedding round-trip."""
     from pipeline.rag.embed import embed_query, _vec_literal
 
-    qvec = _vec_literal(embed_query(query))
+    qvec = _vec_literal(qvec if qvec is not None else embed_query(query))
     fsql, fparams = _filter_sql(state, min_aum, max_aum)
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         vec_ids = _vector_ranked(cur, qvec, pool, fsql, fparams)
         lex_ids = _lexical_ranked(cur, query, pool, fsql, fparams)
         scores: dict[str, float] = {}

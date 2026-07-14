@@ -7,14 +7,15 @@ lives in Supabase (already deployed); this service is stateless compute. Run loc
 """
 from __future__ import annotations
 
+import json
 import logging
 import pathlib
 
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
-from pipeline.rag.answer import answer
+from pipeline.rag.answer import answer, answer_stream
 
 app = FastAPI(title="PolarityIQ Micro-RAG", description="Grounded Q&A over a decision-grade FO dataset")
 _HTML = (pathlib.Path(__file__).parent / "index.html").read_text(encoding="utf-8")
@@ -47,3 +48,25 @@ def query(q: Query):
         logging.getLogger("uvicorn.error").exception("query failed")
         return JSONResponse({"error": "The service hit an internal error answering that query."},
                             status_code=500)
+
+
+@app.post("/query/stream")
+def query_stream(q: Query):
+    """Streaming twin of /query (ADR-0017): NDJSON events -- one 'meta' line (intent + sources,
+    sent the moment retrieval finishes, so the UI renders coverage immediately), then 'delta'
+    lines as the grounded answer generates, then 'done'. The UI reads this; /query stays the
+    plain request/response contract for the CLI and API clients."""
+    if not q.question.strip():
+        return JSONResponse({"error": "empty question"}, status_code=400)
+
+    def gen():
+        try:
+            for event in answer_stream(q.question, k=min(max(q.k, 1), 10)):
+                yield json.dumps(event, ensure_ascii=False) + "\n"
+        except Exception:
+            logging.getLogger("uvicorn.error").exception("stream query failed")
+            yield json.dumps({"type": "error",
+                              "error": "The service hit an internal error answering that query."}) + "\n"
+
+    return StreamingResponse(gen(), media_type="application/x-ndjson",
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})

@@ -74,9 +74,9 @@ def _content_for(r: dict) -> str:
 
 def embed_texts(texts: list[str], model: str | None = None) -> list[list[float]]:
     """The embedding seam. One batched OpenAI call; returns one vector per input text."""
-    from openai import OpenAI
+    from pipeline.rag.oai import client
 
-    resp = OpenAI().embeddings.create(model=model or EMBED_MODEL, input=texts)
+    resp = client().embeddings.create(model=model or EMBED_MODEL, input=texts)
     return [d.embedding for d in resp.data]
 
 

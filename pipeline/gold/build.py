@@ -73,26 +73,32 @@ _EXPORT_COLUMNS = [
     # sectors/team; the email chain carries its own method (code + explanation) per address.
     ("adv_filing_url", "Firm Facts Source (SEC Form ADV)"),
     ("profile_source_url", "Profile Source (Firm Website)"),
-    ("release_state", "Release State"),
+    ("entity_category", "Entity Category"), ("release_state", "Release State"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
     ("people_count", "People Count"),
 ]
 
 
 def export(path: str = GOLD_CSV) -> dict:
-    """Write gold.records to a CSV deliverable (FO-MAX-style columns), best rows first."""
+    """Write gold.records to a CSV deliverable (FO-MAX-style columns), best rows first.
+    Quarantined records do NOT ship in the product file (ADR-0019/0020) -- they are written to a
+    separate quarantined.csv beside it, with their release reasons, as the auditable remainder."""
     cols = [c for c, _ in _EXPORT_COLUMNS]
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with db.get_conn() as c, c.cursor() as cur:
         # Actionability-first ordering: a reviewer reads row 1 first, so lead with records a client
-        # could act on today (verified A email > B catch-all > C unknown > D invalid > F/none),
-        # then by completion. Completion alone would rank an invalid-email record above a verified one.
+        # could act on today (vendor-deliverable A email > B catch-all > C unknown > none),
+        # then by completion. Completion alone would rank a contactless record above a deliverable one.
         cur.execute(f"select {','.join(cols)} from gold.records "
+                    "where release_state != 'quarantined' "
                     "order by case coalesce(primary_email_grade,'Z') "
                     " when 'A' then 0 when 'B' then 1 when 'C' then 2 when 'D' then 3 "
                     " when 'F' then 4 else 5 end, "
                     "data_completion_score desc, family_office_name")
         rows = cur.fetchall()
+        cur.execute("select crd, family_office_name, entity_category, release_reasons "
+                    "from gold.records where release_state = 'quarantined' order by family_office_name")
+        quarantined = cur.fetchall()
     with open(path, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
         w.writerow([h for _, h in _EXPORT_COLUMNS])
@@ -101,7 +107,13 @@ def export(path: str = GOLD_CSV) -> dict:
             for col, v in zip(cols, r):
                 out.append("; ".join(v) if isinstance(v, list) else v)
             w.writerow(out)
-    return {"rows": len(rows), "path": path}
+    qpath = os.path.join(os.path.dirname(path), "quarantined.csv")
+    with open(qpath, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["CRD", "Firm Name", "Entity Category", "Release Reasons"])
+        for crd, name, cat, reasons in quarantined:
+            w.writerow([crd, name, cat, "; ".join(reasons or [])])
+    return {"rows": len(rows), "quarantined": len(quarantined), "path": path, "quarantined_path": qpath}
 
 # Seniority score for picking the primary/secondary contact among a firm's principals. Higher = more
 # senior / better first point of contact for a capital allocator.
@@ -202,12 +214,32 @@ def _contacts(cur, crd: str) -> list[dict]:
     return people
 
 
+def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
+    """ADR-0019 release decision from the ADR-0020 entity adjudication (person gate, ADR-0021,
+    lands in WS3 and is a pending reason until then). Returns
+    (release_state, reasons, entity_category, entity_status)."""
+    person_pending = "person evidence pending (ADR-0021)"
+    if adj is None or adj["status"] == "unresolved":
+        return ("unresolved",
+                ["entity adjudication pending (ADR-0020)", person_pending],
+                adj["category"] if adj else None, adj["status"] if adj else None)
+    if adj["status"] == "rejected":
+        return "quarantined", [f"entity rejected: {adj['rationale']}"], adj["category"], "rejected"
+    if adj.get("duplicate_of"):
+        return ("quarantined", [f"duplicate of CRD {adj['duplicate_of']}: {adj['rationale']}"],
+                adj["category"], "affirmed")
+    return "unresolved", [person_pending], adj["category"], "affirmed"
+
+
 def build(write: bool = False) -> dict:
     """Assemble gold.records from silver + ADV bronze. Upserts one row per firm when write=True.
     Firms in EXCLUDED (ADR-0015) are skipped, recorded in gold.excluded_firms, and removed from
     gold.records if a previous build wrote them."""
     out = {"written": write, "firms": 0, "with_primary": 0, "excluded": len(EXCLUDED), "rows": []}
     with db.get_conn() as c, c.cursor() as cur:
+        cur.execute("select crd, category, status, duplicate_of, rationale from gold.entity_adjudications")
+        adjudications = {r[0]: {"category": r[1], "status": r[2], "duplicate_of": r[3],
+                                "rationale": r[4]} for r in cur.fetchall()}
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
                     "extracted_by, corporate_linkedin, source_urls, "
                     "(select count(*) from silver.people p where p.firm_crd=f.crd) "
@@ -247,12 +279,11 @@ def build(write: bool = False) -> dict:
                 "secondary_contact_email": s_email, "secondary_email_grade": s.get("grade"),
                 "secondary_email_code": s.get("code"), "secondary_email_explanation": s.get("explanation"),
                 "principal_count": len(contacts), "people_count": people_ct, "extracted_by": by,
-                # ADR-0019: no record is presumed qualifying. These flip per record as the ADR-0020
-                # entity adjudication and ADR-0021 person evidence passes complete (WS2/WS3).
-                "release_state": "unresolved",
-                "release_reasons": ["entity adjudication pending (ADR-0020)",
-                                    "person evidence pending (ADR-0021)"],
             }
+            # ADR-0019: no record is presumed qualifying; the entity adjudication (ADR-0020) and,
+            # in WS3, the person evidence pass (ADR-0021) decide what release permits.
+            (row["release_state"], row["release_reasons"],
+             row["entity_category"], row["entity_status"]) = _release(adjudications.get(crd))
             row["data_completion_score"] = _completion(row)
             out["firms"] += 1
             if p:

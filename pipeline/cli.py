@@ -222,6 +222,23 @@ def cmd_load_linkedin(args):
     print(json.dumps(enrich.load_corporate_linkedin(), indent=2))
 
 
+def cmd_entity_evidence(args):
+    """ADR-0020: assemble entity evidence sheet with draft category proposals (never decisions)."""
+    from pipeline import curate
+
+    print(json.dumps(curate.evidence_sheet(), indent=2))
+
+
+def cmd_entity_apply(args):
+    """ADR-0020: apply human-ratified entity adjudications to gold.entity_adjudications."""
+    from pipeline import curate
+
+    kwargs = {"write": args.write}
+    if args.path:
+        kwargs["path"] = args.path
+    print(json.dumps(curate.apply(**kwargs), indent=2))
+
+
 def cmd_build_gold(args):
     """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
     from pipeline.gold import build as gb
@@ -349,6 +366,13 @@ def main():
     rq.add_argument("question", help="the question to ask")
     rq.add_argument("--k", type=int, default=5, help="number of records to retrieve/ground on")
     rq.set_defaults(func=cmd_rag_query)
+
+    ee = sub.add_parser("entity-evidence", help="ADR-0020: assemble per-firm entity evidence + draft proposals for review")
+    ee.set_defaults(func=cmd_entity_evidence)
+    ea = sub.add_parser("entity-apply", help="ADR-0020: load ratified entity adjudications (refuses unratified rows)")
+    ea.add_argument("--write", action="store_true")
+    ea.add_argument("--path", default=None)
+    ea.set_defaults(func=cmd_entity_apply)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

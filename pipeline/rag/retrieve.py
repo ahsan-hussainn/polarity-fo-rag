@@ -20,6 +20,12 @@ from pipeline import db
 
 RRF_K = 60   # standard RRF constant; dampens the influence of low ranks
 
+# Release gate (ADR-0019): quarantined records are not retrievable on ANY path -- lookup, aggregate,
+# or hybrid. 'unresolved' records are still served during the pre-window repair (the whole base is
+# unresolved until the ADR-0020/0021 adjudications run); the qualifying-only gate tightens when
+# those passes complete, so the transition is explicit here rather than silent.
+_RELEASE_GATE = "release_state != 'quarantined'"
+
 # Everything the answer layer needs to say "whom to contact, why them, and how to reach them".
 RECORD_COLUMNS = (
     "crd, family_office_name, city, state, country, founded_year, aum_usd, firm_phone, "
@@ -47,7 +53,7 @@ def _filter_sql(state: str | None, min_aum: int | None, max_aum: int | None) -> 
 
 def _vector_ranked(cur, qvec_literal: str, n: int, fsql: str, fparams: list) -> list[str]:
     cur.execute("select d.crd from gold.rag_docs d join gold.records r using (crd) "
-                f"where d.embedding is not null{fsql} "
+                f"where d.embedding is not null and r.{_RELEASE_GATE}{fsql} "
                 "order by d.embedding <=> %s::vector limit %s",
                 (*fparams, qvec_literal, n))
     return [r[0] for r in cur.fetchall()]
@@ -55,7 +61,7 @@ def _vector_ranked(cur, qvec_literal: str, n: int, fsql: str, fparams: list) -> 
 
 def _lexical_ranked(cur, query: str, n: int, fsql: str, fparams: list) -> list[str]:
     cur.execute("select d.crd from gold.rag_docs d join gold.records r using (crd) "
-                f"where d.tsv @@ plainto_tsquery('english', %s){fsql} "
+                f"where d.tsv @@ plainto_tsquery('english', %s) and r.{_RELEASE_GATE}{fsql} "
                 "order by ts_rank(d.tsv, plainto_tsquery('english', %s)) desc limit %s",
                 (query, *fparams, query, n))
     return [r[0] for r in cur.fetchall()]
@@ -75,7 +81,7 @@ def by_name(name: str, limit: int = 3) -> list[dict]:
     like = f"%{name.strip()}%"
     with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(f"select {RECORD_COLUMNS} from gold.records "
-                    "where family_office_name ilike %s or domain ilike %s "
+                    f"where (family_office_name ilike %s or domain ilike %s) and {_RELEASE_GATE} "
                     "order by data_completion_score desc limit %s", (like, like, limit))
         cols = [d[0] for d in cur.description]
         return [{**dict(zip(cols, r)), "score": 1.0, "matched": ["name"]} for r in cur.fetchall()]
@@ -93,9 +99,9 @@ def by_filters(state: str | None = None, min_aum: int | None = None, max_aum: in
         like = f"%{sector_term}%"
         params += [like, like, like]
     with db.get_pool().connection() as c, c.cursor() as cur:
-        cur.execute(f"select count(*) from gold.records r where true{fsql}", params)
+        cur.execute(f"select count(*) from gold.records r where r.{_RELEASE_GATE}{fsql}", params)
         total = cur.fetchone()[0]
-        cur.execute(f"select {RECORD_COLUMNS} from gold.records r where true{fsql} "
+        cur.execute(f"select {RECORD_COLUMNS} from gold.records r where r.{_RELEASE_GATE}{fsql} "
                     "order by r.aum_usd desc nulls last, r.data_completion_score desc limit %s",
                     (*params, limit))
         cols = [d[0] for d in cur.description]

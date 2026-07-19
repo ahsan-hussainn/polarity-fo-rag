@@ -42,8 +42,16 @@ EXCLUDED: dict[str, str] = {
     "174027": "Parvus Asset Management: hedge fund, not a family office; no enrichable content.",
 }
 
+# Release policy (ADR-0019): vendor verdicts that make an address unsafe for customer use. A value
+# with one of these codes is moved to gold.contact_audit and its operational field is nulled --
+# enforced HERE, at the single writer, so no product surface (CSV, prompt, API, UI) can carry it.
+# The grade/code/explanation stay on the record as verification metadata: "we probed, the vendor
+# rejected every pattern" is honest disclosure (the shipped F rows already worked this way).
+REJECTED_CODES = {"INVALID_API", "INVALID_NO_MX"}
+
 # gold.records column -> human header for the shipped CSV (FO-MAX-style naming, in reading order).
 _EXPORT_COLUMNS = [
+    ("crd", "CRD"),  # stable SEC identifier: identity resolution must be auditable from the artifact
     ("family_office_name", "Family Office Name"), ("domain", "Domain"), ("website", "Website"),
     ("url_quality", "URL Quality"), ("corporate_linkedin", "Corporate LinkedIn"),
     ("street_address", "Street Address"), ("city", "City"), ("state", "State"),
@@ -65,6 +73,7 @@ _EXPORT_COLUMNS = [
     # sectors/team; the email chain carries its own method (code + explanation) per address.
     ("adv_filing_url", "Firm Facts Source (SEC Form ADV)"),
     ("profile_source_url", "Profile Source (Firm Website)"),
+    ("release_state", "Release State"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
     ("people_count", "People Count"),
 ]
@@ -122,8 +131,12 @@ _SCORE_FIELDS = (
 
 
 def _completion(row: dict) -> int:
+    # A vendor-rejected contact slot is not "complete" data (WS0 audit: D-grades were inflating
+    # this score). The grade cell only counts when it describes a usable-or-unconfirmed address.
     got = sum(1 for f in _SCORE_FIELDS if row.get(f) not in (None, "", [], "{}"))
-    return round(100 * got / len(_SCORE_FIELDS))
+    if row.get("primary_email_grade") in ("D", "F"):
+        got -= 1  # the grade field is populated, but it certifies an unusable slot
+    return round(100 * max(got, 0) / len(_SCORE_FIELDS))
 
 
 def _adv_facts(cur, crd: str) -> dict:
@@ -157,6 +170,24 @@ def _url_quality(cur, crd: str) -> str | None:
     if home_ok:
         return "Medium-Low"
     return "Lower"
+
+
+def _released_email(cur, crd: str, role: str, contact: dict, write: bool) -> str | None:
+    """ADR-0019 release gate for one contact slot. A vendor-rejected address (REJECTED_CODES) is
+    recorded in gold.contact_audit and NOT released -- returns None so the operational field ships
+    blank. Non-rejected addresses pass through unchanged."""
+    email, code = contact.get("email"), contact.get("code")
+    if not email or code not in REJECTED_CODES:
+        return email
+    if write:
+        cur.execute(
+            "insert into gold.contact_audit (crd, contact_role, contact_name, email, grade, code, "
+            "explanation, reason) values (%s,%s,%s,%s,%s,%s,%s,%s) "
+            "on conflict (crd, contact_role, email) do nothing",
+            (crd, role, contact.get("name"), email, contact.get("grade"), code,
+             contact.get("explanation"),
+             "vendor rejected as invalid/undeliverable; unsafe for customer use (ADR-0019)"))
+    return None
 
 
 def _contacts(cur, crd: str) -> list[dict]:
@@ -197,6 +228,8 @@ def build(write: bool = False) -> dict:
             website = f"https://{domain}" if domain else None
             p = contacts[0] if len(contacts) > 0 else {}
             s = contacts[1] if len(contacts) > 1 else {}
+            p_email = _released_email(cur, crd, "primary", p, write) if p else None
+            s_email = _released_email(cur, crd, "secondary", s, write) if s else None
             contact_loc = ", ".join(x for x in (city, state) if x) if p else None
             row = {
                 "crd": crd, "family_office_name": name, "domain": domain, "website": website,
@@ -208,12 +241,17 @@ def build(write: bool = False) -> dict:
                 "profile_source_url": (src_urls[0] if src_urls else None),
                 "corporate_linkedin": linkedin, "primary_contact_location": contact_loc,
                 "primary_contact_name": p.get("name"), "primary_contact_title": p.get("title"),
-                "primary_contact_email": p.get("email"), "primary_email_grade": p.get("grade"),
+                "primary_contact_email": p_email, "primary_email_grade": p.get("grade"),
                 "primary_email_code": p.get("code"), "primary_email_explanation": p.get("explanation"),
                 "secondary_contact_name": s.get("name"), "secondary_contact_title": s.get("title"),
-                "secondary_contact_email": s.get("email"), "secondary_email_grade": s.get("grade"),
+                "secondary_contact_email": s_email, "secondary_email_grade": s.get("grade"),
                 "secondary_email_code": s.get("code"), "secondary_email_explanation": s.get("explanation"),
                 "principal_count": len(contacts), "people_count": people_ct, "extracted_by": by,
+                # ADR-0019: no record is presumed qualifying. These flip per record as the ADR-0020
+                # entity adjudication and ADR-0021 person evidence passes complete (WS2/WS3).
+                "release_state": "unresolved",
+                "release_reasons": ["entity adjudication pending (ADR-0020)",
+                                    "person evidence pending (ADR-0021)"],
             }
             row["data_completion_score"] = _completion(row)
             out["firms"] += 1

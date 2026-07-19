@@ -1,7 +1,17 @@
 # CLAUDE.md — project context
 
-Family Office Dataset + Micro-RAG. PolarityIQ Differentiator, Stage 1, Task 1.
+Family Office Dataset + Micro-RAG. PolarityIQ Differentiator — Stage 1 passed; now in the
+**pre-window Bridge Mandate correction phase** before Stage 2 (50 → 500 records, operated over time).
 Read this first each session. Keep it current.
+
+## Current phase: Bridge Mandate corrections (pre-window, no deadline)
+
+Stage 1 feedback (`D:\Polarity IQ Final Round\Stage 2\Ahsan Bridge Mandate.pdf`) requires correcting
+the original 50 before they become the base of the 500. Governing finding: checks measured but did
+not control release. WS0 audit: `docs/findings/bridge-audit-reconciliation.md`. Standards (fixed
+before measurement): ADR-0019 release/quarantine, ADR-0020 entity standard, ADR-0021 decision-maker
+standard. Language rule everywhere: narrowest accurate status word — "vendor reported deliverable,"
+never "verified"; counts regenerated from the artifact, never hand-carried.
 
 ## The one thing that matters most
 
@@ -84,3 +94,7 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0016](./adr/0016-rag-intent-routing-and-actionable-answers.md) | RAG: intent routing, typed filters, actionability-shaped answers | Accepted |
 | [0017](./adr/0017-rag-latency-streaming-and-connection-reuse.md) | RAG latency: streaming answers, connection reuse, parallel calls | Accepted |
 | [0018](./adr/0018-ui-coverage-desk-presentation.md) | Presentation: "Coverage Desk" UI designed around grade + routing | Accepted |
+| [0019](./adr/0019-release-and-quarantine-policy.md) | Release and quarantine policy for vendor-rejected contact data | Accepted |
+| [0020](./adr/0020-affirmative-entity-standard.md) | Affirmative entity standard and identity resolution | Accepted |
+| [0021](./adr/0021-decision-maker-evidence-standard.md) | Decision-maker evidence standard | Accepted |
+| [0022](./adr/0022-contact-selection-allocation-authority.md) | Contact selection: allocation authority first, conditioned on entity category | Accepted |

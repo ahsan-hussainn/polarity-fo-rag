@@ -215,19 +215,23 @@ def _contacts(cur, crd: str) -> list[dict]:
 
 
 def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
-    """ADR-0019 release decision from the ADR-0020 entity adjudication (person gate, ADR-0021,
-    lands in WS3 and is a pending reason until then). Returns
-    (release_state, reasons, entity_category, entity_status)."""
+    """ADR-0019 release decision from the ADR-0020 entity adjudication. Note two distinct senses of
+    'unresolved': an *entity* whose type could not be affirmed is QUARANTINED (policy: not released,
+    not counted, not retrievable); an affirmed entity whose *person* evidence is still pending
+    (ADR-0021, WS3) keeps release_state 'unresolved' -- it ships during the repair, labeled, but is
+    not yet certified 'qualifying'. Returns (release_state, reasons, entity_category, entity_status)."""
     person_pending = "person evidence pending (ADR-0021)"
-    if adj is None or adj["status"] == "unresolved":
-        return ("unresolved",
-                ["entity adjudication pending (ADR-0020)", person_pending],
-                adj["category"] if adj else None, adj["status"] if adj else None)
+    if adj is None:  # defensive: no adjudication on record (should not occur post-WS2)
+        return "unresolved", ["no entity adjudication on record"], None, None
     if adj["status"] == "rejected":
-        return "quarantined", [f"entity rejected: {adj['rationale']}"], adj["category"], "rejected"
+        return "quarantined", [f"entity rejected ({adj['category']}): {adj['rationale']}"], adj["category"], "rejected"
+    if adj["status"] == "unresolved":
+        return ("quarantined", [f"entity type unresolved: {adj['rationale']}"],
+                adj["category"], "unresolved")
     if adj.get("duplicate_of"):
         return ("quarantined", [f"duplicate of CRD {adj['duplicate_of']}: {adj['rationale']}"],
                 adj["category"], "affirmed")
+    # affirmed entity (FO or reclassified non-FO): ships, labeled by category, pending the person pass
     return "unresolved", [person_pending], adj["category"], "affirmed"
 
 

@@ -204,3 +204,36 @@ def apply_contacts(path: str = CONTACT_DECISIONS, write: bool = False) -> dict:
         if write:
             c.commit()
     return out
+
+
+def verify_contacts(write: bool = False, limit: int | None = None) -> dict:
+    """WS3b (ADR-0021/0010): for each ratified contact WITHOUT a published address, infer the pattern
+    for that proven person against the firm's domain and verify it via the email API. Stores the
+    honest grade so build.py can offer a reachable-but-precisely-labeled email. Published-address
+    contacts are skipped (already proven). D/F verdicts are recorded but never released."""
+    from pipeline.verify.api import get_verifier
+    from pipeline.verify.email import resolve_via_api
+
+    verifier = get_verifier()
+    out = {"checked": 0, "graded": {}, "written": write}
+    with db.get_conn() as c, c.cursor() as cur:
+        cur.execute("select ca.crd, ca.contact_role, ca.name, r.domain "
+                    "from gold.contact_adjudications ca join gold.records r using (crd) "
+                    "where ca.published_email is null and ca.inferred_grade is null "
+                    "and ca.name is not null and r.domain is not null "
+                    "order by ca.crd, ca.contact_role" + (f" limit {int(limit)}" if limit else ""))
+        todo = cur.fetchall()
+        for crd, role, name, domain in todo:
+            res = resolve_via_api(name, domain, verifier)
+            out["checked"] += 1
+            out["graded"][res.grade] = out["graded"].get(res.grade, 0) + 1
+            if write:
+                cur.execute(
+                    "update gold.contact_adjudications set inferred_email=%s, inferred_grade=%s, "
+                    "inferred_code=%s, inferred_explanation=%s, inferred_evidence=%s "
+                    "where crd=%s and contact_role=%s",
+                    (res.email, res.grade, res.code, res.explanation,
+                     json.dumps(res.evidence, default=str), crd, role))
+        if write:
+            c.commit()
+    return out

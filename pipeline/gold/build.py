@@ -244,12 +244,14 @@ def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
 _FO_CATEGORIES = {"single_family_office", "multi_family_office"}
 
 
-def _apply_contact(row: dict, crd: str, cadj: dict) -> None:
+def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool) -> None:
     """Overlay the ratified decision-maker (ADR-0021/0022) onto the product row, replacing the
-    title-ladder pick. Email is the PUBLISHED individual address if one was found (grade 'PUB' --
-    proven to be the person's, sourced from the firm itself) or blank -- a guessed pattern is never
-    attached to the newly-proven person (that address, if any, belonged to a different pick).
-    Sets person_status + the primary's authority/selection basis for the customer surface."""
+    title-ladder pick, and resolve the honest email for that person:
+      PUB -- individual address the firm itself publishes (proven to be theirs);
+      A/B/C -- WS3b vendor-verified INFERRED pattern, labeled precisely (A deliverable != proven
+               to be their mailbox; B catch-all; C unknown);
+      D/F -- vendor-rejected: quarantined to gold.contact_audit (ADR-0019), never shipped.
+    A guess is never presented as the person's confirmed address."""
     pri = cadj.get((crd, "primary"))
     sec = cadj.get((crd, "secondary"))
     if not pri:
@@ -258,16 +260,36 @@ def _apply_contact(row: dict, crd: str, cadj: dict) -> None:
     row["primary_authority_basis"] = pri["authority_basis"]
     row["primary_selection_basis"] = pri["selection_basis"]
     for role, c in (("primary", pri), ("secondary", sec)):
-        pub = (c or {}).get("published_email")
-        row[f"{role}_contact_name"] = (c or {}).get("name")
-        row[f"{role}_contact_title"] = (c or {}).get("title")
-        row[f"{role}_contact_email"] = pub
-        row[f"{role}_email_grade"] = "PUB" if pub else None
-        row[f"{role}_email_code"] = "PUBLISHED_FIRM_SITE" if pub else None
-        row[f"{role}_email_explanation"] = (
-            "individual address published on the firm's own website (WS3b will add vendor-verified "
-            "inferred addresses where none is published)" if pub
-            else "no individual address published; not inferred (a guess is not the person's address)")
+        c = c or {}
+        row[f"{role}_contact_name"] = c.get("name")
+        row[f"{role}_contact_title"] = c.get("title")
+        email = grade = code = expl = None
+        if c.get("published_email"):
+            email, grade, code = c["published_email"], "PUB", "PUBLISHED_FIRM_SITE"
+            expl = "individual address published on the firm's own website (source: the firm itself)"
+        elif c.get("inferred_grade") in ("A", "B", "C"):
+            grade, code = c["inferred_grade"], c["inferred_code"]
+            email = c.get("inferred_email")
+            caveat = (" Inferred pattern for the proven contact; vendor-deliverable but NOT proven to "
+                      "be this person's mailbox." if grade == "A" else "")
+            expl = (c.get("inferred_explanation") or "") + caveat
+        elif c.get("inferred_grade") in ("D", "F") and c.get("inferred_email"):
+            # vendor-rejected inferred address for the proven person: audit it, ship nothing (ADR-0019)
+            if write:
+                cur.execute(
+                    "insert into gold.contact_audit (crd, contact_role, contact_name, email, grade, "
+                    "code, explanation, reason) values (%s,%s,%s,%s,%s,%s,%s,%s) "
+                    "on conflict (crd, contact_role, email) do nothing",
+                    (crd, role, c.get("name"), c["inferred_email"], c["inferred_grade"],
+                     c.get("inferred_code"), c.get("inferred_explanation"),
+                     "WS3b: vendor rejected the inferred address for the proven contact (ADR-0019)"))
+            expl = "no individual address published; inferred pattern was vendor-rejected (quarantined)"
+        else:
+            expl = "no individual address published or verifiable for this contact"
+        row[f"{role}_contact_email"] = email
+        row[f"{role}_email_grade"] = grade
+        row[f"{role}_email_code"] = code
+        row[f"{role}_email_explanation"] = expl
 
 
 def build(write: bool = False) -> dict:
@@ -280,9 +302,12 @@ def build(write: bool = False) -> dict:
         adjudications = {r[0]: {"category": r[1], "status": r[2], "duplicate_of": r[3],
                                 "rationale": r[4]} for r in cur.fetchall()}
         cur.execute("select crd, contact_role, name, title, selection_basis, authority_basis, "
-                    "published_email from gold.contact_adjudications")
+                    "published_email, inferred_email, inferred_grade, inferred_code, "
+                    "inferred_explanation from gold.contact_adjudications")
         cadj = {(r[0], r[1]): {"name": r[2], "title": r[3], "selection_basis": r[4],
-                               "authority_basis": r[5], "published_email": r[6]}
+                               "authority_basis": r[5], "published_email": r[6],
+                               "inferred_email": r[7], "inferred_grade": r[8],
+                               "inferred_code": r[9], "inferred_explanation": r[10]}
                 for r in cur.fetchall()}
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
                     "extracted_by, corporate_linkedin, source_urls, "
@@ -332,7 +357,7 @@ def build(write: bool = False) -> dict:
             # pass earns 'qualifying' (counts toward the 500). Reclassified non-FOs keep their old
             # contacts and stay unresolved -- they are not family offices and are not counted.
             if (crd, "primary") in cadj:
-                _apply_contact(row, crd, cadj)
+                _apply_contact(cur, crd, row, cadj, write)
                 if row["entity_status"] == "affirmed" and row["entity_category"] in _FO_CATEGORIES:
                     row["release_state"] = "qualifying"
                     row["release_reasons"] = [f"entity affirmed {row['entity_category']} (ADR-0020); "

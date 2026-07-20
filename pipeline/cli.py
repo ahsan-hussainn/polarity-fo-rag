@@ -249,6 +249,13 @@ def cmd_contact_apply(args):
     print(json.dumps(curate.apply_contacts(**kwargs), indent=2))
 
 
+def cmd_verify_contacts(args):
+    """WS3b: infer + vendor-verify emails for the proven decision-makers lacking a published address."""
+    from pipeline import curate
+
+    print(json.dumps(curate.verify_contacts(write=args.write, limit=args.limit), indent=2))
+
+
 def cmd_build_gold(args):
     """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
     from pipeline.gold import build as gb
@@ -387,6 +394,10 @@ def main():
     ca.add_argument("--write", action="store_true")
     ca.add_argument("--path", default=None)
     ca.set_defaults(func=cmd_contact_apply)
+    cv = sub.add_parser("verify-contacts", help="WS3b: vendor-verify inferred emails for proven decision-makers")
+    cv.add_argument("--write", action="store_true")
+    cv.add_argument("--limit", type=int, default=None)
+    cv.set_defaults(func=cmd_verify_contacts)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

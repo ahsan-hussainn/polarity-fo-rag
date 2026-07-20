@@ -60,6 +60,8 @@ _EXPORT_COLUMNS = [
     ("investment_thesis", "Investment Thesis"), ("description", "Description"),
     ("investing_sectors", "Investing Sectors"),
     ("primary_contact_name", "Primary Contact"), ("primary_contact_title", "Primary Title"),
+    ("primary_authority_basis", "Primary Authority Basis"),
+    ("primary_selection_basis", "Why This Contact"),
     ("primary_contact_location", "Primary Contact Location"),
     ("primary_contact_email", "Primary Email"), ("primary_email_grade", "Primary Email Grade"),
     ("primary_email_code", "Primary Email Validation Code"),
@@ -73,7 +75,8 @@ _EXPORT_COLUMNS = [
     # sectors/team; the email chain carries its own method (code + explanation) per address.
     ("adv_filing_url", "Firm Facts Source (SEC Form ADV)"),
     ("profile_source_url", "Profile Source (Firm Website)"),
-    ("entity_category", "Entity Category"), ("release_state", "Release State"),
+    ("entity_category", "Entity Category"), ("person_status", "Person Status"),
+    ("release_state", "Release State"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
     ("people_count", "People Count"),
 ]
@@ -86,14 +89,16 @@ def export(path: str = GOLD_CSV) -> dict:
     cols = [c for c, _ in _EXPORT_COLUMNS]
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with db.get_conn() as c, c.cursor() as cur:
-        # Actionability-first ordering: a reviewer reads row 1 first, so lead with records a client
-        # could act on today (vendor-deliverable A email > B catch-all > C unknown > none),
-        # then by completion. Completion alone would rank a contactless record above a deliverable one.
+        # Actionability-first ordering (ADR-0019 trust-ranked queue): qualifying family offices lead;
+        # within them, a published individual email (PUB, proven to be the person's) outranks a
+        # vendor-deliverable inferred address (A) > catch-all (B) > unknown (C) > no email. Records a
+        # client cannot yet act on sink to the bottom rather than being dropped.
         cur.execute(f"select {','.join(cols)} from gold.records "
                     "where release_state != 'quarantined' "
-                    "order by case coalesce(primary_email_grade,'Z') "
-                    " when 'A' then 0 when 'B' then 1 when 'C' then 2 when 'D' then 3 "
-                    " when 'F' then 4 else 5 end, "
+                    "order by case when release_state='qualifying' then 0 else 1 end, "
+                    "case coalesce(primary_email_grade,'Z') "
+                    " when 'PUB' then 0 when 'A' then 1 when 'B' then 2 when 'C' then 3 "
+                    " when 'D' then 4 when 'F' then 5 else 6 end, "
                     "data_completion_score desc, family_office_name")
         rows = cur.fetchall()
         cur.execute("select crd, family_office_name, entity_category, release_reasons "
@@ -235,6 +240,36 @@ def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
     return "unresolved", [person_pending], adj["category"], "affirmed"
 
 
+# Affirmed FO categories -- only these count toward the "family office" product and the 500 (ADR-0020).
+_FO_CATEGORIES = {"single_family_office", "multi_family_office"}
+
+
+def _apply_contact(row: dict, crd: str, cadj: dict) -> None:
+    """Overlay the ratified decision-maker (ADR-0021/0022) onto the product row, replacing the
+    title-ladder pick. Email is the PUBLISHED individual address if one was found (grade 'PUB' --
+    proven to be the person's, sourced from the firm itself) or blank -- a guessed pattern is never
+    attached to the newly-proven person (that address, if any, belonged to a different pick).
+    Sets person_status + the primary's authority/selection basis for the customer surface."""
+    pri = cadj.get((crd, "primary"))
+    sec = cadj.get((crd, "secondary"))
+    if not pri:
+        return
+    row["person_status"] = "proven"
+    row["primary_authority_basis"] = pri["authority_basis"]
+    row["primary_selection_basis"] = pri["selection_basis"]
+    for role, c in (("primary", pri), ("secondary", sec)):
+        pub = (c or {}).get("published_email")
+        row[f"{role}_contact_name"] = (c or {}).get("name")
+        row[f"{role}_contact_title"] = (c or {}).get("title")
+        row[f"{role}_contact_email"] = pub
+        row[f"{role}_email_grade"] = "PUB" if pub else None
+        row[f"{role}_email_code"] = "PUBLISHED_FIRM_SITE" if pub else None
+        row[f"{role}_email_explanation"] = (
+            "individual address published on the firm's own website (WS3b will add vendor-verified "
+            "inferred addresses where none is published)" if pub
+            else "no individual address published; not inferred (a guess is not the person's address)")
+
+
 def build(write: bool = False) -> dict:
     """Assemble gold.records from silver + ADV bronze. Upserts one row per firm when write=True.
     Firms in EXCLUDED (ADR-0015) are skipped, recorded in gold.excluded_firms, and removed from
@@ -244,6 +279,11 @@ def build(write: bool = False) -> dict:
         cur.execute("select crd, category, status, duplicate_of, rationale from gold.entity_adjudications")
         adjudications = {r[0]: {"category": r[1], "status": r[2], "duplicate_of": r[3],
                                 "rationale": r[4]} for r in cur.fetchall()}
+        cur.execute("select crd, contact_role, name, title, selection_basis, authority_basis, "
+                    "published_email from gold.contact_adjudications")
+        cadj = {(r[0], r[1]): {"name": r[2], "title": r[3], "selection_basis": r[4],
+                               "authority_basis": r[5], "published_email": r[6]}
+                for r in cur.fetchall()}
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
                     "extracted_by, corporate_linkedin, source_urls, "
                     "(select count(*) from silver.people p where p.firm_crd=f.crd) "
@@ -288,6 +328,15 @@ def build(write: bool = False) -> dict:
             # in WS3, the person evidence pass (ADR-0021) decide what release permits.
             (row["release_state"], row["release_reasons"],
              row["entity_category"], row["entity_status"]) = _release(adjudications.get(crd))
+            # ADR-0021/0022: overlay the proven decision-maker; an affirmed FO with a ratified person
+            # pass earns 'qualifying' (counts toward the 500). Reclassified non-FOs keep their old
+            # contacts and stay unresolved -- they are not family offices and are not counted.
+            if (crd, "primary") in cadj:
+                _apply_contact(row, crd, cadj)
+                if row["entity_status"] == "affirmed" and row["entity_category"] in _FO_CATEGORIES:
+                    row["release_state"] = "qualifying"
+                    row["release_reasons"] = [f"entity affirmed {row['entity_category']} (ADR-0020); "
+                                              f"decision-maker proven (ADR-0021)"]
             row["data_completion_score"] = _completion(row)
             out["firms"] += 1
             if p:

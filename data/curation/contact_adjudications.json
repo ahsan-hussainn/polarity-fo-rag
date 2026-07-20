@@ -1,0 +1,1290 @@
+[
+ {
+  "crd": "107141",
+  "contact_role": "primary",
+  "name": "Benjamin T. Richardson, CFA",
+  "title": "Chief Investment Officer; Partner & Portfolio Manager; Managing Member",
+  "selection_basis": "Named CIO overseeing investment strategy/asset allocation AND Schedule A Managing Member with control.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026; joined 2004; Schedule A MM since 07/2008",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/107141/PDF/107141.pdf",
+    "observed": "Chief Investment Officer; Partner & Portfolio Manager; Managing Member; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/107141/PDF/107141.pdf",
+    "observed": "current affiliation as of team page 2026; joined 2004; Schedule A MM since 07/2008"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "107141",
+  "contact_role": "secondary",
+  "name": "George P. Beal",
+  "title": "Managing Partner & Portfolio Manager (co-founder)",
+  "selection_basis": "Firm head/co-founder, active PM, longest-tenured Schedule A MM with control - owner-principal role distinct from the CIO.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026; Schedule A MM since 10/1996",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/107141/PDF/107141.pdf",
+    "observed": "Managing Partner & Portfolio Manager (co-founder); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/107141/PDF/107141.pdf",
+    "observed": "current affiliation as of team page 2026; Schedule A MM since 10/1996"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "335128",
+  "contact_role": "primary",
+  "name": "Andrew Fabiano, CFA",
+  "title": "Portfolio Manager (functionally leads investments)",
+  "selection_basis": "Bio states he oversees investment strategy, asset allocation and manager selection - the person who evaluates/commits investments; owner not evidenced as allocating.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026; firm registered 2025",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335128/PDF/335128.pdf",
+    "observed": "Portfolio Manager (functionally leads investments); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335128/PDF/335128.pdf",
+    "observed": "current affiliation as of team page 2026; firm registered 2025"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "335128",
+  "contact_role": "secondary",
+  "name": "Christopher Scott Witham",
+  "title": "Owner/controlling member (via Witham Trust -> Rimar Development)",
+  "selection_basis": "Controlling owner (Schedule A code E 75%+) - ultimate authority to commit, but investment role inferred from ownership, not shown.",
+  "authority_basis": "title_inferred",
+  "affiliation_asof": "ADV Schedule A 01/2026",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335128/PDF/335128.pdf",
+    "observed": "Owner/controlling member (via Witham Trust -> Rimar Development); authority_basis=title_inferred (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335128/PDF/335128.pdf",
+    "observed": "current affiliation as of ADV Schedule A 01/2026"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "285035",
+  "contact_role": "primary",
+  "name": "Matt Blackburn",
+  "title": "Managing Partner / Managing Director & co-founder, Class VI Family Office",
+  "selection_basis": "Runs the FO day-to-day, 'actively involved in investment strategy, asset allocation, security selection' AND Schedule A member-owner - can commit the FO (unlike Younger/Tolson on the bank side).",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026; co-founded FO Sept 2016; Schedule A member since 10/2018",
+  "published_email": "Matt@classvipartners.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/285035/PDF/285035.pdf",
+    "observed": "Managing Partner / Managing Director & co-founder, Class VI Family Office; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/285035/PDF/285035.pdf",
+    "observed": "current affiliation as of team page 2026; co-founded FO Sept 2016; Schedule A member since 10/2018"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address Matt@classvipartners.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "285035",
+  "contact_role": "secondary",
+  "name": "Luke McCaslin",
+  "title": "Director of Investment Advisory, Class VI Family Office",
+  "selection_basis": "Investment specialist - 'asset allocation decisions, manager selection, due diligence on private investments' - hands-on allocation authority.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026; joined Jan 2019",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/285035/PDF/285035.pdf",
+    "observed": "Director of Investment Advisory, Class VI Family Office; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/285035/PDF/285035.pdf",
+    "observed": "current affiliation as of team page 2026; joined Jan 2019"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "294025",
+  "contact_role": "primary",
+  "name": "Tony (Anthony M.) Lopiccolo, CFA",
+  "title": "Principal & Chief Investment Officer",
+  "selection_basis": "Named CIO of a small owner-run firm, Schedule A owner/executive, with a PUBLISHED individual email - clearest best-reachable decision-maker.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026; Schedule A owner/executive",
+  "published_email": "anthony@custosfo.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/294025/PDF/294025.pdf",
+    "observed": "Principal & Chief Investment Officer; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/294025/PDF/294025.pdf",
+    "observed": "current affiliation as of team page 2026; Schedule A owner/executive"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address anthony@custosfo.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "294025",
+  "contact_role": "secondary",
+  "name": "Mitchell John Herr",
+  "title": "Principal (Founding, on investment committee)",
+  "selection_basis": "Founding Principal on the IC, Schedule A owner/executive with control; planning/balance-sheet role distinct from CIO, published email.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026; Schedule A owner/executive, control",
+  "published_email": "mitchell@custosfo.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/294025/PDF/294025.pdf",
+    "observed": "Principal (Founding, on investment committee); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/294025/PDF/294025.pdf",
+    "observed": "current affiliation as of team page 2026; Schedule A owner/executive, control"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address mitchell@custosfo.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "338015",
+  "contact_role": "primary",
+  "name": "Thomas H. (Tom) Ruggie",
+  "title": "Founder & CEO; Managing Member/CCO",
+  "selection_basis": "Controlling owner-principal (revocable trust 75%+, sole Schedule A control person) and CEO - ultimate allocation authority.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 07/2025; team page 2026-07",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338015/PDF/338015.pdf",
+    "observed": "Founder & CEO; Managing Member/CCO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338015/PDF/338015.pdf",
+    "observed": "current affiliation as of ADV Schedule A 07/2025; team page 2026-07"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "338015",
+  "contact_role": "secondary",
+  "name": "Jorge A. Romero",
+  "title": "Managing Partner; Co-Lead, Investment Committee",
+  "selection_basis": "Runs investment policy, asset allocation and manager selection as IC co-lead - operational allocation gatekeeper.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 07/2025; team page 2026-07",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338015/PDF/338015.pdf",
+    "observed": "Managing Partner; Co-Lead, Investment Committee; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338015/PDF/338015.pdf",
+    "observed": "current affiliation as of ADV Schedule A 07/2025; team page 2026-07"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "281675",
+  "contact_role": "primary",
+  "name": "Michael D. Nelson, J.D., CFA",
+  "title": "CEO / Managing Partner",
+  "selection_basis": "Owner-principal (Schedule A code D 50-75%, control) and CEO; the only person with a firm-published email - highest-confidence reachable decision-maker.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A CEO since 06/2015; team page 2026-07",
+  "published_email": "michael@eaglebayadvisors.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/281675/PDF/281675.pdf",
+    "observed": "CEO / Managing Partner; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/281675/PDF/281675.pdf",
+    "observed": "current affiliation as of ADV Schedule A CEO since 06/2015; team page 2026-07"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address michael@eaglebayadvisors.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "281675",
+  "contact_role": "secondary",
+  "name": "Jean-Andre F. (Andre) Corpuz",
+  "title": "Chief Investment Officer",
+  "selection_basis": "Named CIO owning allocation and manager selection - most on-point for an investment pitch.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A CIO 01/2026 (dated); LinkedIn present",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/281675/PDF/281675.pdf",
+    "observed": "Chief Investment Officer; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/281675/PDF/281675.pdf",
+    "observed": "current affiliation as of ADV Schedule A CIO 01/2026 (dated); LinkedIn present"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "282750",
+  "contact_role": "primary",
+  "name": "Carlos A. Dominguez",
+  "title": "Co-Founder, President & CIO",
+  "selection_basis": "Named CIO (allocation, manager selection, risk) AND co-founding owner-principal (Schedule A code C 25-50%, control) - both investment authority and can commit.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A control since 03/2016; LinkedIn present; Forbes CIO interview",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/282750/PDF/282750.pdf",
+    "observed": "Co-Founder, President & CIO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/282750/PDF/282750.pdf",
+    "observed": "current affiliation as of ADV Schedule A control since 03/2016; LinkedIn present; Forbes CIO interview"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "282750",
+  "contact_role": "secondary",
+  "name": "David Savir",
+  "title": "Co-Founder & CEO",
+  "selection_basis": "Co-founding owner-principal (via Savir Capital Holdings, control) and CEO 'involved in all aspects of investment management'.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A control since 03/2016; LinkedIn present",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/282750/PDF/282750.pdf",
+    "observed": "Co-Founder & CEO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/282750/PDF/282750.pdf",
+    "observed": "current affiliation as of ADV Schedule A control since 03/2016; LinkedIn present"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "326990",
+  "contact_role": "primary",
+  "name": "Kathleen Anne Grace",
+  "title": "Managing Member, CEO & CIO",
+  "selection_basis": "Triple authority - majority owner (Schedule A code D 50-75%, control), CEO, and CIO. Unambiguous single pitch target.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A MM/CEO since 05/2023; site 2026-07",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/326990/PDF/326990.pdf",
+    "observed": "Managing Member, CEO & CIO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/326990/PDF/326990.pdf",
+    "observed": "current affiliation as of ADV Schedule A MM/CEO since 05/2023; site 2026-07"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "326990",
+  "contact_role": "secondary",
+  "name": "Tabitha LeTourneau Meyerer",
+  "title": "Managing Member, COO & CCO",
+  "selection_basis": "Co-owner-principal (25-50%, control) who can commit, but role is operations/compliance not investment.",
+  "authority_basis": "title_inferred",
+  "affiliation_asof": "ADV Schedule A MM since 05/2023; site 2026-07",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/326990/PDF/326990.pdf",
+    "observed": "Managing Member, COO & CCO; authority_basis=title_inferred (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/326990/PDF/326990.pdf",
+    "observed": "current affiliation as of ADV Schedule A MM since 05/2023; site 2026-07"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "122448",
+  "contact_role": "primary",
+  "name": "Timothy J. Cartwright",
+  "title": "Partner / Member (co-founder)",
+  "selection_basis": "Co-owner (Schedule A code D, 50-75%, control person); firm's explicit alternatives/private-markets decision-maker, chairs Tamiami Angel Funds.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV + team page 2026-07; member since 01/2006",
+  "published_email": "tim@fifthavenuefamily.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/122448/PDF/122448.pdf",
+    "observed": "Partner / Member (co-founder); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/122448/PDF/122448.pdf",
+    "observed": "current affiliation as of ADV + team page 2026-07; member since 01/2006"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address tim@fifthavenuefamily.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "122448",
+  "contact_role": "secondary",
+  "name": "Gary B. Price Jr.",
+  "title": "Partner / Managing Member",
+  "selection_basis": "Co-owner (Schedule A code D, 50-75%, control person), Managing Member - owner-principal who can commit the firm.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV + team page 2026-07; managing member since 12/2008",
+  "published_email": "gary@fifthavenuefamily.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/122448/PDF/122448.pdf",
+    "observed": "Partner / Managing Member; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/122448/PDF/122448.pdf",
+    "observed": "current affiliation as of ADV + team page 2026-07; managing member since 12/2008"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address gary@fifthavenuefamily.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "334002",
+  "contact_role": "primary",
+  "name": "Gilbert A. Calderon",
+  "title": "Partner, Chief Investment Officer",
+  "selection_basis": "Named CIO on both firm site and ADV Schedule A - the family office's investment allocator.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV + team page 2026-07; CIO since 12/2024",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/334002/PDF/334002.pdf",
+    "observed": "Partner, Chief Investment Officer; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/334002/PDF/334002.pdf",
+    "observed": "current affiliation as of ADV + team page 2026-07; CIO since 12/2024"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "334002",
+  "contact_role": "secondary",
+  "name": "Andrew T. Crofton",
+  "title": "Founder, Managing Partner (CEO)",
+  "selection_basis": "Founder/CEO/majority owner (Schedule A code D 50-75%) - ultimate authority to commit the firm.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV + team page 2026-07; since 08/2024",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/334002/PDF/334002.pdf",
+    "observed": "Founder, Managing Partner (CEO); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/334002/PDF/334002.pdf",
+    "observed": "current affiliation as of ADV + team page 2026-07; since 08/2024"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "323432",
+  "contact_role": "primary",
+  "name": "Greg Blaney Reidy",
+  "title": "Founder / Managing Director (CCO on ADV; publicly CIO/CEO)",
+  "selection_basis": "Sole Schedule A owner (code E, 75%+, control) - the single owner-principal; authority rests on ownership regardless of varying public title.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV 2026-07; founder/owner since 03/2022",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/323432/PDF/323432.pdf",
+    "observed": "Founder / Managing Director (CCO on ADV; publicly CIO/CEO); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/323432/PDF/323432.pdf",
+    "observed": "current affiliation as of ADV 2026-07; founder/owner since 03/2022"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "323432",
+  "contact_role": "secondary",
+  "name": "Dara K. Johnson",
+  "title": "Chief of Staff & Founding Partner (CIMA)",
+  "selection_basis": "Co-founder but 'Chief of Staff' is operational; investment authority inferred, not proven.",
+  "authority_basis": "title_inferred",
+  "affiliation_asof": "LinkedIn/ZoomInfo 2026-07 (undated)",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/323432/PDF/323432.pdf",
+    "observed": "Chief of Staff & Founding Partner (CIMA); authority_basis=title_inferred (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/323432/PDF/323432.pdf",
+    "observed": "current affiliation as of LinkedIn/ZoomInfo 2026-07 (undated)"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "125101",
+  "contact_role": "primary",
+  "name": "Brandon C. Johnson, CFA",
+  "title": "Principal, CEO (publicly also CIO)",
+  "selection_basis": "CEO and controlling owner (indirect 50-75% via B&W Holdings LLC), publicly CEO & CIO guiding investment decisions.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV + team page 2026-07; manager/CEO since 01/2002",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/125101/PDF/125101.pdf",
+    "observed": "Principal, CEO (publicly also CIO); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/125101/PDF/125101.pdf",
+    "observed": "current affiliation as of ADV + team page 2026-07; manager/CEO since 01/2002"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "125101",
+  "contact_role": "secondary",
+  "name": "Eric S. Adams, CFA, CAIA",
+  "title": "Partner, Co-Chief Investment Officer",
+  "selection_basis": "Explicit Co-CIO running the private-markets platform (sourcing, due diligence) - the day-to-day allocator.",
+  "authority_basis": "stated",
+  "affiliation_asof": "firm site + LinkedIn 2026-07",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/125101/PDF/125101.pdf",
+    "observed": "Partner, Co-Chief Investment Officer; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/125101/PDF/125101.pdf",
+    "observed": "current affiliation as of firm site + LinkedIn 2026-07"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "157511",
+  "contact_role": "primary",
+  "name": "Michael T. Lima, CFA",
+  "title": "Managing Director, Head of Investment Research",
+  "selection_basis": "Leads manager research, due diligence, and other investment activities - the person who evaluates outside fund managers, the RIGHT contact for a pitch.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026-07-20; joined 2025 (ex-Deputy CIO Geisinger)",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/157511/PDF/157511.pdf",
+    "observed": "Managing Director, Head of Investment Research; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/157511/PDF/157511.pdf",
+    "observed": "current affiliation as of team page 2026-07-20; joined 2025 (ex-Deputy CIO Geisinger)"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "157511",
+  "contact_role": "secondary",
+  "name": "J. Daniel Graham",
+  "title": "Co-Managing Partner (ADV Board Member, control)",
+  "selection_basis": "Co-Managing Partner and ADV control person - firm-commit authority above the investment-research function.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 06/2023; site 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/157511/PDF/157511.pdf",
+    "observed": "Co-Managing Partner (ADV Board Member, control); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/157511/PDF/157511.pdf",
+    "observed": "current affiliation as of ADV Schedule A 06/2023; site 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "155003",
+  "contact_role": "primary",
+  "name": "Andreas P. Arni",
+  "title": "Chief Executive Officer, Managing Partner",
+  "selection_basis": "CEO and Managing Partner of this partner-led MFO, ADV control person/owner - top firm-commit authority. For a private-markets fund pitch specifically, route to Thomas Gnaegi (Head of Private Markets, firm-stated; not on Schedule A).",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A CEO 01/2025; team page 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/155003/PDF/155003.pdf",
+    "observed": "Chief Executive Officer, Managing Partner; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/155003/PDF/155003.pdf",
+    "observed": "current affiliation as of ADV Schedule A CEO 01/2025; team page 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "155003",
+  "contact_role": "secondary",
+  "name": "Lukas Dorig",
+  "title": "Head Markets, Managing Partner",
+  "selection_basis": "Runs the markets/investment desk, ADV control-person owner - the investment-allocation lead.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 01/2019; team page 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/155003/PDF/155003.pdf",
+    "observed": "Head Markets, Managing Partner; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/155003/PDF/155003.pdf",
+    "observed": "current affiliation as of ADV Schedule A 01/2019; team page 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "106806",
+  "contact_role": "primary",
+  "name": "Jerrel Armstrong, MBA",
+  "title": "Partner, Chief Investment Officer",
+  "selection_basis": "CIO who sets and oversees investment strategy, asset allocation, portfolio construction across all clients - definitive investment decision-maker.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team/bio page 2026-07-20; ex-IWP CIO from 2021 (IWP merger)",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/106806/PDF/106806.pdf",
+    "observed": "Partner, Chief Investment Officer; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/106806/PDF/106806.pdf",
+    "observed": "current affiliation as of team/bio page 2026-07-20; ex-IWP CIO from 2021 (IWP merger)"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "106806",
+  "contact_role": "secondary",
+  "name": "Thierry J. D. Brunel",
+  "title": "Partner, Chief Investment Strategist",
+  "selection_basis": "Senior investment partner / chief investment strategist reported to lead the investment committee - co-owns allocation with the CIO.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/106806/PDF/106806.pdf",
+    "observed": "Partner, Chief Investment Strategist; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/106806/PDF/106806.pdf",
+    "observed": "current affiliation as of team page 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "296362",
+  "contact_role": "primary",
+  "name": "Baldassare (Baldo) Fodera",
+  "title": "Managing Member & CCO (founder, sole owner)",
+  "selection_basis": "Founder, Managing Member and 75%+ sole owner (ADV code E) of a ~$5B discretionary MFO - full discretionary investment authority; commits the firm.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 03/2018; LinkedIn present 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/296362/PDF/296362.pdf",
+    "observed": "Managing Member & CCO (founder, sole owner); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/296362/PDF/296362.pdf",
+    "observed": "current affiliation as of ADV Schedule A 03/2018; LinkedIn present 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "312154",
+  "contact_role": "primary",
+  "name": "William Fredrick Blake II (Bill Blake)",
+  "title": "CEO & CCO (ADV); Executive Director (site)",
+  "selection_basis": "Only named executive officer on Schedule A and sole control-person Managing Member of 75%+ owner PMG Family Assets LLC - the one person who can commit the firm.",
+  "authority_basis": "stated",
+  "affiliation_asof": "signed firm ADV 06/05/2026; team page 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/312154/PDF/312154.pdf",
+    "observed": "CEO & CCO (ADV); Executive Director (site); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/312154/PDF/312154.pdf",
+    "observed": "current affiliation as of signed firm ADV 06/05/2026; team page 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "312154",
+  "contact_role": "secondary",
+  "name": "Amanda Farrar",
+  "title": "Family Advisor",
+  "selection_basis": "Only other advisory-facing person at this 2-emp firm, but not an owner/officer/control person - contact point, not proven decision-maker.",
+  "authority_basis": "title_inferred",
+  "affiliation_asof": "team page 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/312154/PDF/312154.pdf",
+    "observed": "Family Advisor; authority_basis=title_inferred (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/312154/PDF/312154.pdf",
+    "observed": "current affiliation as of team page 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "338563",
+  "contact_role": "primary",
+  "name": "Michael Elliott Walsh",
+  "title": "Founder & CEO",
+  "selection_basis": "CEO and control-person owner (via Front Row LLC in holding co Point1 LLC) - top authority to commit.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026-07-20; Schedule B 02/2026",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338563/PDF/338563.pdf",
+    "observed": "Founder & CEO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338563/PDF/338563.pdf",
+    "observed": "current affiliation as of team page 2026-07-20; Schedule B 02/2026"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "338563",
+  "contact_role": "secondary",
+  "name": "Ari Hayden Segal",
+  "title": "Founder & President",
+  "selection_basis": "Owner/control (Managing Partner of Point1 LLC) who leads transaction execution and advisory strategy - strongest investment-authority signal; arguably co-primary.",
+  "authority_basis": "stated",
+  "affiliation_asof": "team page 2026-07-20; Schedule B 08/2025",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338563/PDF/338563.pdf",
+    "observed": "Founder & President; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338563/PDF/338563.pdf",
+    "observed": "current affiliation as of team page 2026-07-20; Schedule B 08/2025"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "338839",
+  "contact_role": "primary",
+  "name": "John Michael Pulliam",
+  "title": "Founder, Managing Director & CCO",
+  "selection_basis": "Sole named owner, officer, and control person (75%+ owner) - the only person who can commit it.",
+  "authority_basis": "stated",
+  "affiliation_asof": "signed firm ADV 04/30/2026; site links LinkedIn 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338839/PDF/338839.pdf",
+    "observed": "Founder, Managing Director & CCO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338839/PDF/338839.pdf",
+    "observed": "current affiliation as of signed firm ADV 04/30/2026; site links LinkedIn 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "335152",
+  "contact_role": "primary",
+  "name": "Daniel Jerome White (Dan White), CFP, CIMA",
+  "title": "Co-Founder, Managing Partner & CCO",
+  "selection_basis": "Investment lead - ex-CIO of predecessor Sestante Capital Advisors (2020), CFP/CIMA - plus Managing Partner and controlling owner via White Family Trust.",
+  "authority_basis": "stated",
+  "affiliation_asof": "signed firm ADV 04/22/2026; site/LinkedIn 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335152/PDF/335152.pdf",
+    "observed": "Co-Founder, Managing Partner & CCO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335152/PDF/335152.pdf",
+    "observed": "current affiliation as of signed firm ADV 04/22/2026; site/LinkedIn 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "335152",
+  "contact_role": "secondary",
+  "name": "Benjamin William White (Ben White)",
+  "title": "Co-Founder & Managing Partner",
+  "selection_basis": "Co-equal Managing Partner and controlling owner (family trust); founder who led the predecessor SFO since 2015.",
+  "authority_basis": "stated",
+  "affiliation_asof": "firm ADV 04/22/2026; site/LinkedIn 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335152/PDF/335152.pdf",
+    "observed": "Co-Founder & Managing Partner; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335152/PDF/335152.pdf",
+    "observed": "current affiliation as of firm ADV 04/22/2026; site/LinkedIn 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "159440",
+  "contact_role": "primary",
+  "name": "Charles (Chuck) Robert Carroll, CFA, CAIA",
+  "title": "Chief Investment Officer | Partner",
+  "selection_basis": "Named CIO who leads the Investment Committee (+ Operating/Executive Committees) - drives allocation and manager selection.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 6/24/2026; bio live 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/159440/PDF/159440.pdf",
+    "observed": "Chief Investment Officer | Partner; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/159440/PDF/159440.pdf",
+    "observed": "current affiliation as of ADV Schedule A 6/24/2026; bio live 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "159440",
+  "contact_role": "secondary",
+  "name": "Christopher (Chris) Edward Erblich, Esq.",
+  "title": "CEO and Chairman | Partner",
+  "selection_basis": "Chairman/CEO and Schedule A control person - ultimate firm authority above the CIO.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 6/24/2026",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/159440/PDF/159440.pdf",
+    "observed": "CEO and Chairman | Partner; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/159440/PDF/159440.pdf",
+    "observed": "current affiliation as of ADV Schedule A 6/24/2026"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "150748",
+  "contact_role": "primary",
+  "name": "Nicholas (Nick) C. Baker",
+  "title": "President (50-75% owner)",
+  "selection_basis": "President + majority owner (50-75%) + control person per current ADV - controls and can commit the firm.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 2/10/2026; LinkedIn present",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/150748/PDF/150748.pdf",
+    "observed": "President (50-75% owner); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/150748/PDF/150748.pdf",
+    "observed": "current affiliation as of ADV Schedule A 2/10/2026; LinkedIn present"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "150748",
+  "contact_role": "secondary",
+  "name": "Tim L. Baker",
+  "title": "Founder (website lists President & CEO)",
+  "selection_basis": "Founder; website still brands him President/CEO but he is ABSENT from the current Schedule A - authority uncertain.",
+  "authority_basis": "title_inferred",
+  "affiliation_asof": "website undated; NOT on 2/10/2026 Schedule A",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/150748/PDF/150748.pdf",
+    "observed": "Founder (website lists President & CEO); authority_basis=title_inferred (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/150748/PDF/150748.pdf",
+    "observed": "current affiliation as of website undated; NOT on 2/10/2026 Schedule A"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "143112",
+  "contact_role": "primary",
+  "name": "Richard (Rich) Joseph Turgeon, CFA, CAIA, MSFS",
+  "title": "Chief Investment Officer | Senior Managing Director",
+  "selection_basis": "Named CIO responsible for the investment program, Schedule A officer/owner (10-25%) - the allocation decision-maker to pitch.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 6/23/2026; bio live 2026-07-20",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf",
+    "observed": "Chief Investment Officer | Senior Managing Director; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf",
+    "observed": "current affiliation as of ADV Schedule A 6/23/2026; bio live 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "143112",
+  "contact_role": "secondary",
+  "name": "Michael (Mike) Thomas Novak",
+  "title": "Founder & CEO",
+  "selection_basis": "Founder, CEO, control person, 25-50% owner - principal with ultimate sign-off.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 6/23/2026",
+  "published_email": null,
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf",
+    "observed": "Founder & CEO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf",
+    "observed": "current affiliation as of ADV Schedule A 6/23/2026"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website",
+    "observed": "no published individual address; any pattern would be inferred, not claimed"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "338122",
+  "contact_role": "primary",
+  "name": "Cort Alan Haber, CFP",
+  "title": "Co-founder & CIO (CCO on ADV)",
+  "selection_basis": "Co-founder and CIO owning investment philosophy, asset allocation and manager due-diligence/IC - approves fund managers. PUBLISHED email.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 5/27/2026; team page live 2026-07-20",
+  "published_email": "chaber@xceptionfamilyoffice.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338122/PDF/338122.pdf",
+    "observed": "Co-founder & CIO (CCO on ADV); authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338122/PDF/338122.pdf",
+    "observed": "current affiliation as of ADV Schedule A 5/27/2026; team page live 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address chaber@xceptionfamilyoffice.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ },
+ {
+  "crd": "338122",
+  "contact_role": "secondary",
+  "name": "M. (Michael) Patrick Callahan, JD",
+  "title": "Co-founder & CEO",
+  "selection_basis": "Co-founder, CEO, Schedule A control person/owner. PUBLISHED email.",
+  "authority_basis": "stated",
+  "affiliation_asof": "ADV Schedule A 5/27/2026; team page live 2026-07-20",
+  "published_email": "pcallahan@xceptionfamilyoffice.com",
+  "evidence": [
+   {
+    "axis": "authority",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338122/PDF/338122.pdf",
+    "observed": "Co-founder & CEO; authority_basis=stated (ADV Schedule A owner/officer anchor)"
+   },
+   {
+    "axis": "affiliation",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338122/PDF/338122.pdf",
+    "observed": "current affiliation as of ADV Schedule A 5/27/2026; team page live 2026-07-20"
+   },
+   {
+    "axis": "email",
+    "source_url": "firm website (team page)",
+    "observed": "published individual address pcallahan@xceptionfamilyoffice.com"
+   }
+  ],
+  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+ }
+]

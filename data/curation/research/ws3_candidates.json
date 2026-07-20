@@ -1,0 +1,1077 @@
+[
+ {
+  "crd": "107141",
+  "firm": "BOSTON FAMILY OFFICE LLC",
+  "domain": "bosfam.com",
+  "people": [
+   {
+    "name": "George P. Beal",
+    "title": "Managing Partner, Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Dylan C. Brix, CFA, CTFA",
+    "title": "Portfolio Manager, Partner",
+    "principal": true
+   },
+   {
+    "name": "Michael J. Dorsey, Jr., CFA",
+    "title": "Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Peder C. Johnson, CFA",
+    "title": "Portfolio Manager, Partner",
+    "principal": true
+   },
+   {
+    "name": "Benjamin T. Richardson, CFA",
+    "title": "Chief Investment Officer, Partner, Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Eliza H. S. (\u201cHappy\u201d) Rowe",
+    "title": "Treasurer, Partner, Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Michael J. Unger, CFA",
+    "title": "Partner, Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Rom Wilson",
+    "title": "Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "George Putnam, III",
+    "title": "Partner",
+    "principal": true
+   },
+   {
+    "name": "Darren Beals",
+    "title": "Chief Compliance Officer",
+    "principal": false
+   },
+   {
+    "name": "Christopher Moffett, CFA",
+    "title": "Director of Research",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "335128",
+  "firm": "CAMBIENT FAMILY OFFICE, LLC",
+  "domain": "cambient.com",
+  "people": [
+   {
+    "name": "Andrew Fabiano",
+    "title": "CFA\u00ae Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Daniel Rausch",
+    "title": "CIMA\u00ae Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Stephen Wilbur",
+    "title": "CFP\u00ae Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Donna Zandee",
+    "title": "Trust Advisor",
+    "principal": false
+   },
+   {
+    "name": "Joshua Gibbs",
+    "title": "CTFA Trust Advisor",
+    "principal": false
+   },
+   {
+    "name": "Jocelyn Goheen",
+    "title": "Client Advisor",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "285035",
+  "firm": "CLASS VI FAMILY OFFICE, LLC",
+  "domain": "classvipartners.com",
+  "people": [
+   {
+    "name": "Christopher J. Younger",
+    "title": "Co-Founder",
+    "principal": true
+   },
+   {
+    "name": "David C. Tolson",
+    "title": "Co-Founder",
+    "principal": true
+   }
+  ]
+ },
+ {
+  "crd": "294025",
+  "firm": "CUSTOS FAMILY OFFICE LLC",
+  "domain": "custosfo.com",
+  "people": [
+   {
+    "name": "Mitchell Herr",
+    "title": "Principal",
+    "principal": true
+   },
+   {
+    "name": "Tony Lopiccolo",
+    "title": "Principal & CIO",
+    "principal": true
+   }
+  ]
+ },
+ {
+  "crd": "338015",
+  "firm": "DESTINY FAMILY OFFICE",
+  "domain": "destinyfamilyoffice.com",
+  "people": [
+   {
+    "name": "Tom Ruggie",
+    "title": "Founder & CEO",
+    "principal": true
+   },
+   {
+    "name": "Audrey Mancuso",
+    "title": "Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Jeremy Wassmer",
+    "title": "Wealth Advisor",
+    "principal": false
+   },
+   {
+    "name": "Ronnie Hopper",
+    "title": "Wealth Advisor",
+    "principal": false
+   },
+   {
+    "name": "Sharon Kolstad",
+    "title": "Client Relationship Manager",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "281675",
+  "firm": "EAGLE BAY FAMILY OFFICE",
+  "domain": "eaglebayfamilyoffice.com",
+  "people": [
+   {
+    "name": "Michael D. Nelson, J.D., CFA\u00ae",
+    "title": "MANAGING PARTNER",
+    "principal": true
+   },
+   {
+    "name": "Tanya Durkee Urbach, J.D.",
+    "title": "PARTNER / CO-HEAD OF FAMILY OFFICE SERVICES",
+    "principal": true
+   },
+   {
+    "name": "Georgina H. Miltenberger, J.D.",
+    "title": "PARTNER / CO-HEAD OF FAMILY OFFICE SERVICES",
+    "principal": true
+   },
+   {
+    "name": "Julie Shah",
+    "title": "PARTNER / CHIEF FINANCIAL OFFICER",
+    "principal": true
+   },
+   {
+    "name": "David Neubert",
+    "title": "MACRO STRATEGY CONSULTANT",
+    "principal": false
+   },
+   {
+    "name": "Cindy Curtis",
+    "title": "PARTNER / CHIEF OPERATING OFFICER",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "282750",
+  "firm": "ELEMENT POINTE FAMILY OFFICE",
+  "domain": "elementpointe.com",
+  "people": []
+ },
+ {
+  "crd": "326990",
+  "firm": "FIDUCIARY FAMILY OFFICE, LLC",
+  "domain": "fiduciaryfo.com",
+  "people": [
+   {
+    "name": "Kathleen Grace",
+    "title": "Managing Member, CEO, CIO",
+    "principal": true
+   },
+   {
+    "name": "Tabitha LeTourneau Meyerer",
+    "title": "Managing Member, COO, CCO",
+    "principal": true
+   }
+  ]
+ },
+ {
+  "crd": "122448",
+  "firm": "FIFTH AVENUE FAMILY OFFICE",
+  "domain": "fifthavenuefamily.com",
+  "people": [
+   {
+    "name": "Gary Price",
+    "title": "Partner",
+    "principal": true
+   },
+   {
+    "name": "Timothy Cartwright",
+    "title": "Partner",
+    "principal": true
+   },
+   {
+    "name": "Kyle Shoemaker",
+    "title": "Senior director, Chief compliance officer",
+    "principal": true
+   },
+   {
+    "name": "Susi Kimball",
+    "title": "Client Services",
+    "principal": false
+   },
+   {
+    "name": "Maria Martin",
+    "title": "Client Services",
+    "principal": false
+   },
+   {
+    "name": "Danielle Russo-Slugh",
+    "title": "Fund Administrator",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "334002",
+  "firm": "FIVE ELEVEN PARTNERS",
+  "domain": "five11partners.com",
+  "people": [
+   {
+    "name": "Andy Crofton",
+    "title": "Founder, Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Scott Essex",
+    "title": "Co-Founder, Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Gil Calderon",
+    "title": "Partner, Chief Investment Officer",
+    "principal": true
+   },
+   {
+    "name": "Keith Feinberg",
+    "title": "Partner, Chief Wealth Strategist",
+    "principal": true
+   },
+   {
+    "name": "Matthew Machucki",
+    "title": "Director, Investments",
+    "principal": false
+   },
+   {
+    "name": "Shawn Young",
+    "title": "Client Advisor & Tax Planning Specialist",
+    "principal": false
+   },
+   {
+    "name": "Leigh-Ann Hanlon",
+    "title": "Business Operations Manager",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "323432",
+  "firm": "HAMPSHIRE FAMILY OFFICE",
+  "domain": "hampshirefamilyoffice.com",
+  "people": [
+   {
+    "name": "Greg Reidy",
+    "title": "Co-Founder, Chief Investment Officer",
+    "principal": true
+   },
+   {
+    "name": "Dara Johnson",
+    "title": "Co-Founder, Chief of Staff",
+    "principal": true
+   },
+   {
+    "name": "Hart Claypool",
+    "title": "Director of Investments",
+    "principal": true
+   },
+   {
+    "name": "Lisa Muccioli",
+    "title": "Chief Administrative Officer",
+    "principal": false
+   },
+   {
+    "name": "Nicholas Bertha",
+    "title": "Chief Fiduciary Officer, Fieldpoint Private Trust, LLC",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "125101",
+  "firm": "JFG FAMILY OFFICE",
+  "domain": "jfgfamilyoffice.com",
+  "people": [
+   {
+    "name": "Brandon C. Johnson",
+    "title": "Principal, Chief Executive Officer",
+    "principal": true
+   },
+   {
+    "name": "Bert W. Williams",
+    "title": "Partner, Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Mark P. McConnell",
+    "title": "Partner, Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Kristin R. Keffeler",
+    "title": "Partner, Chief Learning Officer",
+    "principal": true
+   },
+   {
+    "name": "Eric S. Adams",
+    "title": "Partner, Co-Chief Investment Officer",
+    "principal": true
+   },
+   {
+    "name": "Bryant J. Hicks",
+    "title": "Partner, Director of Operations",
+    "principal": true
+   },
+   {
+    "name": "Mary Love Koons",
+    "title": "Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Will F. Dowell",
+    "title": "Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Patrick C. Crawford",
+    "title": "Managing Director of Investments",
+    "principal": true
+   },
+   {
+    "name": "Rachel Epstein McKiernan",
+    "title": "Partner, Senior Client Advisor",
+    "principal": true
+   },
+   {
+    "name": "Robert L. Lawrence Jr.",
+    "title": "Partner, Senior Client Advisor",
+    "principal": true
+   },
+   {
+    "name": "Aidan J. Scott",
+    "title": "Partner, Client Advisor",
+    "principal": true
+   },
+   {
+    "name": "Max H. Bastien",
+    "title": "Senior Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Kaley A. Kris",
+    "title": "Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Tommy L. Batcha",
+    "title": "Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Devin P. Arguinchona",
+    "title": "Portfolio Manager",
+    "principal": true
+   },
+   {
+    "name": "Wendy M. Johnson",
+    "title": "General Counsel",
+    "principal": false
+   },
+   {
+    "name": "Lisa M. Burke",
+    "title": "Chief Compliance Officer",
+    "principal": false
+   },
+   {
+    "name": "Eric H. Traupe",
+    "title": "Chief Strategy Officer",
+    "principal": false
+   },
+   {
+    "name": "Erica A. Gattis",
+    "title": "Partner, Controller",
+    "principal": false
+   },
+   {
+    "name": "Madeleine P. Heringer",
+    "title": "Director of Strategic Initiatives",
+    "principal": false
+   },
+   {
+    "name": "Jim B. Callahan",
+    "title": "Senior Client Advisor, Advisory Team Lead",
+    "principal": false
+   },
+   {
+    "name": "Laura K. Peterson",
+    "title": "Senior Client Advisor",
+    "principal": false
+   },
+   {
+    "name": "Brendan M. Castleman",
+    "title": "Client Advisor",
+    "principal": false
+   },
+   {
+    "name": "Fabienne Tremblay-Parent",
+    "title": "Client Advisor",
+    "principal": false
+   },
+   {
+    "name": "Leland (Andy) L. Moyer, Jr.",
+    "title": "Senior Financial Planner",
+    "principal": false
+   },
+   {
+    "name": "Tiffani N. Porter",
+    "title": "Associate Advisor, Associate Advisor Team Lead",
+    "principal": false
+   },
+   {
+    "name": "Krista M. Rutz",
+    "title": "Senior Associate Advisor",
+    "principal": false
+   },
+   {
+    "name": "Sean V. Janni",
+    "title": "Senior Associate Advisor",
+    "principal": false
+   },
+   {
+    "name": "William S. Neely",
+    "title": "Senior Associate Advisor",
+    "principal": false
+   },
+   {
+    "name": "Fergus D. Hall",
+    "title": "Associate Advisor",
+    "principal": false
+   },
+   {
+    "name": "Nicole A. Caizzo",
+    "title": "Associate Advisor",
+    "principal": false
+   },
+   {
+    "name": "Tara J. Kravas",
+    "title": "Associate Advisor",
+    "principal": false
+   },
+   {
+    "name": "Keri A. Neujahr",
+    "title": "Advisory Analyst Team Lead, Head of Special Projects",
+    "principal": false
+   },
+   {
+    "name": "Dana C. McNulty",
+    "title": "Advisory Analyst",
+    "principal": false
+   },
+   {
+    "name": "Mallory A. Byrne",
+    "title": "Advisory Analyst",
+    "principal": false
+   },
+   {
+    "name": "Parker B. Dey",
+    "title": "Advisory Analyst",
+    "principal": false
+   },
+   {
+    "name": "Ben A. Lloyd",
+    "title": "Investment Analyst",
+    "principal": false
+   },
+   {
+    "name": "Brandon T. Hane",
+    "title": "Junior Investment Analyst",
+    "principal": false
+   },
+   {
+    "name": "Tyler B. Duke",
+    "title": "Senior Intelligence Analyst",
+    "principal": false
+   },
+   {
+    "name": "Jesse K. Margetson",
+    "title": "Senior Human Capital Advisor, Human Capital Team Lead",
+    "principal": false
+   },
+   {
+    "name": "Nicole M. Libbey",
+    "title": "Senior Associate Human Capital Advisor",
+    "principal": false
+   },
+   {
+    "name": "Mark D. Monson",
+    "title": "Manager of Operations",
+    "principal": false
+   },
+   {
+    "name": "Callie J. Hodgkinson",
+    "title": "Project Manager",
+    "principal": false
+   },
+   {
+    "name": "Ashlie M. Helgeland",
+    "title": "Investment Operations Analyst",
+    "principal": false
+   },
+   {
+    "name": "Nick J. Tabor",
+    "title": "Investment Operations Analyst",
+    "principal": false
+   },
+   {
+    "name": "Griffin A. Hamrick",
+    "title": "Investment Operations Analyst",
+    "principal": false
+   },
+   {
+    "name": "Esteban I. Missura",
+    "title": "Data Analyst",
+    "principal": false
+   },
+   {
+    "name": "Mary B. Wright",
+    "title": "Accounting Manager",
+    "principal": false
+   },
+   {
+    "name": "Sarah E. Mirabassi",
+    "title": "Senior Accountant",
+    "principal": false
+   },
+   {
+    "name": "Jadyn J. Klein",
+    "title": "Staff Accountant",
+    "principal": false
+   },
+   {
+    "name": "Aaron E. Hales",
+    "title": "Senior Accountant",
+    "principal": false
+   },
+   {
+    "name": "Henry A. Martelon",
+    "title": "CPA Staff Accountant",
+    "principal": false
+   },
+   {
+    "name": "Mitch A. Sagehorn",
+    "title": "Staff Accountant",
+    "principal": false
+   },
+   {
+    "name": "Richelle R. Valero",
+    "title": "Executive Administrator",
+    "principal": false
+   },
+   {
+    "name": "Ingrid M. Harris",
+    "title": "Office Manager and Executive Assistant",
+    "principal": false
+   },
+   {
+    "name": "Sarah K. Page",
+    "title": "Office Manager & Receptionist",
+    "principal": false
+   },
+   {
+    "name": "Casey K. Smith",
+    "title": "Compliance and Human Resources Associate",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "157511",
+  "firm": "LANDMARK MANAGEMENT, LLC",
+  "domain": "landmark-mgmt.com",
+  "people": [
+   {
+    "name": "Brian R. Cavagnaro",
+    "title": "Partner, Director of Tax",
+    "principal": true
+   },
+   {
+    "name": "J. Daniel Graham",
+    "title": "Co-Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Michael T. Lima",
+    "title": "Managing Director, Head of Investment Research",
+    "principal": true
+   },
+   {
+    "name": "Allyson D. Samson",
+    "title": "Partner",
+    "principal": true
+   },
+   {
+    "name": "Earl A. \u201cTrip\u201d Samson III",
+    "title": "Founder, Co-Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Katie E. Torjusen",
+    "title": "Partner, Chief Compliance Officer",
+    "principal": false
+   },
+   {
+    "name": "Shauntrice M. Williams",
+    "title": "Partner, Director of Finance",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "155003",
+  "firm": "MARCUARD FAMILY OFFICE LTD",
+  "domain": "marcuardfamilyoffice.com",
+  "people": [
+   {
+    "name": "Ulrich Burkhard",
+    "title": "Founder",
+    "principal": true
+   },
+   {
+    "name": "Heiner Gr\u00fcter",
+    "title": "Chairman",
+    "principal": true
+   },
+   {
+    "name": "Martin Sutter",
+    "title": "Member of the Board of Directors, Senior Partner",
+    "principal": true
+   },
+   {
+    "name": "Claudia Flury",
+    "title": "Member of the Board of Directors",
+    "principal": true
+   },
+   {
+    "name": "Nadja Bleuler",
+    "title": "Chief Economist, Partner",
+    "principal": true
+   },
+   {
+    "name": "Denise Schmid",
+    "title": "General Counsel & Head of Risk, Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Philipp Stokinger",
+    "title": "Senior Investment Advisor, Partner",
+    "principal": true
+   },
+   {
+    "name": "Sabrina Jud",
+    "title": "Head Portfolio Management Services, Partner",
+    "principal": true
+   },
+   {
+    "name": "Frank Nyffenegger",
+    "title": "Senior Relationship Manager & Family Governance, Senior Partner",
+    "principal": true
+   },
+   {
+    "name": "Vanessa Fasciati",
+    "title": "Head Client Relationship Management, Partner",
+    "principal": true
+   },
+   {
+    "name": "Christoph Orschel",
+    "title": "Head Asset Management, Partner",
+    "principal": true
+   },
+   {
+    "name": "C\u00e9cile Zobl-Badertscher",
+    "title": "Senior Legal Counsel, Partner",
+    "principal": true
+   },
+   {
+    "name": "Andreas Arni",
+    "title": "Chief Executive Officer, Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Thomas Gn\u00e4gi",
+    "title": "Head Private Markets, Senior Partner",
+    "principal": true
+   },
+   {
+    "name": "Jorge Frey",
+    "title": "Head Family Governance & Head HR, Senior Partner",
+    "principal": true
+   },
+   {
+    "name": "Lukas D\u00f6rig",
+    "title": "Head Markets, Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "J\u00f6rg Dobler",
+    "title": "Liquid Assets, Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Samir Rajab",
+    "title": "Head Operations, Partner",
+    "principal": true
+   },
+   {
+    "name": "J\u00e9r\u00f4me Ehrenbaum",
+    "title": "Chief Financial Officer",
+    "principal": false
+   },
+   {
+    "name": "Tim M\u00fcnger",
+    "title": "Analyst",
+    "principal": false
+   },
+   {
+    "name": "Alessandra Willingsdorfer",
+    "title": "Relationship Manager",
+    "principal": false
+   },
+   {
+    "name": "Yves H\u00fcrlimann",
+    "title": "Relationship Manager",
+    "principal": false
+   },
+   {
+    "name": "Pascal Gomez",
+    "title": "Senior Relationship Manager",
+    "principal": false
+   },
+   {
+    "name": "Cristina Pelloni",
+    "title": "Assistant Portfolio Management",
+    "principal": false
+   },
+   {
+    "name": "Dina Dingas",
+    "title": "Assistant Portfolio Management",
+    "principal": false
+   },
+   {
+    "name": "Sandro Widmer",
+    "title": "Relationship Manager",
+    "principal": false
+   },
+   {
+    "name": "Mauro Eichin",
+    "title": "Investment Advisor",
+    "principal": false
+   },
+   {
+    "name": "Andrea Mancal",
+    "title": "Chief Compliance & Chief Risk Officer",
+    "principal": false
+   },
+   {
+    "name": "Cecile T\u00f6ngi",
+    "title": "Accountant & Controller",
+    "principal": false
+   },
+   {
+    "name": "Mathias Z\u00fcrcher",
+    "title": "Investment Advisor",
+    "principal": false
+   },
+   {
+    "name": "Gianandrea Vedova",
+    "title": "Relationship Manager",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "106806",
+  "firm": "MATTER FAMILY OFFICE",
+  "domain": "matterfamilyoffice.com",
+  "people": [
+   {
+    "name": "Kathy Lintz",
+    "title": "Founder and Managing Partner",
+    "principal": true
+   }
+  ]
+ },
+ {
+  "crd": "296362",
+  "firm": "PINE RIDGE ADVISERS LLC",
+  "domain": "pineridgeadvisers.com",
+  "people": []
+ },
+ {
+  "crd": "312154",
+  "firm": "PMG FAMILY OFFICE, LLC",
+  "domain": "pmgfamilyoffice.com",
+  "people": [
+   {
+    "name": "Bill Blake",
+    "title": "Executive Director",
+    "principal": true
+   },
+   {
+    "name": "Amanda Farrar",
+    "title": "Family Office Advisor",
+    "principal": true
+   },
+   {
+    "name": "Tracy Lujan",
+    "title": "Family Services Administrator",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "338563",
+  "firm": "POINTONE FAMILY OFFICE",
+  "domain": "p1fo.com",
+  "people": [
+   {
+    "name": "Michael Walsh",
+    "title": "Founder & CEO",
+    "principal": true
+   },
+   {
+    "name": "Ashley McGuinness",
+    "title": "Founder & Managing Director, Family Operations",
+    "principal": true
+   },
+   {
+    "name": "Ari Segal",
+    "title": "Founder & President",
+    "principal": true
+   },
+   {
+    "name": "A.J. Kennedy",
+    "title": "Managing Director",
+    "principal": false
+   },
+   {
+    "name": "Tom McGuinness",
+    "title": "Director, Finance & Operations, CCO",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "338839",
+  "firm": "PULLIAM FAMILY OFFICE, LLC",
+  "domain": "pulliamfamilyoffice.com",
+  "people": [
+   {
+    "name": "John Pulliam",
+    "title": "Managing Director and Founder, PFO Senior Financial Advisor",
+    "principal": true
+   }
+  ]
+ },
+ {
+  "crd": "335152",
+  "firm": "SESTANTE FAMILY OFFICE",
+  "domain": "sestante.com",
+  "people": [
+   {
+    "name": "Ben White",
+    "title": "Co-Founder & Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Dan White",
+    "title": "Co-Founder & Managing Partner",
+    "principal": true
+   },
+   {
+    "name": "Angie Siritanan",
+    "title": "Senior Accountant",
+    "principal": false
+   },
+   {
+    "name": "David Nguyen",
+    "title": "Client Service Associate",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "159440",
+  "firm": "TFO FAMILY OFFICE PARTNERS",
+  "domain": "tfopartners.com",
+  "people": []
+ },
+ {
+  "crd": "150748",
+  "firm": "TIMONIER",
+  "domain": "timonier.com",
+  "people": [
+   {
+    "name": "Tim L. Baker",
+    "title": "FOUNDER",
+    "principal": true
+   },
+   {
+    "name": "Nicholas C. Baker",
+    "title": "WEALTH ADVISOR",
+    "principal": false
+   },
+   {
+    "name": "Janice French",
+    "title": "WEALTH ADVISOR",
+    "principal": false
+   },
+   {
+    "name": "Robert Lack",
+    "title": "WEALTH TRANSFER ADVISOR",
+    "principal": false
+   },
+   {
+    "name": "Febry Beavers",
+    "title": "DIRECTOR OF CLIENT SERVICES",
+    "principal": false
+   },
+   {
+    "name": "Corry Molter",
+    "title": "SENIOR TAX ADVISOR",
+    "principal": false
+   },
+   {
+    "name": "Sam Soots",
+    "title": "DIRECTOR OF RETIREMENT PLAN SERVICES",
+    "principal": false
+   },
+   {
+    "name": "Nicholas Yeakle",
+    "title": "WEALTH ADVISOR",
+    "principal": false
+   },
+   {
+    "name": "Mike Leclerc",
+    "title": "TAX DIRECTOR",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "143112",
+  "firm": "WELLSPRING FAMILY OFFICE",
+  "domain": "wellspringfo.com",
+  "people": [
+   {
+    "name": "Michael Novak",
+    "title": "Founder & CEO",
+    "principal": true
+   },
+   {
+    "name": "Jeff Kadlic",
+    "title": "President & Chief Operating Officer",
+    "principal": true
+   },
+   {
+    "name": "Rich Turgeon",
+    "title": "Chief Investment Officer, Senior Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Jenna Staton",
+    "title": "Senior Wealth Advisor, Senior Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Germaine Martin",
+    "title": "Senior Wealth Advisor, Senior Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Katie Madzsar",
+    "title": "Senior Wealth Advisor, Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Laura Capuozzo",
+    "title": "Head of Operations, Managing Director",
+    "principal": true
+   },
+   {
+    "name": "Bill Ambrogio",
+    "title": "Senior Wealth Advisor, Managing Director",
+    "principal": true
+   },
+   {
+    "name": "A'Shira Nelson",
+    "title": "Quality Assurance & Training, Director",
+    "principal": false
+   },
+   {
+    "name": "Jocelyn Maldonado",
+    "title": "Investment Operations, Director",
+    "principal": false
+   }
+  ]
+ },
+ {
+  "crd": "338122",
+  "firm": "XCEPTION FAMILY OFFICE",
+  "domain": "xceptionfamilyoffice.com",
+  "people": [
+   {
+    "name": "null",
+    "title": "null",
+    "principal": false
+   }
+  ]
+ }
+]

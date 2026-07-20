@@ -34,6 +34,7 @@ from pipeline import db
 
 SHEET = "data/curation/entity_adjudication_sheet.json"
 DECISIONS = "data/curation/entity_adjudications.json"
+CONTACT_DECISIONS = "data/curation/contact_adjudications.json"
 
 # Phrases that speak to what the firm IS. Order matters: first match wins the draft proposal.
 _SELF_DESC = [
@@ -165,6 +166,40 @@ def apply(path: str = DECISIONS, write: bool = False) -> dict:
                     "rationale=excluded.rationale, decided_by=excluded.decided_by, decided_at=now()",
                     (r["crd"], r["firm_name"], cat, status, r.get("duplicate_of"),
                      json.dumps(r.get("evidence", []), default=str), r["rationale"], r["decided_by"]))
+            out["applied"] += 1
+        if write:
+            c.commit()
+    return out
+
+
+def apply_contacts(path: str = CONTACT_DECISIONS, write: bool = False) -> dict:
+    """Load ratified contact adjudications (ADR-0021/0022) into gold.contact_adjudications. Refuses
+    rows without decided_by. build.py reads this to select the product's primary/secondary contact,
+    label authority, and gate qualification."""
+    with open(path, encoding="utf-8") as fh:
+        rows = json.load(fh)
+    out = {"applied": 0, "skipped_unratified": 0, "with_published_email": 0, "written": write}
+    with db.get_conn() as c, c.cursor() as cur:
+        for r in rows:
+            if not r.get("decided_by"):
+                out["skipped_unratified"] += 1
+                continue
+            if r.get("published_email"):
+                out["with_published_email"] += 1
+            if write:
+                cur.execute(
+                    "insert into gold.contact_adjudications "
+                    "(crd, contact_role, name, title, selection_basis, authority_basis, "
+                    " affiliation_asof, published_email, evidence, decided_by) "
+                    "values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+                    "on conflict (crd, contact_role) do update set "
+                    "name=excluded.name, title=excluded.title, selection_basis=excluded.selection_basis, "
+                    "authority_basis=excluded.authority_basis, affiliation_asof=excluded.affiliation_asof, "
+                    "published_email=excluded.published_email, evidence=excluded.evidence, "
+                    "decided_by=excluded.decided_by, decided_at=now()",
+                    (r["crd"], r["contact_role"], r["name"], r["title"], r["selection_basis"],
+                     r["authority_basis"], r["affiliation_asof"], r.get("published_email"),
+                     json.dumps(r.get("evidence", []), default=str), r["decided_by"]))
             out["applied"] += 1
         if write:
             c.commit()

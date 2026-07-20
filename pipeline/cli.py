@@ -239,6 +239,16 @@ def cmd_entity_apply(args):
     print(json.dumps(curate.apply(**kwargs), indent=2))
 
 
+def cmd_contact_apply(args):
+    """ADR-0021/0022: apply human-ratified contact adjudications to gold.contact_adjudications."""
+    from pipeline import curate
+
+    kwargs = {"write": args.write}
+    if args.path:
+        kwargs["path"] = args.path
+    print(json.dumps(curate.apply_contacts(**kwargs), indent=2))
+
+
 def cmd_build_gold(args):
     """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
     from pipeline.gold import build as gb
@@ -373,6 +383,10 @@ def main():
     ea.add_argument("--write", action="store_true")
     ea.add_argument("--path", default=None)
     ea.set_defaults(func=cmd_entity_apply)
+    ca = sub.add_parser("contact-apply", help="ADR-0021/0022: load ratified contact adjudications (refuses unratified rows)")
+    ca.add_argument("--write", action="store_true")
+    ca.add_argument("--path", default=None)
+    ca.set_defaults(func=cmd_contact_apply)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

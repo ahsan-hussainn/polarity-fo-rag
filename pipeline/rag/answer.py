@@ -31,20 +31,27 @@ def _aum_words(aum) -> str | None:
     return f"${aum / 1e9:.1f}B" if aum >= 1_000_000_000 else f"${aum / 1e6:.0f}M"
 
 
+# How precisely to describe each email grade to the customer (mandate: narrowest accurate wording).
+_EMAIL_SURE = {
+    "PUB": "published by the firm for this person",
+    "A": "vendor-reported deliverable for an inferred address (not proven to be this person's mailbox)",
+    "B": "plausible inference on a catch-all domain, unconfirmable",
+}
+
+
 def best_channel(h: dict) -> dict:
-    """Deterministic outreach routing from the verification grades. Returns
-    {channel, target, detail} -- the concrete 'how to reach them' for this record."""
+    """Deterministic outreach routing from the email grades. Returns {channel, target, detail} --
+    the concrete 'how to reach them'. A published individual address (PUB) is the strongest channel;
+    a vendor-deliverable inferred address (A) or catch-all (B) is emailable but honestly qualified."""
     pg, sg = h.get("primary_email_grade"), h.get("secondary_email_grade")
-    if pg in ("A", "B") and h.get("primary_contact_email"):
-        sure = "verified" if pg == "A" else "plausible (catch-all domain, unconfirmable)"
+    if pg in ("PUB", "A", "B") and h.get("primary_contact_email"):
         return {"channel": "email", "target": h["primary_contact_email"],
-                "detail": f"email {h.get('primary_contact_name')} directly ({sure})"}
-    if sg in ("A", "B") and h.get("secondary_contact_email"):
-        sure = "verified" if sg == "A" else "plausible"
+                "detail": f"email {h.get('primary_contact_name')} directly ({_EMAIL_SURE[pg]})"}
+    if sg in ("PUB", "A", "B") and h.get("secondary_contact_email"):
         return {"channel": "email", "target": h["secondary_contact_email"],
-                "detail": (f"primary contact's email could not be verified -- go through "
+                "detail": (f"no reachable address for the primary contact -- go through "
                            f"{h.get('secondary_contact_name')} ({h.get('secondary_contact_title')}), "
-                           f"whose address is {sure}")}
+                           f"whose address is {_EMAIL_SURE[sg]}")}
     if h.get("firm_phone"):
         return {"channel": "phone", "target": h["firm_phone"],
                 "detail": "no deliverable email on record -- call the office line"}

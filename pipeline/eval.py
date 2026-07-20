@@ -1,12 +1,15 @@
-"""Ground-truth evaluation of the extractor's is_principal call (the differentiator).
+"""Proxy-label benchmark for the extractor's is_principal call.
 
-"Decision-grade" means the dataset's accuracy is *measured*, not asserted. This module is the
-measurement engine for the highest-value judgment -- principal vs. staff -- where we claim to beat
-the FO-MAX reference. It does three things:
+This measures the extractor's principal-vs-staff call against a documented TITLE RUBRIC, not against
+independent human ground truth about real investment authority: labels are generated deterministically
+by `adjudicate_title()` (422 of 425 by rule, 3 manual overrides), so it is a *proxy-label* benchmark.
+It reports how far the extractor's is_principal agrees with that rubric -- a real, reproducible
+measurement, but it does not establish that a person actually holds investment authority (ADR-0021's
+Schedule A pass does that). It does three things:
 
-  export()     -- dump people to a BLIND labelling CSV (no model prediction shown), so the human
-                  adjudication is independent of what the model guessed.
-  score()      -- join the hand-labelled truth back to the model's is_principal and compute the
+  export()     -- dump people to a BLIND labelling CSV (no model prediction shown), so the rubric
+                  labelling is independent of what the model guessed.
+  score()      -- join the rubric proxy-labels back to the model's is_principal and compute the
                   confusion matrix + precision / recall / false-positive / false-negative rates.
   crosscheck() -- an AUTHORITATIVE, non-circular sanity anchor: compare each firm's website
                   "principal" count to its SEC Form ADV `total_employees`. A firm with more website
@@ -129,7 +132,7 @@ def label(path: str = LABELS_CSV) -> dict:
 
 
 def score(path: str = LABELS_CSV) -> dict:
-    """Join hand-labelled truth to the model's is_principal; return the confusion matrix + rates."""
+    """Join the rubric proxy-labels to the model's is_principal; return the confusion matrix + rates."""
     labelled: dict[int, int] = {}
     with open(path, encoding="utf-8") as fh:
         for r in csv.DictReader(fh):

@@ -15,9 +15,12 @@ Deliverable #6. Live at the submitted URL; run locally with `uvicorn pipeline.ra
 
 **One document per firm** — the gold record rendered to prose (name, location with the state spelled
 out, founded year, AUM, thesis, description, sectors, primary contact). Records are short and
-self-contained, so splitting them would only sever a firm from its own facts; at 50 documents the
+self-contained, so splitting them would only sever a firm from its own facts; at ~50 documents the
 "chunking" problem is really a rendering problem: what belongs in the searchable text. Contact emails
 are deliberately *not* embedded — they come from the structured row at answer time, with their grade.
+Retrieval is release-gated: all 50 gold rows are indexed, but the 8 quarantined firms are filtered
+out on every path, so only the 42 released records (24 affirmed family offices + 18 labeled non-FOs)
+can surface.
 
 ## Embedding model
 

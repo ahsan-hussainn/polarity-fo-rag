@@ -1,8 +1,10 @@
-# Methodology summary — how the system found, enriched, and validated the dataset
+# Methodology summary — how the system finds, enriches, and adjudicates the dataset
 
-Deliverable #2 of the brief. One page; the full reasoning trail is in `adr/` (15 records) and
-`docs/findings/` (measured results per stage). Every number below is observed from a live run, not
-estimated.
+The full reasoning trail is in `adr/` (22 records) and `docs/findings/`. Every number below is
+reconciled against the final artifact (`data/gold/family_office_dataset.csv`, 2026-07-20), not
+estimated. This reflects the corrected state after the Bridge Mandate pre-window pass
+(`docs/findings/bridge-audit-reconciliation.md`); it supersedes the original Stage 1 figures, which
+described the file before entity/decision-maker adjudication.
 
 ## 1. Discovery — public regulatory data, over-discover then filter (ADR-0004, 0007)
 
@@ -24,40 +26,49 @@ stamped by our code, never by the model. Corporate LinkedIn was search-assisted 
 reviewable data artifact (54/59 firms). Firm phone, street address, and **AUM** come from the ADV
 filing itself — regulatory-sourced, with the filing PDF cited per record.
 
-## 3. Validation — measured, not asserted (ADR-0005, 0010, 0015; `docs/findings/validation-layer.md`)
+## 3. Adjudication — a finding controls release (ADR-0019/0020/0021/0022)
 
-Three validated judgments, each with its method exposed and re-runnable:
+Three affirmative standards, each ratified by a human release control and each able to block a record:
 
-- **Principal identification.** 425 people adjudicated blind against a documented title rubric →
-  precision 0.49 (strict) / 0.78 (lenient bracket), recall 0.98, FP rate 0.43, FN rate 0.02. Failure
-  mode: over-inclusion. Corroborated non-circularly against ADV employee counts (`gt-crosscheck`).
-- **Emails.** Candidate addresses inferred from corporate patterns, verified via a paid API
-  (MillionVerifier) behind a pluggable seam, and graded two-axis: **A** verified deliverable /
-  **B** catch-all, plausible / **C** unknown / **D** authoritatively invalid / **F** no mail server.
-  A catch-all or unconfirmed address is **never** graded valid. Distribution over 250 principals:
-  35% A, 11% B, 4% C, 43% D, 7% F — the D bucket is reported as a finding, not hidden.
-- **Entity validity (curation gate).** Nine discovered firms were institutional managers or
-  wrong-entity records (e.g. Oak Hill Advisors, Hamilton Lane, SpiderRock→blackrock.com). They are
-  excluded in code with written reasons persisted to `gold.excluded_firms` (ADR-0015). The shipped
-  file is exactly **50 records**.
+- **Entity (ADR-0020).** Every firm must affirmatively prove its category from ≥2 independent
+  evidence classes (SEC ADV Item 5 client mix + the firm's own self-description + third-party
+  corroboration). Result over the 50: **24 affirmed multi-family offices**; 18 reclassified as
+  wealth managers (11) or RIAs-with-an-FO-practice (7), kept but not counted as family offices; 2
+  not a family office and 6 unresolved, both quarantined. No single-family offices — true SFOs are
+  exempt from SEC registration. Details: `docs/findings/entity-adjudication.md`.
+- **Decision-maker (ADR-0021/0022).** Each of the 24 FOs leads with an affirmatively-proven
+  allocation-authority contact anchored on SEC ADV Schedule A (named owners/officers) plus dated
+  web/LinkedIn; all 24 primaries are `stated` authority, each with a shipped "why this contact"
+  basis. Details: `docs/findings/decision-maker-evidence.md`.
+- **Email (ADR-0005/0010/0019).** An address is the firm-published individual address where one
+  exists (5 of 24 FOs, grade **PUB** — proven to be the person's), otherwise an inferred pattern
+  vendor-verified two-axis: **A** vendor-reported deliverable (inferred; *not* proven to be this
+  person's mailbox) / **B** catch-all, plausible / **C** unknown. Vendor-**rejected** addresses (D
+  invalid / F no mail server) are removed from operational fields into `gold.contact_audit` (28
+  addresses) and never shipped. FO primary email basis: 5 PUB, 3 A, 1 B, 14 C, 1 none (JFG,
+  vendor-rejected → routes to phone).
 
 ## 4. The deliverable
 
-`data/gold/family_office_dataset.csv` — 50 records, FO-MAX-shaped, sorted actionability-first.
-Per-cell basis: firm facts cite the SEC ADV filing PDF; profile cells cite the firm's website; each
-email carries grade + validation code + plain-English explanation. 13 records lead with a senior
-principal **and** an A-grade verified email; 39/50 carry a named senior contact.
+`data/gold/family_office_dataset.csv` — **42 rows** (24 qualifying family offices + 18 labeled
+non-FOs), sorted with qualifying FOs first, best email basis first; `quarantined.csv` holds the 8
+withheld firms with reasons. Per-cell basis: firm facts cite the SEC ADV filing; profile cells cite
+the firm's website; each contact carries its authority basis, selection reason, and email grade +
+code + plain-English explanation. **9 of 24 FOs carry a routable primary email** (PUB/A/B); 23 of 24
+show a graded address.
 
 ## Honest limitations (what a buyer should know)
 
-- **Coverage:** the SEC-registered universe. Exempt single-family offices are structurally absent;
-  the planned 990-PF track was not built in the window.
-- **Boundary judgment calls kept in the file** (disclosed, not hidden): wealth managers with
-  family-office practices (1919, Chilton, F.L.Putnam); TFO's two registrants share a parent/domain.
-- **Signals/recent-activity fields** (recent investments, hires, news) were not built — scoped out for
-  verification depth on contacts over breadth of unverified columns.
-- **11 records carry no principal contact** (honest blanks where team pages don't exist or the ADV
-  site was social-only). They ship because their firm-level cells are verified; they are the weakest
-  records and are last in the file.
-- Principal `is_principal` over-inclusion is measured but not yet prompt-tuned; `Principal Count`
-  should be read with the published FP rate in mind.
+- **Coverage:** the SEC-registered adviser universe. Exempt single-family offices are structurally
+  absent; the planned 990-PF track was not built. Reaching 500 unique FOs (the Stage 2 target)
+  requires broadening beyond this source.
+- **Email is the weakest axis.** Only the 5 PUB addresses are proven to belong to the named person;
+  A/B/C addresses are inferred patterns, verified only for deliverability (A) or not at all (C), and
+  are labeled as such — never "verified." Converting C's to proven addresses needs a sourced-email
+  crawl (a Stage 2 job).
+- **Some authority rests on ownership, not an investment title** (e.g. a sole owner ADV-titled CCO);
+  where "runs the investment process" is inferred rather than stated, the record says so.
+- **Time-sensitive signals** (recent investments, hires, news) are not yet built — a Stage 2
+  requirement, not present here.
+- The `is_principal` extractor over-includes (measured; see the benchmark below); `Principal Count`
+  is a raw extraction count, not a validated headcount.

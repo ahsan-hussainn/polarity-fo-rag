@@ -405,14 +405,14 @@ def main():
     sub.add_parser("gold-export", help="Export gold.records to a CSV deliverable").set_defaults(
         func=cmd_gold_export)
 
-    ge = sub.add_parser("gt-export", help="Ground truth: export a blind is_principal labelling CSV")
+    ge = sub.add_parser("gt-export", help="Proxy-label benchmark: export a blind is_principal labelling CSV")
     ge.add_argument("--limit", type=int, default=None, help="max people to export")
     ge.set_defaults(func=cmd_gt_export)
-    sub.add_parser("gt-label", help="Ground truth: adjudicate titles -> labelled CSV (rubric)").set_defaults(
+    sub.add_parser("gt-label", help="Proxy-label benchmark: apply the title rubric -> labelled CSV").set_defaults(
         func=cmd_gt_label)
-    sub.add_parser("gt-score", help="Ground truth: score model is_principal vs hand labels").set_defaults(
+    sub.add_parser("gt-score", help="Proxy-label benchmark: score model is_principal vs rubric labels").set_defaults(
         func=cmd_gt_score)
-    sub.add_parser("gt-crosscheck", help="Ground truth: website principals vs ADV employee counts").set_defaults(
+    sub.add_parser("gt-crosscheck", help="Independent anchor: website principals vs ADV employee counts").set_defaults(
         func=cmd_gt_crosscheck)
 
     args = p.parse_args()

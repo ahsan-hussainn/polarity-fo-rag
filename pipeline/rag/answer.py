@@ -17,7 +17,9 @@ from pipeline.rag.retrieve import by_filters, by_name, hybrid
 
 ANSWER_MODEL = os.getenv("ANSWER_MODEL", "gpt-4o-mini")
 
-_GRADE_RANK = {"A": 0, "B": 1, "C": 2, "D": 3, "F": 4}  # ascending: best (verified) first
+# Ascending: best email basis first. PUB (firm-published, proven) outranks A (vendor-deliverable but
+# inferred) > B (catch-all) > C (unconfirmed). D/F are quarantined and never reach a source card.
+_GRADE_RANK = {"PUB": 0, "A": 1, "B": 2, "C": 3, "D": 4, "F": 5}
 
 
 def _grade_key(h: dict) -> tuple:
@@ -57,9 +59,9 @@ def best_channel(h: dict) -> dict:
                 "detail": "no deliverable email on record -- call the office line"}
     if h.get("corporate_linkedin"):
         return {"channel": "linkedin", "target": h["corporate_linkedin"],
-                "detail": "no verified email or phone -- approach via the firm's LinkedIn"}
+                "detail": "no reachable email or phone -- approach via the firm's LinkedIn"}
     return {"channel": "research", "target": h.get("website"),
-            "detail": "no verified outreach channel on record"}
+            "detail": "no confirmed outreach channel on record"}
 
 
 SYSTEM = (
@@ -67,7 +69,8 @@ SYSTEM = (
     "using ONLY the provided records.\n"
     "Shape of every answer (write naturally -- no section headings, no labels):\n"
     "1. Open with one or two sentences that directly answer the question and name the strongest "
-    "target and why (e.g. verified contact + thesis fit). Never open with a list.\n"
+    "target and why (e.g. a firm-published or vendor-checked contact + thesis fit). Never open with "
+    "a list.\n"
     "2. Then, for each relevant firm (numbered, strongest first), write a short paragraph that ties "
     "its thesis/sectors/AUM to the user's question -- not a recitation of every field -- and ends by "
     "saying exactly how to reach them, following the record's 'Recommended outreach' line and stating "
@@ -80,9 +83,14 @@ SYSTEM = (
     "be a subset.\n"
     "- If no record matches the criteria exactly, say so plainly, then offer the nearest records as "
     "closest options, clearly labelled as such.\n"
-    "- 'Verified' applies to EMAIL addresses only (grade A). Never call a phone number, LinkedIn "
-    "page, or the record itself 'verified'. Phone numbers come from the firm's SEC filing -- if you "
-    "qualify one, say exactly that.\n"
+    "- Email honesty (use the record's grade, never the word 'verified' loosely): PUB = an address "
+    "the firm itself publishes for this person (the strongest -- say 'firm-published'); A = an "
+    "inferred pattern a vendor reported deliverable (say 'vendor-checked, but an inferred address "
+    "not confirmed as theirs'); B = inferred on a catch-all domain ('plausible, unconfirmable'); "
+    "C = inferred, unconfirmed. Never call a phone, LinkedIn page, or the record itself 'verified'. "
+    "Phone numbers come from the firm's SEC filing -- say exactly that.\n"
+    "- Each contact was selected as the firm's allocation-authority decision-maker; where the "
+    "record's authority basis is 'title_inferred', say the authority is inferred from title.\n"
     "- Write in clear Markdown prose. Substantive, not padded.\n"
     "- Make the signal scannable: **bold** every load-bearing fact -- the firm name at the start of "
     "its item, contact names, email addresses, phone numbers, AUM figures, and city/state. A reader "

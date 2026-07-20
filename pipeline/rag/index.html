@@ -150,9 +150,11 @@
       </div>
       <div class="desk">Family Office<br>Intelligence</div>
     </div>
-    <p>Ask which family offices to approach. Every target is returned with its senior contact, a
-       <b>contactability grade</b>, and exactly <b>how to reach them</b> — grounded only in the dataset,
-       and never asserting a contact it could not verify.</p>
+    <p>Ask which family offices to approach. Each returns its <b>proven decision-maker</b> — the
+       allocation-authority contact with the evidence for the pick — and an <b>email basis</b>
+       (firm-published, vendor-checked, or unconfirmed), so you see exactly how far each contact is
+       proven. Answers are grounded only in the dataset; the system says so plainly when it cannot
+       reach a contact.</p>
   </header>
 
   <div class="qlabel eyebrow">Ask the desk</div>
@@ -169,11 +171,10 @@
   </div>
 
   <footer>
-    <div>Grounded over the gold-tier dataset · a grade rates the primary contact's <b style="border:0;color:var(--dim)">email</b>, nothing else</div>
+    <div>Grounded over the adjudicated gold dataset (24 affirmed family offices) · the badge rates only the primary contact's <b style="border:0;color:var(--dim)">email basis</b>, nothing else</div>
     <div class="leg" style="margin-top:6px">
-      <span class="s-A"><b>A</b>verified</span><span class="s-B"><b>B</b>catch-all</span>
-      <span class="s-C"><b>C</b>unconfirmed</span><span class="s-D"><b>D</b>invalid</span>
-      <span class="s-F"><b>F</b>no mail server</span>
+      <span class="s-A"><b>PUB</b>firm-published</span><span class="s-A"><b>A</b>vendor-deliverable (inferred)</span>
+      <span class="s-B"><b>B</b>catch-all</span><span class="s-C"><b>C</b>unconfirmed</span>
     </div>
   </footer>
 </div>
@@ -193,7 +194,7 @@ const EXAMPLE_POOL = [
   "Who should I contact at Matter Family Office?",
   "Family offices interested in venture capital or technology",
   "How many family offices are in Colorado?",
-  "Which family offices have verified contact emails I can use today?",
+  "Which family offices publish a direct email for their decision-maker?",
 ];
 const $ = s => document.querySelector(s);
 const chips = $("#chips");
@@ -240,25 +241,29 @@ function readout(it){
 function reach(s){
   const t = s.best_channel_target;
   const mail = t ? `<a href="mailto:${esc(t)}">${esc(t)}</a>` : "";
-  if (s.best_channel === "email" && t && t === s.email)
-    return s.email_grade === "A"
-      ? {cls:"ok",   mk:"✓", lb:"<b>Verified email</b> — deliverable, use today", val:mail}
-      : {cls:"plaus",mk:"≈", lb:"<b>Plausible email</b> — catch-all domain, not confirmable", val:mail};
+  if (s.best_channel === "email" && t && t === s.email){
+    if (s.email_grade === "PUB")
+      return {cls:"ok",   mk:"✓", lb:"<b>Firm-published email</b> — the firm lists this address for them", val:mail};
+    if (s.email_grade === "A")
+      return {cls:"ok",   mk:"✓", lb:"<b>Vendor-checked email</b> — deliverable, but an inferred pattern (not confirmed as theirs)", val:mail};
+    return {cls:"plaus",mk:"≈", lb:"<b>Plausible email</b> — inferred on a catch-all domain, not confirmable", val:mail};
+  }
   if (s.best_channel === "email")
     return {cls:"plaus", mk:"→",
-      lb:`Primary email unverified — <b>route via ${esc(s.secondary_contact||"the secondary contact")}</b>`, val:mail};
+      lb:`No reachable email for the primary contact — <b>route via ${esc(s.secondary_contact||"the secondary contact")}</b>`, val:mail};
   if (s.best_channel === "phone")
-    return {cls:"alt", mk:"☎", lb:"No deliverable email — <b>call the office line</b>",
+    return {cls:"alt", mk:"☎", lb:"No reachable email — <b>call the SEC-filed office line</b>",
       val:`<span>${esc(t||"")}</span>`};
   if (s.best_channel === "linkedin")
     return {cls:"alt", mk:"↗", lb:"No email or phone — <b>approach via LinkedIn</b>",
       val: t ? `<a href="${esc(t)}" target="_blank" rel="noopener">firm page</a>` : ""};
-  return {cls:"alt", mk:"·", lb:"No verified outreach channel on record", val:""};
+  return {cls:"alt", mk:"·", lb:"No confirmed outreach channel on record", val:""};
 }
 
 function card(s, i){
   const g = s.email_grade || "none";
-  const seal = `<div class="seal s-${g}">${g==="none"?"–":g}<small>contact</small></div>`;
+  const sealCls = g === "PUB" ? "A" : g;  // PUB shares the top (green) styling
+  const seal = `<div class="seal s-${sealCls}">${g==="none"?"–":g}<small>contact</small></div>`;
   const meta = [];
   if (s.location) meta.push(`<span>${esc(s.location)}</span>`);
   if (s.aum) meta.push(`<span><span class="k">AUM</span> ${esc(s.aum)}</span>`);

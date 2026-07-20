@@ -46,3 +46,4 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0020](./0020-affirmative-entity-standard.md) | Affirmative entity standard and identity resolution | Accepted |
 | [0021](./0021-decision-maker-evidence-standard.md) | Decision-maker evidence standard | Accepted |
 | [0022](./0022-contact-selection-allocation-authority.md) | Contact selection: allocation authority first, conditioned on entity category | Accepted |
+| [0023](./0023-answer-verification-floor.md) | Independent answer-verification floor + surface consistency | Accepted |

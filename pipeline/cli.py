@@ -256,6 +256,13 @@ def cmd_verify_contacts(args):
     print(json.dumps(curate.verify_contacts(write=args.write, limit=args.limit), indent=2))
 
 
+def cmd_rag_eval(args):
+    """ADR-0023: run the deployed answer path over the adversarial suite and report the numbers."""
+    from pipeline.rag import eval as rageval
+
+    print(json.dumps(rageval.run(), indent=2))
+
+
 def cmd_build_gold(args):
     """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
     from pipeline.gold import build as gb
@@ -398,6 +405,8 @@ def main():
     cv.add_argument("--write", action="store_true")
     cv.add_argument("--limit", type=int, default=None)
     cv.set_defaults(func=cmd_verify_contacts)
+    sub.add_parser("rag-eval", help="ADR-0023: measure the deployed answer path over adversarial cases").set_defaults(
+        func=cmd_rag_eval)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

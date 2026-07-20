@@ -11,6 +11,7 @@ information (use the phone / the A-grade secondary / LinkedIn), not just bad new
 from __future__ import annotations
 
 import os
+import re
 
 from pipeline.rag import intent as qi
 from pipeline.rag.retrieve import by_filters, by_name, hybrid
@@ -22,9 +23,14 @@ ANSWER_MODEL = os.getenv("ANSWER_MODEL", "gpt-4o-mini")
 _GRADE_RANK = {"PUB": 0, "A": 1, "B": 2, "C": 3, "D": 4, "F": 5}
 
 
+def _is_fo(h: dict) -> bool:
+    return h.get("entity_category") in ("single_family_office", "multi_family_office")
+
+
 def _grade_key(h: dict) -> tuple:
-    """Sort key: email grade ascending (A first), then retrieval score descending."""
-    return (_GRADE_RANK.get(h.get("primary_email_grade"), 9), -h.get("score", 0))
+    """Sort key: affirmed family offices first (policy: non-FOs are kept but never LEAD an answer),
+    then email grade ascending (PUB/A first), then retrieval score descending."""
+    return (0 if _is_fo(h) else 1, _GRADE_RANK.get(h.get("primary_email_grade"), 9), -h.get("score", 0))
 
 
 def _aum_words(aum) -> str | None:
@@ -79,6 +85,10 @@ SYSTEM = (
     "query the user could ask, e.g. narrowing by state or AUM).\n"
     "Hard rules:\n"
     "- Use only the records below; never invent a firm, person, email, number, or fact.\n"
+    "- ENTITY HONESTY: each record has an 'Entity type'. Lead with affirmed family offices. A record "
+    "marked 'wealth manager' or 'RIA with a family-office practice' is NOT a family office -- if you "
+    "mention it, say so plainly and never call it a family office. Do not present a non-FO as a "
+    "family office to satisfy the question.\n"
     "- If a 'Dataset total' line is present, use THAT number for any count -- the listed records may "
     "be a subset.\n"
     "- If no record matches the criteria exactly, say so plainly, then offer the nearest records as "
@@ -99,12 +109,25 @@ SYSTEM = (
 )
 
 
+# Plain labels for the entity category (ADR-0023: never present a non-FO as a family office).
+_CATEGORY_LABEL = {
+    "multi_family_office": "multi-family office", "single_family_office": "single-family office",
+    "wealth_manager": "wealth manager (NOT a family office)",
+    "ria_with_fo_practice": "RIA with a family-office practice (NOT a family office)",
+}
+
+
 def _render_one(i: int, h: dict) -> str:
     loc = ", ".join(x for x in (h.get("city"), h.get("state"), h.get("country")) if x)
     facts = [x for x in (loc or None,
                          f"founded {h['founded_year']}" if h.get("founded_year") else None,
                          f"AUM {_aum_words(h.get('aum_usd'))}" if h.get("aum_usd") else None) if x]
     lines = [f"{i}. {h['family_office_name']} ({' | '.join(facts) or 'details n/a'})"]
+    cat = _CATEGORY_LABEL.get(h.get("entity_category"))
+    if cat:
+        lines.append(f"   Entity type: {cat}")
+    if h.get("primary_selection_basis"):
+        lines.append(f"   Why this contact: {h['primary_selection_basis']}")
     if h.get("description"):
         lines.append(f"   About: {h['description']}")
     if h.get("investment_thesis"):
@@ -136,7 +159,9 @@ def _render(hits: list[dict], total: int | None = None, method_note: str | None 
     if total is not None:
         parts.append(f"Dataset total matching the criteria: {total} record(s)."
                      + (f" ({method_note})" if method_note else ""))
-    parts += [_render_one(i, h) for i, h in enumerate(hits, 1)]
+    # affirmed family offices lead the record list handed to the model (policy: non-FOs never lead)
+    ordered = sorted(hits, key=lambda h: (0 if _is_fo(h) else 1, -h.get("score", 0)))
+    parts += [_render_one(i, h) for i, h in enumerate(ordered, 1)]
     return "\n".join(parts)
 
 
@@ -156,6 +181,10 @@ def _sources(hits: list[dict]) -> list[dict]:
             "phone": h.get("firm_phone"), "linkedin": h.get("corporate_linkedin"),
             "website": h.get("website"), "adv_filing_url": h.get("adv_filing_url"),
             "best_channel": ch["channel"], "best_channel_target": ch.get("target"),
+            "entity_category": h.get("entity_category"),
+            "is_family_office": h.get("entity_category") in ("single_family_office", "multi_family_office"),
+            "selection_basis": h.get("primary_selection_basis"),
+            "authority_basis": h.get("primary_authority_basis"),
             "matched": h["matched"], "score": h["score"],
         })
     return out
@@ -198,51 +227,88 @@ def _route(query: str, k: int) -> tuple:
     return q, hits, total, method_note
 
 
-def _messages(query: str, hits: list[dict], total, method_note) -> list[dict]:
+def _messages(query: str, hits: list[dict], total, method_note, repair: list[str] | None = None) -> list[dict]:
     user = (f"Question: {query}\n\nRecords:\n{_render(hits, total, method_note)}\n\n"
             "Answer as specified: verdict first, then the picks with outreach routing, then one "
             "next step.")
+    if repair:  # second attempt: name the exact grounding failures the first answer must not repeat
+        allowed = ", ".join(sorted({e for h in hits for e in
+                                    (h.get("primary_contact_email"), h.get("secondary_contact_email")) if e})) or "none"
+        user += ("\n\nYour previous answer FAILED an independent grounding check: "
+                 + "; ".join(repair)
+                 + f".\nThe ONLY email addresses you may write are: {allowed}. Do not state any other "
+                 "address. Do not name any firm not listed above. Rewrite the answer within these limits.")
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
 
 
 _NO_MATCH = "No matching family office is in the dataset for that query."
 
 
-def answer(query: str, k: int = 5) -> dict:
-    """Classify -> route -> retrieve -> ground an analyst-shaped answer. Returns
-    {answer, sources, query, intent}. (Non-streaming; the CLI and API clients use this.)"""
+def _compose(query: str, hits: list[dict], total, method_note) -> tuple[str, dict]:
+    """Generate -> independently check -> repair-once-or-refuse (ADR-0023). Returns
+    (released_text, verification). The final text is one the deterministic check passed, or a safe
+    grounded fallback -- never an answer that failed the check. Logs the verdict so the control is
+    visible in real runs."""
+    import logging
+
+    from pipeline.rag import checkanswer
     from pipeline.rag.oai import client
 
+    log = logging.getLogger("rag.answer")
+    text = client().chat.completions.create(
+        model=ANSWER_MODEL, temperature=0,
+        messages=_messages(query, hits, total, method_note)).choices[0].message.content or ""
+    v = checkanswer.check(text, hits, total)
+    verification = {"passed": v.ok, "failures": v.failures, "warnings": v.warnings, "repaired": False}
+    if not v.ok:
+        log.warning("grounding check FAILED for %r: %s -- repairing", query, v.failures)
+        text2 = client().chat.completions.create(
+            model=ANSWER_MODEL, temperature=0,
+            messages=_messages(query, hits, total, method_note, repair=v.failures)
+        ).choices[0].message.content or ""
+        v2 = checkanswer.check(text2, hits, total)
+        verification = {"passed": v2.ok, "failures": v2.failures, "warnings": v2.warnings, "repaired": True}
+        if v2.ok:
+            text = text2
+        else:  # still ungrounded -> refuse rather than ship it (a check must control release)
+            log.error("grounding check FAILED after repair for %r: %s -- refusing", query, v2.failures)
+            names = ", ".join(f"**{h['family_office_name']}**" for h in hits[:5])
+            text = ("I can't produce a fully grounded answer for that from the dataset without risking "
+                    f"an unsupported detail. The records retrieved were: {names}. Please narrow the "
+                    "query, or ask about one of these firms directly.")
+    else:
+        log.info("grounding check passed for %r (%d warnings)", query, len(v.warnings))
+    return text, verification
+
+
+def answer(query: str, k: int = 5) -> dict:
+    """Classify -> route -> retrieve -> ground -> INDEPENDENTLY CHECK before release (ADR-0023).
+    Returns {answer, sources, query, intent, verification}. Non-streaming; CLI/API/eval use this."""
     q, hits, total, method_note = _route(query, k)
     if not hits:
-        return {"answer": _NO_MATCH, "sources": [], "query": query, "intent": q.model_dump()}
-    resp = client().chat.completions.create(
-        model=ANSWER_MODEL, temperature=0, messages=_messages(query, hits, total, method_note))
-    return {"answer": resp.choices[0].message.content, "query": query,
-            "intent": q.model_dump(), "sources": _sources(hits)}
+        return {"answer": _NO_MATCH, "sources": [], "query": query, "intent": q.model_dump(),
+                "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
+    text, verification = _compose(query, hits, total, method_note)
+    return {"answer": text, "query": query, "intent": q.model_dump(),
+            "sources": _sources(hits), "verification": verification}
 
 
 def answer_stream(query: str, k: int = 5):
-    """Streaming variant (ADR-0017): yields dict events the serving layer encodes as NDJSON.
-
-    Event order is the UX: {"type":"meta"} ships intent + sources as soon as retrieval finishes
-    (~3s -- the coverage cards render immediately), then {"type":"delta"} chunks stream the answer
-    text as the model generates it, then {"type":"done"}. Perceived latency drops from
-    'generation finished' to 'retrieval finished'."""
-    from pipeline.rag.oai import client
-
+    """Streaming variant (ADR-0017/0023): yields NDJSON events. Order: {"type":"meta"} ships intent +
+    sources as soon as retrieval finishes (the coverage cards render immediately), then the answer is
+    composed AND passed through the independent grounding check BEFORE any text is released, then
+    {"type":"delta"} chunks stream the CHECKED text, then {"type":"done"} carries the verification
+    verdict. Grounding is enforced before release, not merely prompted (correction #5); the cost is
+    that first-text paint waits for the check rather than for the first generated token."""
     q, hits, total, method_note = _route(query, k)
     if not hits:
         yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": []}
         yield {"type": "delta", "text": _NO_MATCH}
-        yield {"type": "done"}
+        yield {"type": "done", "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
         return
     yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": _sources(hits)}
-    stream = client().chat.completions.create(
-        model=ANSWER_MODEL, temperature=0, stream=True,
-        messages=_messages(query, hits, total, method_note))
-    for chunk in stream:
-        delta = chunk.choices[0].delta.content if chunk.choices else None
-        if delta:
-            yield {"type": "delta", "text": delta}
-    yield {"type": "done"}
+    text, verification = _compose(query, hits, total, method_note)
+    for para in re.split(r"(?<=\n)", text):  # stream the released text in natural chunks
+        if para:
+            yield {"type": "delta", "text": para}
+    yield {"type": "done", "verification": verification}

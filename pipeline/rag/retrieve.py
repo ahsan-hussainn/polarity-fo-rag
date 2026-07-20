@@ -26,13 +26,16 @@ RRF_K = 60   # standard RRF constant; dampens the influence of low ranks
 # those passes complete, so the transition is explicit here rather than silent.
 _RELEASE_GATE = "release_state != 'quarantined'"
 
-# Everything the answer layer needs to say "whom to contact, why them, and how to reach them".
+# Everything the answer layer needs to say "whom to contact, why them, and how to reach them" --
+# plus the entity category + person basis so every surface labels a firm the same way (ADR-0023:
+# a reclassified non-FO must never be presented as a family office).
 RECORD_COLUMNS = (
     "crd, family_office_name, city, state, country, founded_year, aum_usd, firm_phone, "
     "investing_sectors, investment_thesis, description, website, corporate_linkedin, "
     "primary_contact_name, primary_contact_title, primary_contact_email, primary_email_grade, "
     "primary_email_explanation, secondary_contact_name, secondary_contact_title, "
-    "secondary_contact_email, secondary_email_grade, secondary_email_explanation, adv_filing_url"
+    "secondary_contact_email, secondary_email_grade, secondary_email_explanation, adv_filing_url, "
+    "entity_category, person_status, primary_authority_basis, primary_selection_basis"
 )
 
 

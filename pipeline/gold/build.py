@@ -77,6 +77,10 @@ _EXPORT_COLUMNS = [
     ("profile_source_url", "Profile Source (Firm Website)"),
     ("entity_category", "Entity Category"), ("category_basis", "Category Basis"),
     ("person_status", "Person Status"), ("release_state", "Release State"),
+    # decision-grade KPIs (ADR-0013 migration)
+    ("actionability_tier", "Actionability"), ("actionability_score", "Actionability Score"),
+    ("confidence_score", "Confidence Score"),
+    ("data_asof", "Firm Data As-Of (ADV filing)"), ("is_stale", "Stale?"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
     ("people_count", "People Count"),
 ]
@@ -174,18 +178,53 @@ def _completion(row: dict) -> int:
     return round(100 * got / len(_SCORE_FIELDS))
 
 
+# Reach quality by email/channel basis -- the axis that varies once a decision-maker is proven.
+_REACH = {"PUB": 55, "A": 40, "B": 30}   # firm-published > vendor-deliverable > catch-all
+
+
+def _actionability(row: dict) -> tuple[str | None, int | None]:
+    """Can a fund manager act on this FO today? Only qualifying FOs are scored (others = N/A).
+    base = a proven decision-maker (stated authority worth more than title-inferred);
+    reach = the contact channel (published/vendor-deliverable email > catch-all > phone > LinkedIn)."""
+    if row.get("release_state") != "qualifying" or row.get("person_status") != "proven":
+        return None, None
+    base = 40 if row.get("primary_authority_basis") == "stated" else 30
+    reach = _REACH.get(row.get("primary_email_grade"))
+    if reach is None:  # no shippable email -> fall to the next channel
+        reach = 15 if row.get("firm_phone") else (8 if row.get("corporate_linkedin") else 0)
+    score = base + reach
+    tier = "High" if score >= 75 else "Medium" if score >= 55 else "Low"
+    return tier, score
+
+
+def _confidence(row: dict) -> int | None:
+    """How well-PROVEN the record is (distinct from reach): affirmed entity (>=2 evidence classes) +
+    person proof (Schedule A-anchored, stated > title-inferred) + email proof (published proves the
+    address is theirs; inferred does not). A record can be high-confidence but low-actionability
+    (e.g. a proven sole owner with no published email)."""
+    if row.get("release_state") != "qualifying":
+        return None
+    entity = 40  # every qualifying FO cleared the >=2 independent-evidence-class bar (ADR-0020)
+    person = 40 if row.get("primary_authority_basis") == "stated" else 25
+    g = row.get("primary_email_grade")
+    email = 20 if g == "PUB" else 10 if g in ("A", "B") else 5
+    return min(100, entity + person + email)
+
+
 def _adv_facts(cur, crd: str) -> dict:
     """Everything gold takes from the firm's SEC ADV capture: location, street, phone, AUM, and the
     filing URL that is the verifiable basis for all of them (data we already hold -- free parity)."""
     cur.execute("select raw->>'city', raw->>'state', raw->>'country', raw->>'street1', "
-                "raw->>'street2', raw->>'phone', raw->>'raum_total', source_url "
+                "raw->>'street2', raw->>'phone', raw->>'raum_total', source_url, "
+                "raw->>'latest_filing_date' "
                 "from bronze.captures where source='sec_form_adv' and entity_key=%s limit 1", (crd,))
     r = cur.fetchone()
     if not r:
         return {}
     street = ", ".join(p for p in (r[3], r[4]) if p) or None
     return {"city": r[0], "state": r[1], "country": r[2], "street_address": street,
-            "firm_phone": r[5], "aum_usd": int(r[6]) if r[6] else None, "adv_filing_url": r[7]}
+            "firm_phone": r[5], "aum_usd": int(r[6]) if r[6] else None, "adv_filing_url": r[7],
+            "latest_filing_date": r[8]}
 
 
 def _url_quality(cur, crd: str) -> str | None:
@@ -399,6 +438,18 @@ def build(write: bool = False) -> dict:
                     row["release_reasons"] = [f"entity affirmed {row['entity_category']} (ADR-0020); "
                                               f"decision-maker proven (ADR-0021)"]
             row["data_completion_score"] = _completion(row)
+            # Record-level KPIs (ADR-0013 migration): actionability (act today?), confidence (how
+            # well-proven?), and freshness (SEC ADV filing date + a staleness flag when > 15 months,
+            # past the annual-filing window). Computed for qualifying FOs; N/A elsewhere.
+            row["actionability_tier"], row["actionability_score"] = _actionability(row)
+            row["confidence_score"] = _confidence(row)
+            filed = adv.get("latest_filing_date")
+            row["data_asof"] = filed
+            row["is_stale"] = None
+            if filed and row.get("release_state") == "qualifying":
+                y, m = (int(x) for x in filed[:7].split("-"))
+                months = (2026 - y) * 12 + (7 - m)  # relative to the build month (2026-07)
+                row["is_stale"] = months > 15
             out["firms"] += 1
             if p:
                 out["with_primary"] += 1

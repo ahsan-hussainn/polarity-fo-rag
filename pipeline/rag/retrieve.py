@@ -35,7 +35,8 @@ RECORD_COLUMNS = (
     "primary_contact_name, primary_contact_title, primary_contact_email, primary_email_grade, "
     "primary_email_explanation, secondary_contact_name, secondary_contact_title, "
     "secondary_contact_email, secondary_email_grade, secondary_email_explanation, adv_filing_url, "
-    "entity_category, person_status, primary_authority_basis, primary_selection_basis"
+    "entity_category, person_status, primary_authority_basis, primary_selection_basis, "
+    "actionability_tier, confidence_score, data_asof"
 )
 
 
@@ -70,13 +71,28 @@ def _lexical_ranked(cur, query: str, n: int, fsql: str, fparams: list) -> list[s
     return [r[0] for r in cur.fetchall()]
 
 
+def _attach_signals(cur, records: list[dict]) -> list[dict]:
+    """Attach each record's recent signals (the 'why now', most recent first) in place."""
+    crds = [r["crd"] for r in records if r.get("crd")]
+    if not crds:
+        return records
+    by = {r["crd"]: r for r in records}
+    cur.execute("select crd, signal_type, signal_date, description from gold.record_signals "
+                "where crd = any(%s) order by crd, signal_date desc", (crds,))
+    for crd, stype, sdate, sdesc in cur.fetchall():
+        by[crd].setdefault("signals", []).append({"type": stype, "date": sdate, "description": sdesc})
+    return records
+
+
 def records_by_crd(cur, crds: list[str]) -> dict[str, dict]:
-    """Full gold records keyed by crd."""
+    """Full gold records keyed by crd, each with its recent signals."""
     if not crds:
         return {}
     cur.execute(f"select {RECORD_COLUMNS} from gold.records where crd = any(%s)", (crds,))
     cols = [d[0] for d in cur.description]
-    return {r[0]: dict(zip(cols, r)) for r in cur.fetchall()}
+    recs = {r[0]: dict(zip(cols, r)) for r in cur.fetchall()}
+    _attach_signals(cur, list(recs.values()))
+    return recs
 
 
 def by_name(name: str, limit: int = 3) -> list[dict]:
@@ -87,7 +103,8 @@ def by_name(name: str, limit: int = 3) -> list[dict]:
                     f"where (family_office_name ilike %s or domain ilike %s) and {_RELEASE_GATE} "
                     "order by data_completion_score desc limit %s", (like, like, limit))
         cols = [d[0] for d in cur.description]
-        return [{**dict(zip(cols, r)), "score": 1.0, "matched": ["name"]} for r in cur.fetchall()]
+        recs = [{**dict(zip(cols, r)), "score": 1.0, "matched": ["name"]} for r in cur.fetchall()]
+        return _attach_signals(cur, recs)
 
 
 def by_filters(state: str | None = None, min_aum: int | None = None, max_aum: int | None = None,

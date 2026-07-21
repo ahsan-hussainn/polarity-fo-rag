@@ -83,6 +83,9 @@ SYSTEM = (
     "the verification status in plain words. Never present an unverified address as confirmed.\n"
     "3. Close with one concrete, analyst-style next step (whom to start with and why, or a sharper "
     "query the user could ask, e.g. narrowing by state or AUM).\n"
+    "- WHY NOW: if a record has a 'Recent signal' line (a dated, sourced event -- a raise, hire, "
+    "merger, award), weave it in as the timely reason to reach out now. Never invent a signal; use "
+    "only the ones listed.\n"
     "Hard rules:\n"
     "- Use only the records below; never invent a firm, person, email, number, or fact.\n"
     "- ENTITY HONESTY: each record has an 'Entity type'. Lead with affirmed family offices. A record "
@@ -151,6 +154,8 @@ def _render_one(i: int, h: dict) -> str:
     ch = best_channel(h)
     lines.append(f"   Recommended outreach: {ch['detail']}" +
                  (f" -> {ch['target']}" if ch.get("target") else ""))
+    for s in (h.get("signals") or [])[:2]:  # the 'why now' -- dated, sourced recent events
+        lines.append(f"   Recent signal ({s['date']}, {s['type']}): {s['description']}")
     return "\n".join(lines)
 
 
@@ -185,6 +190,8 @@ def _sources(hits: list[dict]) -> list[dict]:
             "is_family_office": h.get("entity_category") in ("single_family_office", "multi_family_office"),
             "selection_basis": h.get("primary_selection_basis"),
             "authority_basis": h.get("primary_authority_basis"),
+            "actionability": h.get("actionability_tier"), "confidence": h.get("confidence_score"),
+            "signals": (h.get("signals") or [])[:2],
             "matched": h["matched"], "score": h["score"],
         })
     return out

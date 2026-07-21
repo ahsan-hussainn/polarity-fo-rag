@@ -263,6 +263,16 @@ def cmd_rag_eval(args):
     print(json.dumps(rageval.run(), indent=2))
 
 
+def cmd_signal_apply(args):
+    """Correction #6: apply ratified time-sensitive signals to gold.record_signals."""
+    from pipeline import curate
+
+    kwargs = {"write": args.write}
+    if args.path:
+        kwargs["path"] = args.path
+    print(json.dumps(curate.apply_signals(**kwargs), indent=2))
+
+
 def cmd_reconcile(args):
     """WS6: assert every surface tells one story; exit non-zero if any disagree."""
     import sys
@@ -419,6 +429,10 @@ def main():
     cv.set_defaults(func=cmd_verify_contacts)
     sub.add_parser("rag-eval", help="ADR-0023: measure the deployed answer path over adversarial cases").set_defaults(
         func=cmd_rag_eval)
+    sa = sub.add_parser("signal-apply", help="Correction #6: load ratified time-sensitive signals")
+    sa.add_argument("--write", action="store_true")
+    sa.add_argument("--path", default=None)
+    sa.set_defaults(func=cmd_signal_apply)
     sub.add_parser("reconcile", help="WS6: assert every surface (CSV, DB, retrieval, docs) agrees").set_defaults(
         func=cmd_reconcile)
 

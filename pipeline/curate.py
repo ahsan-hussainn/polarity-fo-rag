@@ -237,3 +237,35 @@ def verify_contacts(write: bool = False, limit: int | None = None) -> dict:
         if write:
             c.commit()
     return out
+
+
+SIGNAL_DECISIONS = "data/curation/record_signals.json"
+
+
+def apply_signals(path: str = SIGNAL_DECISIONS, write: bool = False) -> dict:
+    """Load ratified time-sensitive signals (correction #6) into gold.record_signals. Refuses rows
+    without decided_by; each signal must carry a date and a source_url (the basis)."""
+    with open(path, encoding="utf-8") as fh:
+        rows = json.load(fh)
+    out = {"applied": 0, "skipped": 0, "firms_with_signals": 0, "written": write}
+    seen_firms = set()
+    with db.get_conn() as c, c.cursor() as cur:
+        if write:
+            cur.execute("truncate gold.record_signals")  # full re-population from the ratified file
+        for r in rows:
+            if not r.get("decided_by") or not r.get("signal_date") or not r.get("source_url"):
+                out["skipped"] += 1
+                continue
+            seen_firms.add(r["crd"])
+            if write:
+                cur.execute(
+                    "insert into gold.record_signals (crd, signal_type, description, signal_date, "
+                    "source_url, decided_by) values (%s,%s,%s,%s,%s,%s) "
+                    "on conflict (crd, description) do nothing",
+                    (r["crd"], r["signal_type"], r["description"], r["signal_date"],
+                     r["source_url"], r["decided_by"]))
+            out["applied"] += 1
+        if write:
+            c.commit()
+    out["firms_with_signals"] = len(seen_firms)
+    return out

@@ -121,6 +121,13 @@ def export(path: str = GOLD_CSV) -> dict:
                     " when 'PUB' then 0 when 'A' then 1 when 'B' then 2 else 6 end, "
                     "data_completion_score desc, family_office_name")
         fo_rows = cur.fetchall()
+        # Recent signals per firm (correction #6): most recent first, for the "why now" summary column
+        # and the full-detail record_signals.csv sidecar.
+        cur.execute("select crd, signal_type, signal_date, description, source_url "
+                    "from gold.record_signals order by crd, signal_date desc")
+        sig_by_crd: dict[str, list] = {}
+        for scrd, stype, sdate, sdesc, surl in cur.fetchall():
+            sig_by_crd.setdefault(scrd, []).append((stype, sdate, sdesc, surl))
         # Reclassified = affirmed-but-not-FO (kept for audit, firm-level, not counted as FOs).
         cur.execute(f"select {','.join(rcols)} from gold.records "
                     "where release_state = 'unresolved' and entity_category in "
@@ -130,9 +137,30 @@ def export(path: str = GOLD_CSV) -> dict:
                     "from gold.records where release_state = 'quarantined' order by family_office_name")
         quarantined = cur.fetchall()
 
-    _write(path, [h for _, h in _EXPORT_COLUMNS], fo_rows)
+    # Main product CSV: map columns + a "Recent Signals" summary (count + most-recent dated event).
+    crd_idx = cols.index("crd")
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow([h for _, h in _EXPORT_COLUMNS] + ["Recent Signals"])
+        for r in fo_rows:
+            out = ["; ".join(v) if isinstance(v, list) else v for v in r]
+            sigs = sig_by_crd.get(r[crd_idx], [])
+            if sigs:
+                stype, sdate, sdesc, _ = sigs[0]
+                summary = f"{len(sigs)} signal(s); latest {sdate} ({stype}): {sdesc[:80]}"
+            else:
+                summary = "no recent signal found"
+            w.writerow(out + [summary])
     rpath = os.path.join(os.path.dirname(path), "reclassified_firms.csv")
     _write(rpath, [h for _, h in _RECLASS_COLUMNS], reclass_rows)
+    # Full-detail signals sidecar: one row per dated, sourced signal.
+    spath = os.path.join(os.path.dirname(path), "record_signals.csv")
+    with open(spath, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["CRD", "Signal Type", "Date", "Description", "Source URL"])
+        for scrd in sorted(sig_by_crd):
+            for stype, sdate, sdesc, surl in sig_by_crd[scrd]:
+                w.writerow([scrd, stype, sdate, sdesc, surl])
     qpath = os.path.join(os.path.dirname(path), "quarantined.csv")
     with open(qpath, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
@@ -140,8 +168,8 @@ def export(path: str = GOLD_CSV) -> dict:
         for crd, name, cat, basis, reasons in quarantined:
             w.writerow([crd, name, cat, basis, "; ".join(reasons or [])])
     return {"family_offices": len(fo_rows), "reclassified": len(reclass_rows),
-            "quarantined": len(quarantined), "path": path, "reclassified_path": rpath,
-            "quarantined_path": qpath}
+            "quarantined": len(quarantined), "signals": sum(len(v) for v in sig_by_crd.values()),
+            "path": path, "reclassified_path": rpath, "quarantined_path": qpath, "signals_path": spath}
 
 # Seniority score for picking the primary/secondary contact among a firm's principals. Higher = more
 # senior / better first point of contact for a capital allocator.

@@ -51,9 +51,11 @@ Three affirmative standards, each ratified by a human release control and each a
 
 ## 4. The deliverable
 
-`data/gold/family_office_dataset.csv` — **42 rows** (24 qualifying family offices + 18 labeled
-non-FOs), sorted with qualifying FOs first, best email basis first; `quarantined.csv` holds the 8
-withheld firms with reasons. Per-cell basis: firm facts cite the SEC ADV filing; profile cells cite
+`data/gold/family_office_dataset.csv` — **24 affirmed family offices** (the product), sorted best
+email basis first. Two auditable sidecars hold the rest of the 50: `reclassified_firms.csv` (18 real
+firms whose FO label was marketing — wealth managers / RIAs, firm-level only, not counted as FOs) and
+`quarantined.csv` (8 not-a-family-office + unresolved). Every one of the 50 lands in exactly one file.
+Per-cell basis: firm facts cite the SEC ADV filing; profile cells cite
 the firm's website; each contact carries its authority basis, selection reason, and email grade +
 code + plain-English explanation. **9 of 24 FOs carry a routable primary email** (5 firm-published +
 4 vendor-checked); the other 15 route to the SEC-filed phone / LinkedIn (unconfirmed inferred

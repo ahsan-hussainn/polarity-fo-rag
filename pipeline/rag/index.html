@@ -305,11 +305,9 @@ function renderMeta(d){
   const ro = readout(d.intent);
   if (ro) { $("#readout").className = "readout show"; $("#readout").innerHTML = ro; }
   if (d.sources && d.sources.length) {
-    // Honest coverage count: family offices are the "targets"; reclassified non-FOs are counted
-    // separately, never folded into the family-office tally (Bridge Mandate: surfaces must agree).
-    const fos = d.sources.filter(s => s.is_family_office !== false).length;
-    const other = d.sources.length - fos;
-    const label = `${fos} family office${fos===1?"":"s"}` + (other ? ` · ${other} related firm${other===1?"":"s"}` : "");
+    // The product serves affirmed family offices only; every source card is one.
+    const fos = d.sources.length;
+    const label = `${fos} family office${fos===1?"":"s"}`;
     $("#sources").innerHTML =
       `<div class="covH"><span>Coverage</span><span>${label}</span></div>`
       + d.sources.map((s,i)=>card(s,i)).join("");

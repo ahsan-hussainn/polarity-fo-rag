@@ -37,7 +37,7 @@ cold-starts in ~30–60 s).
 
 | Deliverable | Where |
 |---|---|
-| Gold dataset CSV (24 qualifying FOs + 18 labeled non-FOs; 8 quarantined split out) | [`data/gold/family_office_dataset.csv`](./data/gold/family_office_dataset.csv), [`quarantined.csv`](./data/gold/quarantined.csv) |
+| Gold dataset CSV (24 affirmed family offices) + auditable sidecars | [`family_office_dataset.csv`](./data/gold/family_office_dataset.csv), [`reclassified_firms.csv`](./data/gold/reclassified_firms.csv), [`quarantined.csv`](./data/gold/quarantined.csv) |
 | Methodology summary | [`METHODOLOGY.md`](./METHODOLOGY.md) |
 | Records with a full validation chain | [`docs/validation-chains.md`](./docs/validation-chains.md) |
 | Measured principal-selection benchmark (proxy labels, FP/FN) | [`docs/findings/validation-layer.md`](./docs/findings/validation-layer.md) |

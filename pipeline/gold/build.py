@@ -82,43 +82,62 @@ _EXPORT_COLUMNS = [
 ]
 
 
+# Firm-level columns for the reclassified sidecar (no contact fields: their decision-makers were
+# not proven to the ADR-0021 standard, so we present the firm, not an unverified person).
+_RECLASS_COLUMNS = [
+    ("crd", "CRD"), ("family_office_name", "Firm Name"), ("entity_category", "Entity Category"),
+    ("category_basis", "Category Basis"), ("domain", "Domain"), ("website", "Website"),
+    ("city", "City"), ("state", "State"), ("aum_usd", "AUM (USD)"), ("firm_phone", "Firm Phone"),
+    ("investment_thesis", "Investment Thesis"), ("investing_sectors", "Investing Sectors"),
+    ("adv_filing_url", "Firm Facts Source (SEC Form ADV)"),
+]
+
+
 def export(path: str = GOLD_CSV) -> dict:
-    """Write gold.records to a CSV deliverable (FO-MAX-style columns), best rows first.
-    Quarantined records do NOT ship in the product file (ADR-0019/0020) -- they are written to a
-    separate quarantined.csv beside it, with their release reasons, as the auditable remainder."""
+    """Write the three deliverable CSVs (the product is family offices only; the rest is auditable
+    remainder): family_office_dataset.csv = the QUALIFYING affirmed family offices; reclassified_firms
+    .csv = real firms whose FO label was marketing (wealth managers / RIAs), firm-level only;
+    quarantined.csv = not-a-family-office + unresolved. Every one of the 50 lands in exactly one file."""
     cols = [c for c, _ in _EXPORT_COLUMNS]
+    rcols = [c for c, _ in _RECLASS_COLUMNS]
     os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    def _write(p, header, rows):
+        with open(p, "w", encoding="utf-8", newline="") as fh:
+            w = csv.writer(fh)
+            w.writerow(header)
+            for r in rows:
+                w.writerow(["; ".join(v) if isinstance(v, list) else v for v in r])
+
     with db.get_conn() as c, c.cursor() as cur:
-        # Actionability-first ordering (ADR-0019 trust-ranked queue): qualifying family offices lead;
-        # within them, a published individual email (PUB, proven to be the person's) outranks a
-        # vendor-deliverable inferred address (A) > catch-all (B) > unknown (C) > no email. Records a
-        # client cannot yet act on sink to the bottom rather than being dropped.
-        cur.execute(f"select {','.join(cols)} from gold.records "
-                    "where release_state != 'quarantined' "
-                    "order by case when release_state='qualifying' then 0 else 1 end, "
-                    "case coalesce(primary_email_grade,'Z') "
-                    " when 'PUB' then 0 when 'A' then 1 when 'B' then 2 when 'C' then 3 "
-                    " when 'D' then 4 when 'F' then 5 else 6 end, "
+        # Product = qualifying family offices only. Actionability-first: published email (PUB, proven)
+        # > vendor-deliverable inferred (A) > catch-all (B) > no email; contactless records sink.
+        cur.execute(f"select {','.join(cols)} from gold.records where release_state = 'qualifying' "
+                    "order by case coalesce(primary_email_grade,'Z') "
+                    " when 'PUB' then 0 when 'A' then 1 when 'B' then 2 else 6 end, "
                     "data_completion_score desc, family_office_name")
-        rows = cur.fetchall()
-        cur.execute("select crd, family_office_name, entity_category, release_reasons "
+        fo_rows = cur.fetchall()
+        # Reclassified = affirmed-but-not-FO (kept for audit, firm-level, not counted as FOs).
+        cur.execute(f"select {','.join(rcols)} from gold.records "
+                    "where release_state = 'unresolved' and entity_category in "
+                    "('wealth_manager','ria_with_fo_practice') order by entity_category, family_office_name")
+        reclass_rows = cur.fetchall()
+        cur.execute("select crd, family_office_name, entity_category, category_basis, release_reasons "
                     "from gold.records where release_state = 'quarantined' order by family_office_name")
         quarantined = cur.fetchall()
-    with open(path, "w", encoding="utf-8", newline="") as fh:
-        w = csv.writer(fh)
-        w.writerow([h for _, h in _EXPORT_COLUMNS])
-        for r in rows:
-            out = []
-            for col, v in zip(cols, r):
-                out.append("; ".join(v) if isinstance(v, list) else v)
-            w.writerow(out)
+
+    _write(path, [h for _, h in _EXPORT_COLUMNS], fo_rows)
+    rpath = os.path.join(os.path.dirname(path), "reclassified_firms.csv")
+    _write(rpath, [h for _, h in _RECLASS_COLUMNS], reclass_rows)
     qpath = os.path.join(os.path.dirname(path), "quarantined.csv")
     with open(qpath, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["CRD", "Firm Name", "Entity Category", "Release Reasons"])
-        for crd, name, cat, reasons in quarantined:
-            w.writerow([crd, name, cat, "; ".join(reasons or [])])
-    return {"rows": len(rows), "quarantined": len(quarantined), "path": path, "quarantined_path": qpath}
+        w.writerow(["CRD", "Firm Name", "Entity Category", "Category Basis", "Release Reasons"])
+        for crd, name, cat, basis, reasons in quarantined:
+            w.writerow([crd, name, cat, basis, "; ".join(reasons or [])])
+    return {"family_offices": len(fo_rows), "reclassified": len(reclass_rows),
+            "quarantined": len(quarantined), "path": path, "reclassified_path": rpath,
+            "quarantined_path": qpath}
 
 # Seniority score for picking the primary/secondary contact among a firm's principals. Higher = more
 # senior / better first point of contact for a capital allocator.

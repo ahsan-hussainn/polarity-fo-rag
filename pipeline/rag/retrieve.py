@@ -20,11 +20,11 @@ from pipeline import db
 
 RRF_K = 60   # standard RRF constant; dampens the influence of low ranks
 
-# Release gate (ADR-0019): quarantined records are not retrievable on ANY path -- lookup, aggregate,
-# or hybrid. 'unresolved' records are still served during the pre-window repair (the whole base is
-# unresolved until the ADR-0020/0021 adjudications run); the qualifying-only gate tightens when
-# those passes complete, so the transition is explicit here rather than silent.
-_RELEASE_GATE = "release_state != 'quarantined'"
+# Release gate: the RAG serves ONLY qualifying family offices (entity affirmed FO + decision-maker
+# proven). Reclassified non-FOs (wealth managers / RIAs) and quarantined firms are never retrievable
+# -- this is a family-office product, so a non-FO must not surface in an answer at all (stronger than
+# labeling it after the fact). The reclassified firms live in reclassified_firms.csv for audit.
+_RELEASE_GATE = "release_state = 'qualifying'"
 
 # Everything the answer layer needs to say "whom to contact, why them, and how to reach them" --
 # plus the entity category + person basis so every surface labels a firm the same way (ADR-0023:

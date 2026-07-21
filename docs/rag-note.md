@@ -18,9 +18,10 @@ out, founded year, AUM, thesis, description, sectors, primary contact). Records 
 self-contained, so splitting them would only sever a firm from its own facts; at ~50 documents the
 "chunking" problem is really a rendering problem: what belongs in the searchable text. Contact emails
 are deliberately *not* embedded — they come from the structured row at answer time, with their grade.
-Retrieval is release-gated: all 50 gold rows are indexed, but the 8 quarantined firms are filtered
-out on every path, so only the 42 released records (24 affirmed family offices + 18 labeled non-FOs)
-can surface.
+Retrieval is release-gated to **qualifying family offices only**: all 50 gold rows are indexed, but
+the gate serves only the 24 affirmed FOs — the 18 reclassified non-FOs (in `reclassified_firms.csv`)
+and the 8 quarantined firms never surface. This is a family-office product, so a non-FO must not
+appear in an answer at all, which is stronger than labeling it after the fact.
 
 ## Embedding model
 

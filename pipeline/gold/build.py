@@ -75,8 +75,8 @@ _EXPORT_COLUMNS = [
     # sectors/team; the email chain carries its own method (code + explanation) per address.
     ("adv_filing_url", "Firm Facts Source (SEC Form ADV)"),
     ("profile_source_url", "Profile Source (Firm Website)"),
-    ("entity_category", "Entity Category"), ("person_status", "Person Status"),
-    ("release_state", "Release State"),
+    ("entity_category", "Entity Category"), ("category_basis", "Category Basis"),
+    ("person_status", "Person Status"), ("release_state", "Release State"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
     ("people_count", "People Count"),
 ]
@@ -138,22 +138,21 @@ def principal_rank(title: str | None) -> int:
     return 10
 
 
-# Key cells the completion score rewards (firm facts + a gradeable primary contact).
+# Key cells the completion score rewards (firm facts + a named, reachable primary contact). Note:
+# email GRADE is intentionally NOT a scored field -- it is metadata about the email, so scoring both
+# email and grade would double-count one underlying fact (a record with no email would lose two
+# points for one gap). This measures FIELD COMPLETENESS, not trust; the proof signals (entity
+# category, person status, authority basis, email grade) are their own columns on the record.
 _SCORE_FIELDS = (
     "family_office_name", "domain", "website", "description", "investment_thesis",
     "investing_sectors", "founded_year", "city",
     "primary_contact_name", "primary_contact_title", "primary_contact_email",
-    "primary_email_grade",
 )
 
 
 def _completion(row: dict) -> int:
-    # A vendor-rejected contact slot is not "complete" data (WS0 audit: D-grades were inflating
-    # this score). The grade cell only counts when it describes a usable-or-unconfirmed address.
     got = sum(1 for f in _SCORE_FIELDS if row.get(f) not in (None, "", [], "{}"))
-    if row.get("primary_email_grade") in ("D", "F"):
-        got -= 1  # the grade field is populated, but it certifies an unusable slot
-    return round(100 * max(got, 0) / len(_SCORE_FIELDS))
+    return round(100 * got / len(_SCORE_FIELDS))
 
 
 def _adv_facts(cur, crd: str) -> dict:
@@ -369,6 +368,8 @@ def build(write: bool = False) -> dict:
             # in WS3, the person evidence pass (ADR-0021) decide what release permits.
             (row["release_state"], row["release_reasons"],
              row["entity_category"], row["entity_status"]) = _release(adjudications.get(crd))
+            adj = adjudications.get(crd)
+            row["category_basis"] = adj["rationale"] if adj else None
             # ADR-0021/0022: overlay the proven decision-maker; an affirmed FO with a ratified person
             # pass earns 'qualifying' (counts toward the 500). Reclassified non-FOs keep their old
             # contacts and stay unresolved -- they are not family offices and are not counted.

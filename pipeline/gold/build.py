@@ -271,7 +271,11 @@ def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool, rejected: 
         if pub and pub.lower() not in rejected:
             email, grade, code = pub, "PUB", "PUBLISHED_FIRM_SITE"
             expl = "individual address published on the firm's own website (source: the firm itself)"
-        elif c.get("inferred_grade") in ("A", "B", "C") and inf and inf.lower() not in rejected:
+        elif c.get("inferred_grade") in ("A", "B") and inf and inf.lower() not in rejected:
+            # only a vendor-DELIVERABLE (A) or catch-all-plausible (B) inferred address ships. A bare
+            # 'unknown' (C) inference is a uniform first.last guess the vendor could not confirm; per
+            # the WS6 human review it is withheld rather than shipped as look-alike signal -- the firm
+            # routes to its SEC-filed phone / LinkedIn instead (the conservative, more honest choice).
             grade, code = c["inferred_grade"], c["inferred_code"]
             email = inf
             caveat = (" Inferred pattern for the proven contact; vendor-deliverable but NOT proven to "
@@ -279,6 +283,9 @@ def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool, rejected: 
             expl = (c.get("inferred_explanation") or "") + caveat
         elif inf and inf.lower() in rejected:
             expl = "no individual address published; the inferred pattern was previously vendor-rejected (withheld)"
+        elif c.get("inferred_grade") == "C":
+            expl = ("no individual address published; the inferred pattern was unconfirmed by the vendor "
+                    "and is withheld (WS6) -- reach via the firm's SEC-filed phone / LinkedIn")
         elif c.get("inferred_grade") in ("D", "F") and c.get("inferred_email"):
             # vendor-rejected inferred address for the proven person: audit it, ship nothing (ADR-0019)
             if write:

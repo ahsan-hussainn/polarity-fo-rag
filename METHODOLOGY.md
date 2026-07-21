@@ -43,10 +43,11 @@ Three affirmative standards, each ratified by a human release control and each a
 - **Email (ADR-0005/0010/0019).** An address is the firm-published individual address where one
   exists (5 of 24 FOs, grade **PUB** — proven to be the person's), otherwise an inferred pattern
   vendor-verified two-axis: **A** vendor-reported deliverable (inferred; *not* proven to be this
-  person's mailbox) / **B** catch-all, plausible / **C** unknown. Vendor-**rejected** addresses (D
-  invalid / F no mail server) are removed from operational fields into `gold.contact_audit` (28
-  addresses) and never shipped. FO primary email basis: 5 PUB, 3 A, 1 B, 14 C, 1 none (JFG,
-  vendor-rejected → routes to phone).
+  person's mailbox) / **B** catch-all, plausible. Vendor-**rejected** addresses (D invalid / F no mail
+  server) are removed from operational fields into `gold.contact_audit` (28 addresses) and never
+  shipped; **unknown (C)** inferred addresses — uniform `first.last@` guesses the vendor could not
+  confirm — are **withheld** (WS6 human-review decision) rather than shipped as look-alike signal.
+  FO primary email basis: **5 PUB, 3 A, 1 B, 15 none** (route to the SEC-filed phone / LinkedIn).
 
 ## 4. The deliverable
 
@@ -54,8 +55,9 @@ Three affirmative standards, each ratified by a human release control and each a
 non-FOs), sorted with qualifying FOs first, best email basis first; `quarantined.csv` holds the 8
 withheld firms with reasons. Per-cell basis: firm facts cite the SEC ADV filing; profile cells cite
 the firm's website; each contact carries its authority basis, selection reason, and email grade +
-code + plain-English explanation. **9 of 24 FOs carry a routable primary email** (PUB/A/B); 23 of 24
-show a graded address.
+code + plain-English explanation. **9 of 24 FOs carry a routable primary email** (5 firm-published +
+4 vendor-checked); the other 15 route to the SEC-filed phone / LinkedIn (unconfirmed inferred
+addresses are withheld, not shipped as guesses).
 
 ## Honest limitations (what a buyer should know)
 

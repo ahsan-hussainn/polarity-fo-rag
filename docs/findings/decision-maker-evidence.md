@@ -38,14 +38,16 @@ Proving *who* is far easier than proving *their email*. Across the 24 primaries:
 | **PUB** — published by the firm | 5 | The firm publishes the individual's address; proven to be theirs. |
 | **A** — vendor-deliverable inferred | 3 | Vendor reports the inferred pattern deliverable — but **not proven to be this person's mailbox**. |
 | **B** — catch-all inferred | 1 | Plausible pattern on a catch-all domain; unconfirmable. |
-| **C** — unknown inferred | 14 | Vendor could not confirm (mostly M365/greylisted); inferred, not verified. |
-| none | 1 | JFG — the vendor **rejected** the inferred pattern for both contacts (quarantined); routes to phone. |
+| none (C withheld / rejected) | 15 | Unknown-inferred (C) `first.last@` guesses the vendor could not confirm were **withheld** at the WS6 review; plus JFG's vendor-**rejected** patterns. All route to the SEC-filed phone / LinkedIn. |
 
-So **9 of 24 have a routable email** (PUB/A/B) and 23 show an address with an honest grade; only the
-firm-published 5 are proven to belong to the person. This is the axis the Bridge Mandate singled out
-("an A-grade did not prove the mailbox belonged to the named person"), and the labels now say exactly
-that — an inferred A reads "vendor-reported deliverable … NOT proven to be this person's mailbox,"
-never "verified."
+So **9 of 24 have a routable email** (5 firm-published + 4 vendor-checked); the other 15 route to
+phone/LinkedIn. Only the firm-published 5 are proven to belong to the person. This is the axis the
+Bridge Mandate singled out ("an A-grade did not prove the mailbox belonged to the named person"), and
+the labels now say exactly that — an inferred A reads "vendor-reported deliverable … NOT proven to be
+this person's mailbox," never "verified." **WS6 decision:** rather than ship 12 unconfirmed (C)
+`first.last@` guesses labeled "unconfirmed," they were withheld — a column of look-alike inferred
+addresses reads as more confident than the label admits; withholding is the honest, conservative call
+(reachability down, trust up).
 
 ## What controls the product now
 

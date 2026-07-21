@@ -50,8 +50,11 @@ Of the 50 SEC-discovered firms (a further 9 were hard-excluded pre-gold under AD
   `quarantined.csv`, unretrievable on every path.
 - **28 vendor-rejected email addresses** removed from operational fields into `gold.contact_audit`.
 - **Contact reachability of the 24 FOs:** 5 firm-published emails (PUB, proven to be the person's),
-  3 vendor-deliverable inferred (A, not proven to be theirs), 1 catch-all (B), 12 unconfirmed (C),
-  3 with no shippable email (routes to the SEC-filed phone).
+  3 vendor-deliverable inferred (A, not proven to be theirs), 1 catch-all (B); the other 15 route to
+  the SEC-filed phone / LinkedIn. Unknown (C) inferred addresses — uniform `first.last@` guesses the
+  vendor could not confirm — were **withheld** at the WS6 human review rather than shipped as
+  look-alike signal (a tightening of the pre-registered C-grade policy, in the conservative direction:
+  lower reachability, higher trust).
 
 ## 4. How the work was ordered (consequence first)
 

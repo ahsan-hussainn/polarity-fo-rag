@@ -244,7 +244,7 @@ def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
 _FO_CATEGORIES = {"single_family_office", "multi_family_office"}
 
 
-def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool) -> None:
+def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool, rejected: set) -> None:
     """Overlay the ratified decision-maker (ADR-0021/0022) onto the product row, replacing the
     title-ladder pick, and resolve the honest email for that person:
       PUB -- individual address the firm itself publishes (proven to be theirs);
@@ -264,15 +264,21 @@ def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool) -> None:
         row[f"{role}_contact_name"] = c.get("name")
         row[f"{role}_contact_title"] = c.get("title")
         email = grade = code = expl = None
-        if c.get("published_email"):
-            email, grade, code = c["published_email"], "PUB", "PUBLISHED_FIRM_SITE"
+        pub, inf = c.get("published_email"), c.get("inferred_email")
+        # Once the verifier rejected an address it stays rejected: an address anywhere in the
+        # vendor-rejected audit trail is never shipped, even if a later (temporally noisy) probe
+        # softened its grade (ADR-0019). This suppression is what the WS6 reconciliation enforces.
+        if pub and pub.lower() not in rejected:
+            email, grade, code = pub, "PUB", "PUBLISHED_FIRM_SITE"
             expl = "individual address published on the firm's own website (source: the firm itself)"
-        elif c.get("inferred_grade") in ("A", "B", "C"):
+        elif c.get("inferred_grade") in ("A", "B", "C") and inf and inf.lower() not in rejected:
             grade, code = c["inferred_grade"], c["inferred_code"]
-            email = c.get("inferred_email")
+            email = inf
             caveat = (" Inferred pattern for the proven contact; vendor-deliverable but NOT proven to "
                       "be this person's mailbox." if grade == "A" else "")
             expl = (c.get("inferred_explanation") or "") + caveat
+        elif inf and inf.lower() in rejected:
+            expl = "no individual address published; the inferred pattern was previously vendor-rejected (withheld)"
         elif c.get("inferred_grade") in ("D", "F") and c.get("inferred_email"):
             # vendor-rejected inferred address for the proven person: audit it, ship nothing (ADR-0019)
             if write:
@@ -309,6 +315,9 @@ def build(write: bool = False) -> dict:
                                "inferred_email": r[7], "inferred_grade": r[8],
                                "inferred_code": r[9], "inferred_explanation": r[10]}
                 for r in cur.fetchall()}
+        # Addresses the verifier has EVER rejected (from prior builds' audit) -- never re-shipped.
+        cur.execute("select lower(email) from gold.contact_audit")
+        rejected_addrs = {r[0] for r in cur.fetchall()}
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
                     "extracted_by, corporate_linkedin, source_urls, "
                     "(select count(*) from silver.people p where p.firm_crd=f.crd) "
@@ -357,7 +366,7 @@ def build(write: bool = False) -> dict:
             # pass earns 'qualifying' (counts toward the 500). Reclassified non-FOs keep their old
             # contacts and stay unresolved -- they are not family offices and are not counted.
             if (crd, "primary") in cadj:
-                _apply_contact(cur, crd, row, cadj, write)
+                _apply_contact(cur, crd, row, cadj, write, rejected_addrs)
                 if row["entity_status"] == "affirmed" and row["entity_category"] in _FO_CATEGORIES:
                     row["release_state"] = "qualifying"
                     row["release_reasons"] = [f"entity affirmed {row['entity_category']} (ADR-0020); "

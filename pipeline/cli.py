@@ -263,6 +263,18 @@ def cmd_rag_eval(args):
     print(json.dumps(rageval.run(), indent=2))
 
 
+def cmd_reconcile(args):
+    """WS6: assert every surface tells one story; exit non-zero if any disagree."""
+    import sys
+
+    from pipeline import reconcile
+
+    out = reconcile.run()
+    print(json.dumps(out, indent=2))
+    if not out["all_agree"]:
+        sys.exit(1)
+
+
 def cmd_build_gold(args):
     """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
     from pipeline.gold import build as gb
@@ -407,6 +419,8 @@ def main():
     cv.set_defaults(func=cmd_verify_contacts)
     sub.add_parser("rag-eval", help="ADR-0023: measure the deployed answer path over adversarial cases").set_defaults(
         func=cmd_rag_eval)
+    sub.add_parser("reconcile", help="WS6: assert every surface (CSV, DB, retrieval, docs) agrees").set_defaults(
+        func=cmd_reconcile)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

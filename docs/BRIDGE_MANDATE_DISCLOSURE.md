@@ -25,8 +25,11 @@ the five days), disclosed here as not-yet-done:
 
 - **#4 Broaden the source base.** New discovery beyond SEC ADV is explicitly window work. The entity-
   adjudication machinery (`pipeline/curate.py`) is source-agnostic and ready to vet new candidates.
-- **#6 Time-sensitive signals.** Recent investments/hires/news that age and go stale require the
-  operating agent that keeps data current over time — the Stage 2 build. Not present in this artifact.
+- **#6 Time-sensitive signals — signal FIELDS + initial population built pre-window; operating loop is
+  window work.** The 24 FOs now carry dated, sourced recent signals (27 across 17 firms, 7 honest
+  blanks) in `gold.record_signals` / `record_signals.csv`, plus per-record freshness (ADV filing
+  as-of + staleness flag). What is NOT built here is the mandate's *"the system notices these changes
+  and adjusts"* — that operating loop is the Stage 2 agent.
 
 ## 2. Thresholds set BEFORE measurement (governance, not hindsight)
 
@@ -73,9 +76,15 @@ is the contact safe?) were resolved before presentation polish.
   judge is the next layer).
 - **One eval case fails, reported:** an out-of-scope query sharing a token with a firm ("weather in
   Zurich" → Marcuard) is answered about that firm — grounded but off-intent (`rag-eval` 7/8).
-- **Time-sensitive signals (#6) and broadened sources (#4) are not present** — window work per §1.
-- **Product-shape question for Stage 2:** whether the 18 labeled non-FOs belong in a family-office
-  product or a separate segment is a decision for the Stage 2 brief.
+- **The signal-refresh loop (#6's "over time" half) and broadened sources (#4) are not present** —
+  window work per §1. The signal fields carry an initial dated population, not live maintenance.
+- **Product shape resolved:** the product is the 24 affirmed family offices; the 18 reclassified firms
+  live in `reclassified_firms.csv` (firm-level, category + basis, not counted), the 8 in
+  `quarantined.csv`. Every one of the 50 is in exactly one file.
+- **Decision-grade KPIs are heuristic composites** (documented weights in `build.py`): actionability
+  (reach), confidence (proof depth), and a data-completeness score. They summarise the underlying
+  proof columns; a buyer can still read every axis (entity category, person status, email grade)
+  directly.
 
 ## 6. Evidence pointers
 

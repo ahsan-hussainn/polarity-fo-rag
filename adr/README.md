@@ -42,8 +42,10 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0016](./0016-rag-intent-routing-and-actionable-answers.md) | RAG: intent routing, typed filters, actionability-shaped answers | Accepted |
 | [0017](./0017-rag-latency-streaming-and-connection-reuse.md) | RAG latency: streaming answers, connection reuse, parallel calls | Accepted |
 | [0018](./0018-ui-coverage-desk-presentation.md) | Presentation: "Coverage Desk" UI designed around grade + routing | Accepted |
-| [0019](./0019-release-and-quarantine-policy.md) | Release and quarantine policy for vendor-rejected contact data | Accepted |
-| [0020](./0020-affirmative-entity-standard.md) | Affirmative entity standard and identity resolution | Accepted |
+| [0019](./0019-release-and-quarantine-policy.md) | Release and quarantine policy for vendor-rejected contact data | Accepted (amended by 0024) |
+| [0020](./0020-affirmative-entity-standard.md) | Affirmative entity standard and identity resolution | Accepted (amended by 0024) |
 | [0021](./0021-decision-maker-evidence-standard.md) | Decision-maker evidence standard | Accepted |
 | [0022](./0022-contact-selection-allocation-authority.md) | Contact selection: allocation authority first, conditioned on entity category | Accepted |
 | [0023](./0023-answer-verification-floor.md) | Independent answer-verification floor + surface consistency | Accepted |
+| [0024](./0024-product-shape-and-final-review.md) | Product shape (family offices only) + final-review release decisions | Accepted |
+| [0025](./0025-decision-grade-record-enrichment.md) | Decision-grade record enrichment: reachability, confidence, freshness, signals | Accepted |

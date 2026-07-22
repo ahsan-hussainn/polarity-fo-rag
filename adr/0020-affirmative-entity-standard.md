@@ -1,7 +1,14 @@
 # ADR-0020: Affirmative entity standard and identity resolution
 
 - **Date:** 2026-07-19
-- **Status:** Accepted
+- **Status:** Accepted (amended by ADR-0024)
+
+> **Amendment (2026-07-22, ADR-0024).** This ADR kept reclassified non-FOs *in the product file,
+> labeled*. WS6 revised that: the product is family offices only; the 18 reclassified firms move to
+> `reclassified_firms.csv` (firm-level, category + basis, not retrievable), and the RAG serves only
+> `release_state='qualifying'`. The affirmative-standard + evidence rules below are unchanged; only
+> where the reclassified firms *live* changed. The category rationale is now surfaced on the artifact
+> (the "Category Basis" column), per this ADR's "make the qualification decision visible" requirement.
 
 ## Context
 

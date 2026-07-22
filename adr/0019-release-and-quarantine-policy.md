@@ -1,7 +1,13 @@
 # ADR-0019: Release and quarantine policy for vendor-rejected contact data
 
 - **Date:** 2026-07-19
-- **Status:** Accepted
+- **Status:** Accepted (amended by ADR-0024)
+
+> **Amendment (2026-07-22, ADR-0024).** The C-grade policy here ("kept, labeled") was tightened at the
+> WS6 human review: unknown (C) *inferred* contact emails — uniform `first.last@` guesses the vendor
+> could not confirm — are now **withheld**, not shipped. Only PUB (firm-published) and A/B
+> (vendor-deliverable / catch-all) addresses ship; C/D/F route to phone / LinkedIn. Also: an address
+> ever present in the vendor-rejected audit stays suppressed even if a later probe softens its grade.
 
 ## Context
 

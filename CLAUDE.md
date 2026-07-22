@@ -99,3 +99,5 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0021](./adr/0021-decision-maker-evidence-standard.md) | Decision-maker evidence standard | Accepted |
 | [0022](./adr/0022-contact-selection-allocation-authority.md) | Contact selection: allocation authority first, conditioned on entity category | Accepted |
 | [0023](./adr/0023-answer-verification-floor.md) | Independent answer-verification floor + surface consistency | Accepted |
+| [0024](./adr/0024-product-shape-and-final-review.md) | Product shape (family offices only) + final-review release decisions | Accepted |
+| [0025](./adr/0025-decision-grade-record-enrichment.md) | Decision-grade record enrichment: reachability, confidence, freshness, signals | Accepted |

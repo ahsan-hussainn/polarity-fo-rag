@@ -78,7 +78,7 @@ _EXPORT_COLUMNS = [
     ("entity_category", "Entity Category"), ("category_basis", "Category Basis"),
     ("person_status", "Person Status"), ("release_state", "Release State"),
     # decision-grade KPIs (ADR-0013 migration)
-    ("actionability_tier", "Actionability"), ("actionability_score", "Actionability Score"),
+    ("reachability_tier", "Reachability"), ("reachability_score", "Reachability Score"),
     ("confidence_score", "Confidence Score"),
     ("data_asof", "Firm Data As-Of (ADV filing)"), ("is_stale", "Stale?"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
@@ -206,29 +206,31 @@ def _completion(row: dict) -> int:
     return round(100 * got / len(_SCORE_FIELDS))
 
 
-# Reach quality by email/channel basis -- the axis that varies once a decision-maker is proven.
-_REACH = {"PUB": 55, "A": 40, "B": 30}   # firm-published > vendor-deliverable > catch-all
-
-
-def _actionability(row: dict) -> tuple[str | None, int | None]:
-    """Can a fund manager act on this FO today? Only qualifying FOs are scored (others = N/A).
-    base = a proven decision-maker (stated authority worth more than title-inferred);
-    reach = the contact channel (published/vendor-deliverable email > catch-all > phone > LinkedIn)."""
+def _reachability(row: dict) -> tuple[str | None, int | None]:
+    """How directly can you reach the proven decision-maker? Only qualifying FOs are scored.
+    The EMAIL is the only direct-to-the-person channel; phone/LinkedIn are firm-level cold routes.
+      High   -- a usable email to the person: firm-published (PUB) or vendor-deliverable (A).
+      Medium -- a plausible email to try (B), OR both the SEC phone and LinkedIn (two cold routes).
+      Low    -- a single cold route only (phone-only / LinkedIn-only), or nothing."""
     if row.get("release_state") != "qualifying" or row.get("person_status") != "proven":
         return None, None
-    base = 40 if row.get("primary_authority_basis") == "stated" else 30
-    reach = _REACH.get(row.get("primary_email_grade"))
-    if reach is None:  # no shippable email -> fall to the next channel
-        reach = 15 if row.get("firm_phone") else (8 if row.get("corporate_linkedin") else 0)
-    score = base + reach
-    tier = "High" if score >= 75 else "Medium" if score >= 55 else "Low"
-    return tier, score
+    g = row.get("primary_email_grade")
+    if g in ("PUB", "A"):
+        return "High", (100 if g == "PUB" else 85)
+    if g == "B":
+        return "Medium", 60
+    phone, li = bool(row.get("firm_phone")), bool(row.get("corporate_linkedin"))
+    if phone and li:
+        return "Medium", 45
+    if phone or li:
+        return "Low", 25
+    return "Low", 0
 
 
 def _confidence(row: dict) -> int | None:
     """How well-PROVEN the record is (distinct from reach): affirmed entity (>=2 evidence classes) +
     person proof (Schedule A-anchored, stated > title-inferred) + email proof (published proves the
-    address is theirs; inferred does not). A record can be high-confidence but low-actionability
+    address is theirs; inferred does not). A record can be high-confidence but low-reachability
     (e.g. a proven sole owner with no published email)."""
     if row.get("release_state") != "qualifying":
         return None
@@ -466,10 +468,10 @@ def build(write: bool = False) -> dict:
                     row["release_reasons"] = [f"entity affirmed {row['entity_category']} (ADR-0020); "
                                               f"decision-maker proven (ADR-0021)"]
             row["data_completion_score"] = _completion(row)
-            # Record-level KPIs (ADR-0013 migration): actionability (act today?), confidence (how
+            # Record-level KPIs (ADR-0013 migration): reachability (reach the DM?), confidence (how
             # well-proven?), and freshness (SEC ADV filing date + a staleness flag when > 15 months,
             # past the annual-filing window). Computed for qualifying FOs; N/A elsewhere.
-            row["actionability_tier"], row["actionability_score"] = _actionability(row)
+            row["reachability_tier"], row["reachability_score"] = _reachability(row)
             row["confidence_score"] = _confidence(row)
             filed = adv.get("latest_filing_date")
             row["data_asof"] = filed

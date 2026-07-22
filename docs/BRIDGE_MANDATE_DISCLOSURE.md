@@ -81,10 +81,12 @@ is the contact safe?) were resolved before presentation polish.
 - **Product shape resolved:** the product is the 24 affirmed family offices; the 18 reclassified firms
   live in `reclassified_firms.csv` (firm-level, category + basis, not counted), the 8 in
   `quarantined.csv`. Every one of the 50 is in exactly one file.
-- **Decision-grade KPIs are heuristic composites** (documented weights in `build.py`): actionability
-  (reach), confidence (proof depth), and a data-completeness score. They summarise the underlying
-  proof columns; a buyer can still read every axis (entity category, person status, email grade)
-  directly.
+- **Decision-grade KPIs are heuristic composites** (documented weights in `build.py`): reachability
+  (how directly you can reach the proven decision-maker — High = usable email, Medium = plausible
+  email or phone+LinkedIn, Low = a single cold route; 8/13/3), confidence (proof depth), and a
+  data-completeness score. They summarise the underlying proof columns; a buyer can still read every
+  axis (entity category, person status, email grade) directly. "Actionability" as a holistic idea is
+  reachability + confidence + a recent signal, read across those columns rather than fudged into one.
 
 ## 6. Evidence pointers
 

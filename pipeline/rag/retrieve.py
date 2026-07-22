@@ -36,7 +36,7 @@ RECORD_COLUMNS = (
     "primary_email_explanation, secondary_contact_name, secondary_contact_title, "
     "secondary_contact_email, secondary_email_grade, secondary_email_explanation, adv_filing_url, "
     "entity_category, person_status, primary_authority_basis, primary_selection_basis, "
-    "actionability_tier, confidence_score, data_asof"
+    "reachability_tier, confidence_score, data_asof"
 )
 
 

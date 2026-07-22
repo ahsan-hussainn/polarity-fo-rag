@@ -190,7 +190,7 @@ def _sources(hits: list[dict]) -> list[dict]:
             "is_family_office": h.get("entity_category") in ("single_family_office", "multi_family_office"),
             "selection_basis": h.get("primary_selection_basis"),
             "authority_basis": h.get("primary_authority_basis"),
-            "actionability": h.get("actionability_tier"), "confidence": h.get("confidence_score"),
+            "reachability": h.get("reachability_tier"), "confidence": h.get("confidence_score"),
             "signals": (h.get("signals") or [])[:2],
             "matched": h["matched"], "score": h["score"],
         })

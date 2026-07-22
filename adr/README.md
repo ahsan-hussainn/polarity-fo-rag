@@ -32,3 +32,20 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0006](./0006-medallion-pipeline-in-postgres.md) | Medallion pipeline (bronze/silver/gold) lightweight in Postgres | Accepted |
 | [0007](./0007-pipeline-architecture-staged-medallion-dag.md) | Pipeline architecture: staged medallion DAG, over-discover then filter | Accepted |
 | [0008](./0008-extraction-llm-openai-behind-pluggable-seam.md) | OpenAI (gpt-4o-mini) as the extraction LLM, behind a provider-agnostic seam | Accepted |
+| [0009](./0009-silver-schema-firm-and-people-split.md) | Silver schema: firm + person split, believed vs verified cells | Accepted |
+| [0010](./0010-email-verification-api-millionverifier.md) | Email verification via API (MillionVerifier) behind the verifier seam | Accepted |
+| [0011](./0011-gold-record-shape-and-primary-contact.md) | Gold record shape: FO-MAX-mirroring, primary contact by seniority | Accepted |
+| [0012](./0012-fo-max-parity-enrichment.md) | FO-MAX parity enrichment: held-data fields + search-assisted LinkedIn | Accepted |
+| [0013](./0013-rag-embeddings-and-hybrid-retrieval.md) | RAG index: OpenAI embeddings + hybrid (pgvector + tsvector) retrieval | Accepted |
+| [0014](./0014-rag-serving-fastapi-and-render.md) | RAG serving: one FastAPI app (page + API), deployed on Render | Accepted |
+| [0015](./0015-gold-curation-gate.md) | Gold curation gate: entity validity is validated, not assumed | Accepted |
+| [0016](./0016-rag-intent-routing-and-actionable-answers.md) | RAG: intent routing, typed filters, actionability-shaped answers | Accepted |
+| [0017](./0017-rag-latency-streaming-and-connection-reuse.md) | RAG latency: streaming answers, connection reuse, parallel calls | Accepted |
+| [0018](./0018-ui-coverage-desk-presentation.md) | Presentation: "Coverage Desk" UI designed around grade + routing | Accepted |
+| [0019](./0019-release-and-quarantine-policy.md) | Release and quarantine policy for vendor-rejected contact data | Accepted (amended by 0024) |
+| [0020](./0020-affirmative-entity-standard.md) | Affirmative entity standard and identity resolution | Accepted (amended by 0024) |
+| [0021](./0021-decision-maker-evidence-standard.md) | Decision-maker evidence standard | Accepted |
+| [0022](./0022-contact-selection-allocation-authority.md) | Contact selection: allocation authority first, conditioned on entity category | Accepted |
+| [0023](./0023-answer-verification-floor.md) | Independent answer-verification floor + surface consistency | Accepted |
+| [0024](./0024-product-shape-and-final-review.md) | Product shape (family offices only) + final-review release decisions | Accepted |
+| [0025](./0025-decision-grade-record-enrichment.md) | Decision-grade record enrichment: reachability, confidence, freshness, signals | Accepted |

@@ -20,13 +20,23 @@ from pipeline import db
 
 RRF_K = 60   # standard RRF constant; dampens the influence of low ranks
 
-# Everything the answer layer needs to say "whom to contact, why them, and how to reach them".
+# Release gate: the RAG serves ONLY qualifying family offices (entity affirmed FO + decision-maker
+# proven). Reclassified non-FOs (wealth managers / RIAs) and quarantined firms are never retrievable
+# -- this is a family-office product, so a non-FO must not surface in an answer at all (stronger than
+# labeling it after the fact). The reclassified firms live in reclassified_firms.csv for audit.
+_RELEASE_GATE = "release_state = 'qualifying'"
+
+# Everything the answer layer needs to say "whom to contact, why them, and how to reach them" --
+# plus the entity category + person basis so every surface labels a firm the same way (ADR-0023:
+# a reclassified non-FO must never be presented as a family office).
 RECORD_COLUMNS = (
     "crd, family_office_name, city, state, country, founded_year, aum_usd, firm_phone, "
     "investing_sectors, investment_thesis, description, website, corporate_linkedin, "
     "primary_contact_name, primary_contact_title, primary_contact_email, primary_email_grade, "
     "primary_email_explanation, secondary_contact_name, secondary_contact_title, "
-    "secondary_contact_email, secondary_email_grade, secondary_email_explanation, adv_filing_url"
+    "secondary_contact_email, secondary_email_grade, secondary_email_explanation, adv_filing_url, "
+    "entity_category, person_status, primary_authority_basis, primary_selection_basis, "
+    "reachability_tier, confidence_score, data_asof"
 )
 
 
@@ -47,7 +57,7 @@ def _filter_sql(state: str | None, min_aum: int | None, max_aum: int | None) -> 
 
 def _vector_ranked(cur, qvec_literal: str, n: int, fsql: str, fparams: list) -> list[str]:
     cur.execute("select d.crd from gold.rag_docs d join gold.records r using (crd) "
-                f"where d.embedding is not null{fsql} "
+                f"where d.embedding is not null and r.{_RELEASE_GATE}{fsql} "
                 "order by d.embedding <=> %s::vector limit %s",
                 (*fparams, qvec_literal, n))
     return [r[0] for r in cur.fetchall()]
@@ -55,19 +65,34 @@ def _vector_ranked(cur, qvec_literal: str, n: int, fsql: str, fparams: list) -> 
 
 def _lexical_ranked(cur, query: str, n: int, fsql: str, fparams: list) -> list[str]:
     cur.execute("select d.crd from gold.rag_docs d join gold.records r using (crd) "
-                f"where d.tsv @@ plainto_tsquery('english', %s){fsql} "
+                f"where d.tsv @@ plainto_tsquery('english', %s) and r.{_RELEASE_GATE}{fsql} "
                 "order by ts_rank(d.tsv, plainto_tsquery('english', %s)) desc limit %s",
                 (query, *fparams, query, n))
     return [r[0] for r in cur.fetchall()]
 
 
+def _attach_signals(cur, records: list[dict]) -> list[dict]:
+    """Attach each record's recent signals (the 'why now', most recent first) in place."""
+    crds = [r["crd"] for r in records if r.get("crd")]
+    if not crds:
+        return records
+    by = {r["crd"]: r for r in records}
+    cur.execute("select crd, signal_type, signal_date, description from gold.record_signals "
+                "where crd = any(%s) order by crd, signal_date desc", (crds,))
+    for crd, stype, sdate, sdesc in cur.fetchall():
+        by[crd].setdefault("signals", []).append({"type": stype, "date": sdate, "description": sdesc})
+    return records
+
+
 def records_by_crd(cur, crds: list[str]) -> dict[str, dict]:
-    """Full gold records keyed by crd."""
+    """Full gold records keyed by crd, each with its recent signals."""
     if not crds:
         return {}
     cur.execute(f"select {RECORD_COLUMNS} from gold.records where crd = any(%s)", (crds,))
     cols = [d[0] for d in cur.description]
-    return {r[0]: dict(zip(cols, r)) for r in cur.fetchall()}
+    recs = {r[0]: dict(zip(cols, r)) for r in cur.fetchall()}
+    _attach_signals(cur, list(recs.values()))
+    return recs
 
 
 def by_name(name: str, limit: int = 3) -> list[dict]:
@@ -75,10 +100,11 @@ def by_name(name: str, limit: int = 3) -> list[dict]:
     like = f"%{name.strip()}%"
     with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(f"select {RECORD_COLUMNS} from gold.records "
-                    "where family_office_name ilike %s or domain ilike %s "
+                    f"where (family_office_name ilike %s or domain ilike %s) and {_RELEASE_GATE} "
                     "order by data_completion_score desc limit %s", (like, like, limit))
         cols = [d[0] for d in cur.description]
-        return [{**dict(zip(cols, r)), "score": 1.0, "matched": ["name"]} for r in cur.fetchall()]
+        recs = [{**dict(zip(cols, r)), "score": 1.0, "matched": ["name"]} for r in cur.fetchall()]
+        return _attach_signals(cur, recs)
 
 
 def by_filters(state: str | None = None, min_aum: int | None = None, max_aum: int | None = None,
@@ -93,9 +119,9 @@ def by_filters(state: str | None = None, min_aum: int | None = None, max_aum: in
         like = f"%{sector_term}%"
         params += [like, like, like]
     with db.get_pool().connection() as c, c.cursor() as cur:
-        cur.execute(f"select count(*) from gold.records r where true{fsql}", params)
+        cur.execute(f"select count(*) from gold.records r where r.{_RELEASE_GATE}{fsql}", params)
         total = cur.fetchone()[0]
-        cur.execute(f"select {RECORD_COLUMNS} from gold.records r where true{fsql} "
+        cur.execute(f"select {RECORD_COLUMNS} from gold.records r where r.{_RELEASE_GATE}{fsql} "
                     "order by r.aum_usd desc nulls last, r.data_completion_score desc limit %s",
                     (*params, limit))
         cols = [d[0] for d in cur.description]

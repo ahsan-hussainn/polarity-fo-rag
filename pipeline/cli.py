@@ -222,6 +222,69 @@ def cmd_load_linkedin(args):
     print(json.dumps(enrich.load_corporate_linkedin(), indent=2))
 
 
+def cmd_entity_evidence(args):
+    """ADR-0020: assemble entity evidence sheet with draft category proposals (never decisions)."""
+    from pipeline import curate
+
+    print(json.dumps(curate.evidence_sheet(), indent=2))
+
+
+def cmd_entity_apply(args):
+    """ADR-0020: apply human-ratified entity adjudications to gold.entity_adjudications."""
+    from pipeline import curate
+
+    kwargs = {"write": args.write}
+    if args.path:
+        kwargs["path"] = args.path
+    print(json.dumps(curate.apply(**kwargs), indent=2))
+
+
+def cmd_contact_apply(args):
+    """ADR-0021/0022: apply human-ratified contact adjudications to gold.contact_adjudications."""
+    from pipeline import curate
+
+    kwargs = {"write": args.write}
+    if args.path:
+        kwargs["path"] = args.path
+    print(json.dumps(curate.apply_contacts(**kwargs), indent=2))
+
+
+def cmd_verify_contacts(args):
+    """WS3b: infer + vendor-verify emails for the proven decision-makers lacking a published address."""
+    from pipeline import curate
+
+    print(json.dumps(curate.verify_contacts(write=args.write, limit=args.limit), indent=2))
+
+
+def cmd_rag_eval(args):
+    """ADR-0023: run the deployed answer path over the adversarial suite and report the numbers."""
+    from pipeline.rag import eval as rageval
+
+    print(json.dumps(rageval.run(), indent=2))
+
+
+def cmd_signal_apply(args):
+    """Correction #6: apply ratified time-sensitive signals to gold.record_signals."""
+    from pipeline import curate
+
+    kwargs = {"write": args.write}
+    if args.path:
+        kwargs["path"] = args.path
+    print(json.dumps(curate.apply_signals(**kwargs), indent=2))
+
+
+def cmd_reconcile(args):
+    """WS6: assert every surface tells one story; exit non-zero if any disagree."""
+    import sys
+
+    from pipeline import reconcile
+
+    out = reconcile.run()
+    print(json.dumps(out, indent=2))
+    if not out["all_agree"]:
+        sys.exit(1)
+
+
 def cmd_build_gold(args):
     """Silver -> gold: assemble decision-grade FO-MAX-shaped records (ADR-0011)."""
     from pipeline.gold import build as gb
@@ -350,20 +413,43 @@ def main():
     rq.add_argument("--k", type=int, default=5, help="number of records to retrieve/ground on")
     rq.set_defaults(func=cmd_rag_query)
 
+    ee = sub.add_parser("entity-evidence", help="ADR-0020: assemble per-firm entity evidence + draft proposals for review")
+    ee.set_defaults(func=cmd_entity_evidence)
+    ea = sub.add_parser("entity-apply", help="ADR-0020: load ratified entity adjudications (refuses unratified rows)")
+    ea.add_argument("--write", action="store_true")
+    ea.add_argument("--path", default=None)
+    ea.set_defaults(func=cmd_entity_apply)
+    ca = sub.add_parser("contact-apply", help="ADR-0021/0022: load ratified contact adjudications (refuses unratified rows)")
+    ca.add_argument("--write", action="store_true")
+    ca.add_argument("--path", default=None)
+    ca.set_defaults(func=cmd_contact_apply)
+    cv = sub.add_parser("verify-contacts", help="WS3b: vendor-verify inferred emails for proven decision-makers")
+    cv.add_argument("--write", action="store_true")
+    cv.add_argument("--limit", type=int, default=None)
+    cv.set_defaults(func=cmd_verify_contacts)
+    sub.add_parser("rag-eval", help="ADR-0023: measure the deployed answer path over adversarial cases").set_defaults(
+        func=cmd_rag_eval)
+    sa = sub.add_parser("signal-apply", help="Correction #6: load ratified time-sensitive signals")
+    sa.add_argument("--write", action="store_true")
+    sa.add_argument("--path", default=None)
+    sa.set_defaults(func=cmd_signal_apply)
+    sub.add_parser("reconcile", help="WS6: assert every surface (CSV, DB, retrieval, docs) agrees").set_defaults(
+        func=cmd_reconcile)
+
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")
     g.set_defaults(func=cmd_build_gold)
     sub.add_parser("gold-export", help="Export gold.records to a CSV deliverable").set_defaults(
         func=cmd_gold_export)
 
-    ge = sub.add_parser("gt-export", help="Ground truth: export a blind is_principal labelling CSV")
+    ge = sub.add_parser("gt-export", help="Proxy-label benchmark: export a blind is_principal labelling CSV")
     ge.add_argument("--limit", type=int, default=None, help="max people to export")
     ge.set_defaults(func=cmd_gt_export)
-    sub.add_parser("gt-label", help="Ground truth: adjudicate titles -> labelled CSV (rubric)").set_defaults(
+    sub.add_parser("gt-label", help="Proxy-label benchmark: apply the title rubric -> labelled CSV").set_defaults(
         func=cmd_gt_label)
-    sub.add_parser("gt-score", help="Ground truth: score model is_principal vs hand labels").set_defaults(
+    sub.add_parser("gt-score", help="Proxy-label benchmark: score model is_principal vs rubric labels").set_defaults(
         func=cmd_gt_score)
-    sub.add_parser("gt-crosscheck", help="Ground truth: website principals vs ADV employee counts").set_defaults(
+    sub.add_parser("gt-crosscheck", help="Independent anchor: website principals vs ADV employee counts").set_defaults(
         func=cmd_gt_crosscheck)
 
     args = p.parse_args()

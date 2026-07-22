@@ -15,9 +15,13 @@ Deliverable #6. Live at the submitted URL; run locally with `uvicorn pipeline.ra
 
 **One document per firm** — the gold record rendered to prose (name, location with the state spelled
 out, founded year, AUM, thesis, description, sectors, primary contact). Records are short and
-self-contained, so splitting them would only sever a firm from its own facts; at 50 documents the
+self-contained, so splitting them would only sever a firm from its own facts; at ~50 documents the
 "chunking" problem is really a rendering problem: what belongs in the searchable text. Contact emails
 are deliberately *not* embedded — they come from the structured row at answer time, with their grade.
+Retrieval is release-gated to **qualifying family offices only**: all 50 gold rows are indexed, but
+the gate serves only the 24 affirmed FOs — the 18 reclassified non-FOs (in `reclassified_firms.csv`)
+and the 8 quarantined firms never surface. This is a family-office product, so a non-FO must not
+appear in an answer at all, which is stronger than labeling it after the fact.
 
 ## Embedding model
 
@@ -45,13 +49,26 @@ says so and offers nearest records, clearly labeled.
 - Failure handling: empty question → 400; no hits → explicit refusal; upstream exception → logged
   server-side, generic message to the client; UI renders errors without dying.
 
+## Grounding is now enforced, not just prompted (ADR-0023)
+
+An independent, deterministic post-generation check (`pipeline/rag/checkanswer.py`) gates every answer
+before release: every email must belong to a retrieved record, no quarantined address may appear, a
+stated count must match the dataset total, and a reclassified non-FO must be labelled as not a family
+office. On failure the answer is repaired once, else refused — the verdict is logged and returned in
+the API `verification` field, and shown in the UI. Measured over the deployed `answer()` path
+(`python -m pipeline.cli rag-eval`, 8 adversarial cases): **grounded 8/8, expectation 7/8** — the one
+miss is reported below, not hidden.
+
 ## What doesn't (known limits, stated plainly)
 
-- **Grounding is prompt-enforced, not verified post-hoc.** No automatic check that every cited firm was
-  in the retrieved set. Spot-checked manually; a citation-verifier would make it measured.
-- **No retrieval gold set yet.** Unlike the dataset (measured FP/FN), the RAG has no recall@k number —
-  the honest gap in our own evidence standard, and the first improvement below. The intent classifier
-  (ADR-0016) is likewise unmeasured.
+- **The check verifies structure, not semantics.** Emails, suppression, counts, and category honesty
+  are checked deterministically; free-form *faithfulness* (a grounded-but-misleading sentence) is not.
+  An LLM faithfulness judge is the next layer.
+- **Out-of-scope queries that share a token with a firm** get answered about that firm ("weather in
+  Zurich" → Marcuard). The answer is grounded but off-intent; `rag-eval` flags this case (7/8). A
+  relevance/scope gate would close it.
+- **No live-traffic groundedness number yet** — only the fixed adversarial suite. The intent
+  classifier (ADR-0016) is still unmeasured.
 - Render free tier sleeps when idle: first request after a quiet period takes ~30–60s.
 
 ## Post-submission upgrade (ADR-0016)
@@ -68,7 +85,9 @@ concrete next step.
 
 ## What I would improve, in order
 
-1. A query→expected-record gold set with measured recall@k, groundedness, and intent-classification
-   accuracy (the same "measured, not asserted" bar the dataset already meets).
-2. Post-answer citation verification (every named firm must appear in the retrieved set).
-3. Keep-warm ping or paid tier to remove the cold start.
+1. An LLM faithfulness judge as a second gate behind the deterministic check (semantic, not just
+   structural, grounding).
+2. A query→expected-record gold set with measured recall@k on live traffic, plus intent-classifier
+   accuracy (the "measured, not asserted" bar, extended from the adversarial suite to real queries).
+3. A relevance/scope gate for out-of-scope queries (the one reported eval miss).
+4. Keep-warm ping or paid tier to remove the cold start.

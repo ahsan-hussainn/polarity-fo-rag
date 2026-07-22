@@ -42,8 +42,16 @@ EXCLUDED: dict[str, str] = {
     "174027": "Parvus Asset Management: hedge fund, not a family office; no enrichable content.",
 }
 
+# Release policy (ADR-0019): vendor verdicts that make an address unsafe for customer use. A value
+# with one of these codes is moved to gold.contact_audit and its operational field is nulled --
+# enforced HERE, at the single writer, so no product surface (CSV, prompt, API, UI) can carry it.
+# The grade/code/explanation stay on the record as verification metadata: "we probed, the vendor
+# rejected every pattern" is honest disclosure (the shipped F rows already worked this way).
+REJECTED_CODES = {"INVALID_API", "INVALID_NO_MX"}
+
 # gold.records column -> human header for the shipped CSV (FO-MAX-style naming, in reading order).
 _EXPORT_COLUMNS = [
+    ("crd", "CRD"),  # stable SEC identifier: identity resolution must be auditable from the artifact
     ("family_office_name", "Family Office Name"), ("domain", "Domain"), ("website", "Website"),
     ("url_quality", "URL Quality"), ("corporate_linkedin", "Corporate LinkedIn"),
     ("street_address", "Street Address"), ("city", "City"), ("state", "State"),
@@ -52,6 +60,8 @@ _EXPORT_COLUMNS = [
     ("investment_thesis", "Investment Thesis"), ("description", "Description"),
     ("investing_sectors", "Investing Sectors"),
     ("primary_contact_name", "Primary Contact"), ("primary_contact_title", "Primary Title"),
+    ("primary_authority_basis", "Primary Authority Basis"),
+    ("primary_selection_basis", "Why This Contact"),
     ("primary_contact_location", "Primary Contact Location"),
     ("primary_contact_email", "Primary Email"), ("primary_email_grade", "Primary Email Grade"),
     ("primary_email_code", "Primary Email Validation Code"),
@@ -65,34 +75,101 @@ _EXPORT_COLUMNS = [
     # sectors/team; the email chain carries its own method (code + explanation) per address.
     ("adv_filing_url", "Firm Facts Source (SEC Form ADV)"),
     ("profile_source_url", "Profile Source (Firm Website)"),
+    ("entity_category", "Entity Category"), ("category_basis", "Category Basis"),
+    ("person_status", "Person Status"), ("release_state", "Release State"),
+    # decision-grade KPIs (ADR-0013 migration)
+    ("reachability_tier", "Reachability"), ("reachability_score", "Reachability Score"),
+    ("confidence_score", "Confidence Score"),
+    ("data_asof", "Firm Data As-Of (ADV filing)"), ("is_stale", "Stale?"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
     ("people_count", "People Count"),
 ]
 
 
+# Firm-level columns for the reclassified sidecar (no contact fields: their decision-makers were
+# not proven to the ADR-0021 standard, so we present the firm, not an unverified person).
+_RECLASS_COLUMNS = [
+    ("crd", "CRD"), ("family_office_name", "Firm Name"), ("entity_category", "Entity Category"),
+    ("category_basis", "Category Basis"), ("domain", "Domain"), ("website", "Website"),
+    ("city", "City"), ("state", "State"), ("aum_usd", "AUM (USD)"), ("firm_phone", "Firm Phone"),
+    ("investment_thesis", "Investment Thesis"), ("investing_sectors", "Investing Sectors"),
+    ("adv_filing_url", "Firm Facts Source (SEC Form ADV)"),
+]
+
+
 def export(path: str = GOLD_CSV) -> dict:
-    """Write gold.records to a CSV deliverable (FO-MAX-style columns), best rows first."""
+    """Write the three deliverable CSVs (the product is family offices only; the rest is auditable
+    remainder): family_office_dataset.csv = the QUALIFYING affirmed family offices; reclassified_firms
+    .csv = real firms whose FO label was marketing (wealth managers / RIAs), firm-level only;
+    quarantined.csv = not-a-family-office + unresolved. Every one of the 50 lands in exactly one file."""
     cols = [c for c, _ in _EXPORT_COLUMNS]
+    rcols = [c for c, _ in _RECLASS_COLUMNS]
     os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    def _write(p, header, rows):
+        with open(p, "w", encoding="utf-8", newline="") as fh:
+            w = csv.writer(fh)
+            w.writerow(header)
+            for r in rows:
+                w.writerow(["; ".join(v) if isinstance(v, list) else v for v in r])
+
     with db.get_conn() as c, c.cursor() as cur:
-        # Actionability-first ordering: a reviewer reads row 1 first, so lead with records a client
-        # could act on today (verified A email > B catch-all > C unknown > D invalid > F/none),
-        # then by completion. Completion alone would rank an invalid-email record above a verified one.
-        cur.execute(f"select {','.join(cols)} from gold.records "
+        # Product = qualifying family offices only. Actionability-first: published email (PUB, proven)
+        # > vendor-deliverable inferred (A) > catch-all (B) > no email; contactless records sink.
+        cur.execute(f"select {','.join(cols)} from gold.records where release_state = 'qualifying' "
                     "order by case coalesce(primary_email_grade,'Z') "
-                    " when 'A' then 0 when 'B' then 1 when 'C' then 2 when 'D' then 3 "
-                    " when 'F' then 4 else 5 end, "
+                    " when 'PUB' then 0 when 'A' then 1 when 'B' then 2 else 6 end, "
                     "data_completion_score desc, family_office_name")
-        rows = cur.fetchall()
+        fo_rows = cur.fetchall()
+        # Recent signals per firm (correction #6): most recent first, for the "why now" summary column
+        # and the full-detail record_signals.csv sidecar.
+        cur.execute("select crd, signal_type, signal_date, description, source_url "
+                    "from gold.record_signals order by crd, signal_date desc")
+        sig_by_crd: dict[str, list] = {}
+        for scrd, stype, sdate, sdesc, surl in cur.fetchall():
+            sig_by_crd.setdefault(scrd, []).append((stype, sdate, sdesc, surl))
+        # Reclassified = affirmed-but-not-FO (kept for audit, firm-level, not counted as FOs).
+        cur.execute(f"select {','.join(rcols)} from gold.records "
+                    "where release_state = 'unresolved' and entity_category in "
+                    "('wealth_manager','ria_with_fo_practice') order by entity_category, family_office_name")
+        reclass_rows = cur.fetchall()
+        cur.execute("select crd, family_office_name, entity_category, category_basis, release_reasons "
+                    "from gold.records where release_state = 'quarantined' order by family_office_name")
+        quarantined = cur.fetchall()
+
+    # Main product CSV: map columns + a "Recent Signals" summary (count + most-recent dated event).
+    crd_idx = cols.index("crd")
     with open(path, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow([h for _, h in _EXPORT_COLUMNS])
-        for r in rows:
-            out = []
-            for col, v in zip(cols, r):
-                out.append("; ".join(v) if isinstance(v, list) else v)
-            w.writerow(out)
-    return {"rows": len(rows), "path": path}
+        w.writerow([h for _, h in _EXPORT_COLUMNS] + ["Recent Signals"])
+        for r in fo_rows:
+            out = ["; ".join(v) if isinstance(v, list) else v for v in r]
+            sigs = sig_by_crd.get(r[crd_idx], [])
+            if sigs:
+                stype, sdate, sdesc, _ = sigs[0]
+                summary = f"{len(sigs)} signal(s); latest {sdate} ({stype}): {sdesc[:80]}"
+            else:
+                summary = "no recent signal found"
+            w.writerow(out + [summary])
+    rpath = os.path.join(os.path.dirname(path), "reclassified_firms.csv")
+    _write(rpath, [h for _, h in _RECLASS_COLUMNS], reclass_rows)
+    # Full-detail signals sidecar: one row per dated, sourced signal.
+    spath = os.path.join(os.path.dirname(path), "record_signals.csv")
+    with open(spath, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["CRD", "Signal Type", "Date", "Description", "Source URL"])
+        for scrd in sorted(sig_by_crd):
+            for stype, sdate, sdesc, surl in sig_by_crd[scrd]:
+                w.writerow([scrd, stype, sdate, sdesc, surl])
+    qpath = os.path.join(os.path.dirname(path), "quarantined.csv")
+    with open(qpath, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["CRD", "Firm Name", "Entity Category", "Category Basis", "Release Reasons"])
+        for crd, name, cat, basis, reasons in quarantined:
+            w.writerow([crd, name, cat, basis, "; ".join(reasons or [])])
+    return {"family_offices": len(fo_rows), "reclassified": len(reclass_rows),
+            "quarantined": len(quarantined), "signals": sum(len(v) for v in sig_by_crd.values()),
+            "path": path, "reclassified_path": rpath, "quarantined_path": qpath, "signals_path": spath}
 
 # Seniority score for picking the primary/secondary contact among a firm's principals. Higher = more
 # senior / better first point of contact for a capital allocator.
@@ -112,12 +189,15 @@ def principal_rank(title: str | None) -> int:
     return 10
 
 
-# Key cells the completion score rewards (firm facts + a gradeable primary contact).
+# Key cells the completion score rewards (firm facts + a named, reachable primary contact). Note:
+# email GRADE is intentionally NOT a scored field -- it is metadata about the email, so scoring both
+# email and grade would double-count one underlying fact (a record with no email would lose two
+# points for one gap). This measures FIELD COMPLETENESS, not trust; the proof signals (entity
+# category, person status, authority basis, email grade) are their own columns on the record.
 _SCORE_FIELDS = (
     "family_office_name", "domain", "website", "description", "investment_thesis",
     "investing_sectors", "founded_year", "city",
     "primary_contact_name", "primary_contact_title", "primary_contact_email",
-    "primary_email_grade",
 )
 
 
@@ -126,18 +206,55 @@ def _completion(row: dict) -> int:
     return round(100 * got / len(_SCORE_FIELDS))
 
 
+def _reachability(row: dict) -> tuple[str | None, int | None]:
+    """How directly can you reach the proven decision-maker? Only qualifying FOs are scored.
+    The EMAIL is the only direct-to-the-person channel; phone/LinkedIn are firm-level cold routes.
+      High   -- a usable email to the person: firm-published (PUB) or vendor-deliverable (A).
+      Medium -- a plausible email to try (B), OR both the SEC phone and LinkedIn (two cold routes).
+      Low    -- a single cold route only (phone-only / LinkedIn-only), or nothing."""
+    if row.get("release_state") != "qualifying" or row.get("person_status") != "proven":
+        return None, None
+    g = row.get("primary_email_grade")
+    if g in ("PUB", "A"):
+        return "High", (100 if g == "PUB" else 85)
+    if g == "B":
+        return "Medium", 60
+    phone, li = bool(row.get("firm_phone")), bool(row.get("corporate_linkedin"))
+    if phone and li:
+        return "Medium", 45
+    if phone or li:
+        return "Low", 25
+    return "Low", 0
+
+
+def _confidence(row: dict) -> int | None:
+    """How well-PROVEN the record is (distinct from reach): affirmed entity (>=2 evidence classes) +
+    person proof (Schedule A-anchored, stated > title-inferred) + email proof (published proves the
+    address is theirs; inferred does not). A record can be high-confidence but low-reachability
+    (e.g. a proven sole owner with no published email)."""
+    if row.get("release_state") != "qualifying":
+        return None
+    entity = 40  # every qualifying FO cleared the >=2 independent-evidence-class bar (ADR-0020)
+    person = 40 if row.get("primary_authority_basis") == "stated" else 25
+    g = row.get("primary_email_grade")
+    email = 20 if g == "PUB" else 10 if g in ("A", "B") else 5
+    return min(100, entity + person + email)
+
+
 def _adv_facts(cur, crd: str) -> dict:
     """Everything gold takes from the firm's SEC ADV capture: location, street, phone, AUM, and the
     filing URL that is the verifiable basis for all of them (data we already hold -- free parity)."""
     cur.execute("select raw->>'city', raw->>'state', raw->>'country', raw->>'street1', "
-                "raw->>'street2', raw->>'phone', raw->>'raum_total', source_url "
+                "raw->>'street2', raw->>'phone', raw->>'raum_total', source_url, "
+                "raw->>'latest_filing_date' "
                 "from bronze.captures where source='sec_form_adv' and entity_key=%s limit 1", (crd,))
     r = cur.fetchone()
     if not r:
         return {}
     street = ", ".join(p for p in (r[3], r[4]) if p) or None
     return {"city": r[0], "state": r[1], "country": r[2], "street_address": street,
-            "firm_phone": r[5], "aum_usd": int(r[6]) if r[6] else None, "adv_filing_url": r[7]}
+            "firm_phone": r[5], "aum_usd": int(r[6]) if r[6] else None, "adv_filing_url": r[7],
+            "latest_filing_date": r[8]}
 
 
 def _url_quality(cur, crd: str) -> str | None:
@@ -159,6 +276,24 @@ def _url_quality(cur, crd: str) -> str | None:
     return "Lower"
 
 
+def _released_email(cur, crd: str, role: str, contact: dict, write: bool) -> str | None:
+    """ADR-0019 release gate for one contact slot. A vendor-rejected address (REJECTED_CODES) is
+    recorded in gold.contact_audit and NOT released -- returns None so the operational field ships
+    blank. Non-rejected addresses pass through unchanged."""
+    email, code = contact.get("email"), contact.get("code")
+    if not email or code not in REJECTED_CODES:
+        return email
+    if write:
+        cur.execute(
+            "insert into gold.contact_audit (crd, contact_role, contact_name, email, grade, code, "
+            "explanation, reason) values (%s,%s,%s,%s,%s,%s,%s,%s) "
+            "on conflict (crd, contact_role, email) do nothing",
+            (crd, role, contact.get("name"), email, contact.get("grade"), code,
+             contact.get("explanation"),
+             "vendor rejected as invalid/undeliverable; unsafe for customer use (ADR-0019)"))
+    return None
+
+
 def _contacts(cur, crd: str) -> list[dict]:
     """A firm's principals, most-senior first, with their email grade chain."""
     cur.execute(
@@ -171,12 +306,112 @@ def _contacts(cur, crd: str) -> list[dict]:
     return people
 
 
+def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
+    """ADR-0019 release decision from the ADR-0020 entity adjudication. Note two distinct senses of
+    'unresolved': an *entity* whose type could not be affirmed is QUARANTINED (policy: not released,
+    not counted, not retrievable); an affirmed entity whose *person* evidence is still pending
+    (ADR-0021, WS3) keeps release_state 'unresolved' -- it ships during the repair, labeled, but is
+    not yet certified 'qualifying'. Returns (release_state, reasons, entity_category, entity_status)."""
+    person_pending = "person evidence pending (ADR-0021)"
+    if adj is None:  # defensive: no adjudication on record (should not occur post-WS2)
+        return "unresolved", ["no entity adjudication on record"], None, None
+    if adj["status"] == "rejected":
+        return "quarantined", [f"entity rejected ({adj['category']}): {adj['rationale']}"], adj["category"], "rejected"
+    if adj["status"] == "unresolved":
+        return ("quarantined", [f"entity type unresolved: {adj['rationale']}"],
+                adj["category"], "unresolved")
+    if adj.get("duplicate_of"):
+        return ("quarantined", [f"duplicate of CRD {adj['duplicate_of']}: {adj['rationale']}"],
+                adj["category"], "affirmed")
+    # affirmed entity (FO or reclassified non-FO): ships, labeled by category, pending the person pass
+    return "unresolved", [person_pending], adj["category"], "affirmed"
+
+
+# Affirmed FO categories -- only these count toward the "family office" product and the 500 (ADR-0020).
+_FO_CATEGORIES = {"single_family_office", "multi_family_office"}
+
+
+def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool, rejected: set) -> None:
+    """Overlay the ratified decision-maker (ADR-0021/0022) onto the product row, replacing the
+    title-ladder pick, and resolve the honest email for that person:
+      PUB -- individual address the firm itself publishes (proven to be theirs);
+      A/B/C -- WS3b vendor-verified INFERRED pattern, labeled precisely (A deliverable != proven
+               to be their mailbox; B catch-all; C unknown);
+      D/F -- vendor-rejected: quarantined to gold.contact_audit (ADR-0019), never shipped.
+    A guess is never presented as the person's confirmed address."""
+    pri = cadj.get((crd, "primary"))
+    sec = cadj.get((crd, "secondary"))
+    if not pri:
+        return
+    row["person_status"] = "proven"
+    row["primary_authority_basis"] = pri["authority_basis"]
+    row["primary_selection_basis"] = pri["selection_basis"]
+    for role, c in (("primary", pri), ("secondary", sec)):
+        c = c or {}
+        row[f"{role}_contact_name"] = c.get("name")
+        row[f"{role}_contact_title"] = c.get("title")
+        email = grade = code = expl = None
+        pub, inf = c.get("published_email"), c.get("inferred_email")
+        # Once the verifier rejected an address it stays rejected: an address anywhere in the
+        # vendor-rejected audit trail is never shipped, even if a later (temporally noisy) probe
+        # softened its grade (ADR-0019). This suppression is what the WS6 reconciliation enforces.
+        if pub and pub.lower() not in rejected:
+            email, grade, code = pub, "PUB", "PUBLISHED_FIRM_SITE"
+            expl = "individual address published on the firm's own website (source: the firm itself)"
+        elif c.get("inferred_grade") in ("A", "B") and inf and inf.lower() not in rejected:
+            # only a vendor-DELIVERABLE (A) or catch-all-plausible (B) inferred address ships. A bare
+            # 'unknown' (C) inference is a uniform first.last guess the vendor could not confirm; per
+            # the WS6 human review it is withheld rather than shipped as look-alike signal -- the firm
+            # routes to its SEC-filed phone / LinkedIn instead (the conservative, more honest choice).
+            grade, code = c["inferred_grade"], c["inferred_code"]
+            email = inf
+            caveat = (" Inferred pattern for the proven contact; vendor-deliverable but NOT proven to "
+                      "be this person's mailbox." if grade == "A" else "")
+            expl = (c.get("inferred_explanation") or "") + caveat
+        elif inf and inf.lower() in rejected:
+            expl = "no individual address published; the inferred pattern was previously vendor-rejected (withheld)"
+        elif c.get("inferred_grade") == "C":
+            expl = ("no individual address published; the inferred pattern was unconfirmed by the vendor "
+                    "and is withheld (WS6) -- reach via the firm's SEC-filed phone / LinkedIn")
+        elif c.get("inferred_grade") in ("D", "F") and c.get("inferred_email"):
+            # vendor-rejected inferred address for the proven person: audit it, ship nothing (ADR-0019)
+            if write:
+                cur.execute(
+                    "insert into gold.contact_audit (crd, contact_role, contact_name, email, grade, "
+                    "code, explanation, reason) values (%s,%s,%s,%s,%s,%s,%s,%s) "
+                    "on conflict (crd, contact_role, email) do nothing",
+                    (crd, role, c.get("name"), c["inferred_email"], c["inferred_grade"],
+                     c.get("inferred_code"), c.get("inferred_explanation"),
+                     "WS3b: vendor rejected the inferred address for the proven contact (ADR-0019)"))
+            expl = "no individual address published; inferred pattern was vendor-rejected (quarantined)"
+        else:
+            expl = "no individual address published or verifiable for this contact"
+        row[f"{role}_contact_email"] = email
+        row[f"{role}_email_grade"] = grade
+        row[f"{role}_email_code"] = code
+        row[f"{role}_email_explanation"] = expl
+
+
 def build(write: bool = False) -> dict:
     """Assemble gold.records from silver + ADV bronze. Upserts one row per firm when write=True.
     Firms in EXCLUDED (ADR-0015) are skipped, recorded in gold.excluded_firms, and removed from
     gold.records if a previous build wrote them."""
     out = {"written": write, "firms": 0, "with_primary": 0, "excluded": len(EXCLUDED), "rows": []}
     with db.get_conn() as c, c.cursor() as cur:
+        cur.execute("select crd, category, status, duplicate_of, rationale from gold.entity_adjudications")
+        adjudications = {r[0]: {"category": r[1], "status": r[2], "duplicate_of": r[3],
+                                "rationale": r[4]} for r in cur.fetchall()}
+        cur.execute("select crd, contact_role, name, title, selection_basis, authority_basis, "
+                    "published_email, inferred_email, inferred_grade, inferred_code, "
+                    "inferred_explanation from gold.contact_adjudications")
+        cadj = {(r[0], r[1]): {"name": r[2], "title": r[3], "selection_basis": r[4],
+                               "authority_basis": r[5], "published_email": r[6],
+                               "inferred_email": r[7], "inferred_grade": r[8],
+                               "inferred_code": r[9], "inferred_explanation": r[10]}
+                for r in cur.fetchall()}
+        # Addresses the verifier has EVER rejected (from prior builds' audit) -- never re-shipped.
+        cur.execute("select lower(email) from gold.contact_audit")
+        rejected_addrs = {r[0] for r in cur.fetchall()}
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
                     "extracted_by, corporate_linkedin, source_urls, "
                     "(select count(*) from silver.people p where p.firm_crd=f.crd) "
@@ -197,6 +432,8 @@ def build(write: bool = False) -> dict:
             website = f"https://{domain}" if domain else None
             p = contacts[0] if len(contacts) > 0 else {}
             s = contacts[1] if len(contacts) > 1 else {}
+            p_email = _released_email(cur, crd, "primary", p, write) if p else None
+            s_email = _released_email(cur, crd, "secondary", s, write) if s else None
             contact_loc = ", ".join(x for x in (city, state) if x) if p else None
             row = {
                 "crd": crd, "family_office_name": name, "domain": domain, "website": website,
@@ -208,14 +445,41 @@ def build(write: bool = False) -> dict:
                 "profile_source_url": (src_urls[0] if src_urls else None),
                 "corporate_linkedin": linkedin, "primary_contact_location": contact_loc,
                 "primary_contact_name": p.get("name"), "primary_contact_title": p.get("title"),
-                "primary_contact_email": p.get("email"), "primary_email_grade": p.get("grade"),
+                "primary_contact_email": p_email, "primary_email_grade": p.get("grade"),
                 "primary_email_code": p.get("code"), "primary_email_explanation": p.get("explanation"),
                 "secondary_contact_name": s.get("name"), "secondary_contact_title": s.get("title"),
-                "secondary_contact_email": s.get("email"), "secondary_email_grade": s.get("grade"),
+                "secondary_contact_email": s_email, "secondary_email_grade": s.get("grade"),
                 "secondary_email_code": s.get("code"), "secondary_email_explanation": s.get("explanation"),
                 "principal_count": len(contacts), "people_count": people_ct, "extracted_by": by,
             }
+            # ADR-0019: no record is presumed qualifying; the entity adjudication (ADR-0020) and,
+            # in WS3, the person evidence pass (ADR-0021) decide what release permits.
+            (row["release_state"], row["release_reasons"],
+             row["entity_category"], row["entity_status"]) = _release(adjudications.get(crd))
+            adj = adjudications.get(crd)
+            row["category_basis"] = adj["rationale"] if adj else None
+            # ADR-0021/0022: overlay the proven decision-maker; an affirmed FO with a ratified person
+            # pass earns 'qualifying' (counts toward the 500). Reclassified non-FOs keep their old
+            # contacts and stay unresolved -- they are not family offices and are not counted.
+            if (crd, "primary") in cadj:
+                _apply_contact(cur, crd, row, cadj, write, rejected_addrs)
+                if row["entity_status"] == "affirmed" and row["entity_category"] in _FO_CATEGORIES:
+                    row["release_state"] = "qualifying"
+                    row["release_reasons"] = [f"entity affirmed {row['entity_category']} (ADR-0020); "
+                                              f"decision-maker proven (ADR-0021)"]
             row["data_completion_score"] = _completion(row)
+            # Record-level KPIs (ADR-0013 migration): reachability (reach the DM?), confidence (how
+            # well-proven?), and freshness (SEC ADV filing date + a staleness flag when > 15 months,
+            # past the annual-filing window). Computed for qualifying FOs; N/A elsewhere.
+            row["reachability_tier"], row["reachability_score"] = _reachability(row)
+            row["confidence_score"] = _confidence(row)
+            filed = adv.get("latest_filing_date")
+            row["data_asof"] = filed
+            row["is_stale"] = None
+            if filed and row.get("release_state") == "qualifying":
+                y, m = (int(x) for x in filed[:7].split("-"))
+                months = (2026 - y) * 12 + (7 - m)  # relative to the build month (2026-07)
+                row["is_stale"] = months > 15
             out["firms"] += 1
             if p:
                 out["with_primary"] += 1

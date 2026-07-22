@@ -1,0 +1,3362 @@
+[
+ {
+  "crd": "133370",
+  "firm_name": "1919 INVESTMENT COUNSEL, LLC",
+  "domain": "1919ic.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=4866",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/133370/PDF/133370.pdf",
+    "observed_at": "2026-04-10",
+    "detail": {
+     "hnw_clients": "2653",
+     "nonhnw_clients": "2213",
+     "hnw_raum": "18840060771",
+     "raum_total": "26036166216",
+     "total_employees": "131",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Foundations & End"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Advancing Your Vi"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/about-us/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Foundations & End"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/about-us/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Advancing Your Vi"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/about-us/culture-careers/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Foundations & End"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/about-us/culture-careers/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Advancing Your Vi"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/about-us/team-offices/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Foundations & End"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/about-us/team-offices/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Advancing Your Vi"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/insight/what-makes-a-strong-referral-partnership-with-1919/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Foundations & End"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/insight/what-makes-a-strong-referral-partnership-with-1919/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ess to the very best in financial services. Explore Services Investment Counsel Family Office Services Women & Wealth Responsible Investing Foundations & Endowments Advancing Your Vi"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/insight/what-makes-a-strong-referral-partnership-with-1919/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "uity and confidence. About 1919 Investment Counsel 1919 Investment Counsel is a registered investment advisor. Its mission for more than 100 years has been to provide investment counsel and"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://1919ic.com/insight/what-makes-a-strong-referral-partnership-with-1919/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "f any investment advisory services agreement. 1919 Investment Counsel, LLC is a registered investment advisor with the U.S. Securities and Exchange Commission. 1919 Investment Counsel, LLC,"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "337753",
+  "firm_name": "ACTIV8 FAMILY OFFICE LLC",
+  "domain": "activ8familyoffice.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=299",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/337753/PDF/337753.pdf",
+    "observed_at": "2026-03-11",
+    "detail": {
+     "hnw_clients": "148",
+     "nonhnw_clients": "151",
+     "hnw_raum": "1481576002",
+     "raum_total": "1542366700",
+     "total_employees": "21",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "307521",
+  "firm_name": "ALPHA CAPITAL FAMILY OFFICE, LLC",
+  "domain": "acfamilyoffice.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=147",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/307521/PDF/307521.pdf",
+    "observed_at": "2026-06-30",
+    "detail": {
+     "hnw_clients": "83",
+     "nonhnw_clients": "64",
+     "hnw_raum": "265383529",
+     "raum_total": "295926405",
+     "total_employees": "15",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://acfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "nvestment Advisory Services offered through Alpha Capital Family Office, LLC, a Registered Investment Advisor with the U.S. Securities & Exchange Commissions. Registration does not imply a"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://acfamilyoffice.com/ac-family-office-americas-top-financial-advisory-firms-2026-by-newsweek/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "nvestment Advisory Services offered through Alpha Capital Family Office, LLC, a Registered Investment Advisor with the U.S. Securities & Exchange Commissions. Registration does not imply a"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://acfamilyoffice.com/about/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "nvestment Advisory Services offered through Alpha Capital Family Office, LLC, a Registered Investment Advisor with the U.S. Securities & Exchange Commissions. Registration does not imply a"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://acfamilyoffice.com/certified-investment-management-analyst-cima/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "nvestment Advisory Services offered through Alpha Capital Family Office, LLC, a Registered Investment Advisor with the U.S. Securities & Exchange Commissions. Registration does not imply a"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://acfamilyoffice.com/investmentnews-2025-top-financial-professionals-in-the-us-hot-list-will-coughlin/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "nvestment Advisory Services offered through Alpha Capital Family Office, LLC, a Registered Investment Advisor with the U.S. Securities & Exchange Commissions. Registration does not imply a"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "168744",
+  "firm_name": "ARROWROOT FAMILY OFFICE, LLC",
+  "domain": "arrowrootadvisors.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "self-described MFO but ADV reports 1413 individual clients -- a retail-scale book; propose wealth_manager, review the spans",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/168744/PDF/168744.pdf",
+    "observed_at": "2026-03-30",
+    "detail": {
+     "hnw_clients": "595",
+     "nonhnw_clients": "818",
+     "hnw_raum": "326353585",
+     "raum_total": "430684413",
+     "total_employees": "18",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://arrowrootadvisors.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "t Family Office, LLC, he was a Director for Salem Partners Wealth Management, a multi-family office and investment bank in Los Angeles. Mr. Santos was part of the seven-member inv"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://arrowrootadvisors.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "multi_family_office",
+     "span": "t Family Office, LLC, he was a Director for Salem Partners Wealth Management, a multi-family office and investment bank in Los Angeles. Mr. Santos was part of the seven-member inv"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "107141",
+  "firm_name": "BOSTON FAMILY OFFICE LLC",
+  "domain": "bosfam.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=332",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/107141/PDF/107141.pdf",
+    "observed_at": "2026-03-02",
+    "detail": {
+     "hnw_clients": "245",
+     "nonhnw_clients": "87",
+     "hnw_raum": "1871029984",
+     "raum_total": "2019164947",
+     "total_employees": "17",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "107687",
+  "firm_name": "CALLAN",
+  "domain": "callan.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=0",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/107687/PDF/107687.pdf",
+    "observed_at": "2026-03-24",
+    "detail": {
+     "hnw_clients": "0",
+     "nonhnw_clients": "0",
+     "hnw_raum": "0",
+     "raum_total": "41940517968",
+     "total_employees": "202",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "335128",
+  "firm_name": "CAMBIENT FAMILY OFFICE, LLC",
+  "domain": "cambient.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "self-described MFO but ADV reports 172 individual clients -- a retail-scale book; propose wealth_manager, review the spans",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335128/PDF/335128.pdf",
+    "observed_at": "2026-03-31",
+    "detail": {
+     "hnw_clients": "172",
+     "nonhnw_clients": null,
+     "hnw_raum": "517269319",
+     "raum_total": "857939726",
+     "total_employees": "6",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.cambient.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "Multi-Family Office & Wealth Planning \u2013 Cambient Skip to main contentAbout UsOur TeamContact UsClie"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.cambient.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "nClient LoginPreserving Legacy,Navigating ComplexityCambient Family Office is a multi-family office serving clients with complex financial lives, emphasizing stewardship and fiduc"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.cambient.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "St. E, Suite 203Ada, MI 49301Copyright \u00a9 {{year}} Cambient Family Office, LLC a Registered Investment Advisor.Privacy PolicyDisclosuresForm CRSCloseCloseLog Into FidelityLog Into AddeparLog"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.cambient.com/about-us",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "multi_family_office",
+     "span": "UsStewards of Multi-Generational WealthCambient Family Office is an independent multi-family office serving affluent families, private foundations, and entrepreneurs.Disciplined.I"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.cambient.com/about-us",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "St. E, Suite 203Ada, MI 49301Copyright \u00a9 {{year}} Cambient Family Office, LLC a Registered Investment Advisor.Privacy PolicyDisclosuresForm CRSCloseCloseLog Into FidelityLog Into AddeparLog"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.cambient.com/our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "St. E, Suite 203Ada, MI 49301Copyright \u00a9 {{year}} Cambient Family Office, LLC a Registered Investment Advisor.Privacy PolicyDisclosuresForm CRSCloseCloseLog Into FidelityLog Into AddeparLog"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.cambient.com/contact-us",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "contact",
+     "category_signal": "wealth_manager",
+     "span": "St. E, Suite 203Ada, MI 49301Copyright \u00a9 {{year}} Cambient Family Office, LLC a Registered Investment Advisor.Privacy PolicyDisclosuresForm CRSCloseCloseLog Into FidelityLog Into AddeparLog"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "312005",
+  "firm_name": "CAPITOL FAMILY OFFICE, INC.",
+  "domain": "capitolcfo.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=124",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/312005/PDF/312005.pdf",
+    "observed_at": "2026-03-25",
+    "detail": {
+     "hnw_clients": "45",
+     "nonhnw_clients": "79",
+     "hnw_raum": "92132141",
+     "raum_total": "136089945",
+     "total_employees": "2",
+     "org_form": "Corporation"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "159306",
+  "firm_name": "CHILTON INVESTMENT SERVICES, LLC",
+  "domain": "chiltontrustcompany.com",
+  "draft_category": "single_family_office",
+  "draft_note": "self-described SFO; ADV reports 1678 individual clients (check: >5 contradicts one-family claim)",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/159306/PDF/159306.pdf",
+    "observed_at": "2026-07-06",
+    "detail": {
+     "hnw_clients": "506",
+     "nonhnw_clients": "1172",
+     "hnw_raum": "3141372000",
+     "raum_total": "8150127000",
+     "total_employees": "70",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "single_family_office",
+     "span": "lient\u2019s investment objectives and guidelines Family Office Services Combining a single-family office feel with multi-family office resources through a collaborative and personalize"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "nd guidelines Family Office Services Combining a single-family office feel with multi-family office resources through a collaborative and personalized team Trust & Fiduciary Over"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Trust Company Menu What We Do WEALTH PLANNING & EDUCATION INVESTMENT MANAGEMENT FAMILY OFFICE SERVICES TRUST & FIDUCIARY About Us CULTURE & CAREERS CSR Our Team News & Insights Conta"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Menu What We DoShow sub menu Wealth Planning & Education Investment Management Family Office Services Trust & Fiduciary About UsShow sub menu Culture & Careers CSR Our Team News & I"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "t Tailoring each portfolio to the client\u2019s investment objectives and guidelines Family Office Services Combining a single-family office feel with multi-family office resources throug"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/what-we-do/investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Trust Company Menu What We Do WEALTH PLANNING & EDUCATION INVESTMENT MANAGEMENT FAMILY OFFICE SERVICES TRUST & FIDUCIARY About Us CULTURE & CAREERS CSR Our Team News & Insights Conta"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/what-we-do/investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Menu What We DoShow sub menu Wealth Planning & Education Investment Management Family Office Services Trust & Fiduciary About UsShow sub menu Culture & Careers CSR Our Team News & I"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/what-we-do/investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ng money. Watch Video EXPLORE ADDITIONAL SERVICES Wealth Planning and Education FAMILY OFFICE SERVICES Trust & Fiduciary Build a Trusting Relationship with Our Experienced Advisory T"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Trust Company Menu What We Do WEALTH PLANNING & EDUCATION INVESTMENT MANAGEMENT FAMILY OFFICE SERVICES TRUST & FIDUCIARY About Us CULTURE & CAREERS CSR Our Team News & Insights Conta"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Menu What We DoShow sub menu Wealth Planning & Education Investment Management Family Office Services Trust & Fiduciary About UsShow sub menu Culture & Careers CSR Our Team News & I"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://chiltontrustcompany.com/team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "eam View All View All Leadership Investment Management Client & Wealth Advisory Family Office Services Legal Compliance & Operations Trust & Fiduciary Richard Lockwood Chilton, Jr. F"
+    }
+   }
+  ],
+  "category": "single_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "285035",
+  "firm_name": "CLASS VI FAMILY OFFICE, LLC",
+  "domain": "classvipartners.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=195",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/285035/PDF/285035.pdf",
+    "observed_at": "2026-02-11",
+    "detail": {
+     "hnw_clients": "148",
+     "nonhnw_clients": "47",
+     "hnw_raum": "1477102409",
+     "raum_total": "1498011942",
+     "total_employees": "9",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.classvipartners.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "ces offered through Class VI Partners\u2019 affiliate Class VI Family Office, LLC, a Registered Investment Adviser with the U.S Securities and Exchange Commission.Form CRSTestimonials & Endorsem"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.classvipartners.com/your-journey/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "ces offered through Class VI Partners\u2019 affiliate Class VI Family Office, LLC, a Registered Investment Adviser with the U.S Securities and Exchange Commission.Class VI Partners offers invest"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.classvipartners.com/your-journey/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "Stats sourced from internal data as of 06/2026.Class VI Family Office, LLC is a Registered Investment Adviser with the U.S. Securities and Exchange CommissionGive forward for lasting impact"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.classvipartners.com/your-journey/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "ces offered through Class VI Partners\u2019 affiliate Class VI Family Office, LLC, a Registered Investment Adviser with the U.S Securities and Exchange Commission.Form CRSTestimonials & Endorsem"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.classvipartners.com/planning-guides/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "ces offered through Class VI Partners\u2019 affiliate Class VI Family Office, LLC, a Registered Investment Adviser with the U.S Securities and Exchange Commission.Form CRSTestimonials & Endorsem"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.classvipartners.com/deal-announcements/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "ces offered through Class VI Partners\u2019 affiliate Class VI Family Office, LLC, a Registered Investment Adviser with the U.S Securities and Exchange Commission.Form CRSTestimonials & Endorsem"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.classvipartners.com/about/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "ces offered through Class VI Partners\u2019 affiliate Class VI Family Office, LLC, a Registered Investment Adviser with the U.S Securities and Exchange Commission.Form CRSTestimonials & Endorsem"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "108253",
+  "firm_name": "CLEARBROOK INVESTMENT CONSULTING LLC",
+  "domain": "clearbrookglobal.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=0",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/108253/PDF/108253.pdf",
+    "observed_at": "2026-03-31",
+    "detail": {
+     "hnw_clients": "0",
+     "nonhnw_clients": "0",
+     "hnw_raum": "0",
+     "raum_total": "13719492092",
+     "total_employees": "10",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "301274",
+  "firm_name": "COLLECTIVE FAMILY OFFICE, LLC",
+  "domain": "collectivefamilyoffice.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "self-described MFO but ADV reports 143 individual clients -- a retail-scale book; propose wealth_manager, review the spans",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/301274/PDF/301274.pdf",
+    "observed_at": "2026-07-08",
+    "detail": {
+     "hnw_clients": "80",
+     "nonhnw_clients": "63",
+     "hnw_raum": "499896856",
+     "raum_total": "533364496",
+     "total_employees": "3",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.collectivefamilyoffice.com/team-member-01/brian-luster",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "Mellon Wealth Management in Central Pennsylvania, Founder and CEO of a boutique multi-family office in New York City, and Managing Member and Portfolio Manager of a long/short U.S"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "171787",
+  "firm_name": "COMPOUND PLANNING, INC.",
+  "domain": "compoundplanning.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=11480",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/171787/PDF/171787.pdf",
+    "observed_at": "2026-07-06",
+    "detail": {
+     "hnw_clients": "612",
+     "nonhnw_clients": "10868",
+     "hnw_raum": "1526930037",
+     "raum_total": "4848634144",
+     "total_employees": "119",
+     "org_form": "Corporation"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "286243",
+  "firm_name": "CRESTWOOD ADVISORS",
+  "domain": "corporate.focuspartners.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "self-described MFO but ADV reports 1106 individual clients -- a retail-scale book; propose wealth_manager, review the spans",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/286243/PDF/286243.pdf",
+    "observed_at": "2026-06-11",
+    "detail": {
+     "hnw_clients": "870",
+     "nonhnw_clients": "236",
+     "hnw_raum": "7617151735",
+     "raum_total": "8021455218",
+     "total_employees": "64",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://corporate.focuspartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "a leading fiduciary advice company comprised of independent wealth management, multi-family office, and business-management services, today announced that substantially all of th"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "294025",
+  "firm_name": "CUSTOS FAMILY OFFICE LLC",
+  "domain": "custosfo.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=67",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/294025/PDF/294025.pdf",
+    "observed_at": "2026-04-07",
+    "detail": {
+     "hnw_clients": "46",
+     "nonhnw_clients": "21",
+     "hnw_raum": "310773783",
+     "raum_total": "346555336",
+     "total_employees": "2",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://custosfo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Waterstreet, now a part of the Morgan Stanley Greystone Consulting Group, was a Registered Investment Adviser for high net worth families and institutional investors. Mitchell graduated Mag"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://custosfo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Waterstreet, now a part of the Morgan Stanley Greystone Consulting Group, was a Registered Investment Adviser for high net worth families and institutional investors. Mitchell graduated Mag"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://custosfo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "y Investment advisory services are offered through Custos Family Office, LLC, a Registered Investment Advisor. Custos Family Office and its representatives are in compliance with the curren"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "338015",
+  "firm_name": "DESTINY FAMILY OFFICE",
+  "domain": "destinyfamilyoffice.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=62",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338015/PDF/338015.pdf",
+    "observed_at": "2026-06-19",
+    "detail": {
+     "hnw_clients": "28",
+     "nonhnw_clients": "34",
+     "hnw_raum": "580334818",
+     "raum_total": "605068786",
+     "total_employees": "7",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "d Integration. The Core of Destiny Family Office Private Investments Collectors Family Office Services Destiny Family Office provides structured guidance for families navigating the"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Built on Three Pillars: Strategy, Access, and Integration. The Core of Destiny Family Office Services Destiny Family Office provides structured guidance for families navigating the"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "vestment advisory services offered through Destiny Wealth Partners, LLC, an SEC Registered Investment Advisor.Destiny Wealth Partners also conducts business under the name Destiny Family Of"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/about-tom-ruggie/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "single_family_office",
+     "span": "challenges and complexities of managing significant wealth, and to offer them a single-family office experience within a multi-family office structure.His success is not one of inh"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/about-tom-ruggie/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "multi_family_office",
+     "span": "ignificant wealth, and to offer them a single-family office experience within a multi-family office structure.His success is not one of inherited privilege but of resilience, hard"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/about-tom-ruggie/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "ment advisory services are offered through Destiny Wealth Partners, LLC, an SEC Registered Investment Advisor. Destiny Wealth Partners also conducts business under the name Destiny Family O"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/about-tom-ruggie/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "vestment advisory services offered through Destiny Wealth Partners, LLC, an SEC Registered Investment Advisor.Destiny Wealth Partners also conducts business under the name Destiny Family Of"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "single_family_office",
+     "span": "challenges and complexities of managing significant wealth, and to offer them a single-family office experience within a multi-family office structure.His success is not one of inh"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ignificant wealth, and to offer them a single-family office experience within a multi-family office structure.His success is not one of inherited privilege but of resilience, hard"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "vestment advisory services offered through Destiny Wealth Partners, LLC, an SEC Registered Investment Advisor.Destiny Wealth Partners also conducts business under the name Destiny Family Of"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/private-investments/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "wealth_manager",
+     "span": "vestment advisory services offered through Destiny Wealth Partners, LLC, an SEC Registered Investment Advisor.Destiny Wealth Partners also conducts business under the name Destiny Family Of"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/collectors/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "mily Office integrates our clients\u2019 valuable collections into our full suite of family office services, considering them in the context of their other assets.Financial Planning Inclu"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/collectors/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "mily Office integrates our clients\u2019 valuable collections into our full suite of family office services, considering them in the context of their other assets.Financial Planning Inclu"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/collectors/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ntages for High-Net-Worth Collectors Read More What are the advantages of using family office services for high-net-worth collectors? Read More Modern vs. Vintage Collecting: Key con"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://destinyfamilyoffice.com/collectors/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "wealth_manager",
+     "span": "vestment advisory services offered through Destiny Wealth Partners, LLC, an SEC Registered Investment Advisor.Destiny Wealth Partners also conducts business under the name Destiny Family Of"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "281675",
+  "firm_name": "EAGLE BAY FAMILY OFFICE",
+  "domain": "eaglebayfamilyoffice.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=50",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/281675/PDF/281675.pdf",
+    "observed_at": "2026-04-15",
+    "detail": {
+     "hnw_clients": "37",
+     "nonhnw_clients": "13",
+     "hnw_raum": "675200133",
+     "raum_total": "680792794",
+     "total_employees": "15",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "agle Bay Fiduciary Duty Careers Wealth Solutions Overview Investment Management Family Office Services Webinars Connect Client Logins Client Login Pause Video How can Eagle Bay help"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "single_family_office",
+     "span": "time zones.Georgina previously served as board chair of an advisory board to a single family office, where she helped guide governance and long-term planning. She also brings exte"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "agle Bay Fiduciary Duty Careers Wealth Solutions Overview Investment Management Family Office Services Webinars Connect Client Logins Client Login Perspective. Passion. Personal. Mee"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Palmer Point. LINKEDIN Read Bio Tanya Durkee Urbach, J.D. PARTNER / CO-HEAD OF FAMILY OFFICE SERVICES Close Tanya D. Urbach is an affiliate expert for the Bates Group, a leading pro"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "e Admire. Linkedin Read Bio Georgina H. Miltenberger, J.D. PARTNER / CO-HEAD OF FAMILY OFFICE SERVICES Close Georgina is a seasoned family law litigator whose career has spanned the"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/eagle-bay",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "agle Bay Fiduciary Duty Careers Wealth Solutions Overview Investment Management Family Office Services Webinars Connect Client Logins Client Login Your Life.Your Legacy. Meet Our Tea"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "single_family_office",
+     "span": "time zones.Georgina previously served as board chair of an advisory board to a single family office, where she helped guide governance and long-term planning. She also brings exte"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "agle Bay Fiduciary Duty Careers Wealth Solutions Overview Investment Management Family Office Services Webinars Connect Client Logins Client Login Perspective. Passion. Personal. Mee"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Palmer Point. LINKEDIN Read Bio Tanya Durkee Urbach, J.D. PARTNER / CO-HEAD OF FAMILY OFFICE SERVICES Close Tanya D. Urbach is an affiliate expert for the Bates Group, a leading pro"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/about/meet-our-team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "e Admire. Linkedin Read Bio Georgina H. Miltenberger, J.D. PARTNER / CO-HEAD OF FAMILY OFFICE SERVICES Close Georgina is a seasoned family law litigator whose career has spanned the"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/wealth-solutions/investment-management",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "agle Bay Fiduciary Duty Careers Wealth Solutions Overview Investment Management Family Office Services Webinars Connect Client Logins Client Login Investment Management Overview Inve"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://eaglebayfamilyoffice.com/wealth-solutions/investment-management",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Client Logins Client Login Investment Management Overview Investment Management Family Office Services YOUR PASSIONS INSPIRE USYOUR DREAMS EXCITE USYOUR CAUSES BECOME OUR CAUSES Inve"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "282750",
+  "firm_name": "ELEMENT POINTE FAMILY OFFICE",
+  "domain": "elementpointe.com",
+  "draft_category": "single_family_office",
+  "draft_note": "self-described SFO; ADV reports 52 individual clients (check: >5 contradicts one-family claim)",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/282750/PDF/282750.pdf",
+    "observed_at": "2026-05-01",
+    "detail": {
+     "hnw_clients": "52",
+     "nonhnw_clients": null,
+     "hnw_raum": "1214119733",
+     "raum_total": "1218377295",
+     "total_employees": "11",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.elementpointe.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "single_family_office",
+     "span": "u have investable assets above $15 million? Select an optionYesNo Do you have a single-family office today? Select an optionYesNo If no, are you interested in establishing a family"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.elementpointe.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "erest that can adversely impact clients\u2019 portfolios. As a fee-only, independent registered investment adviser, we never earn commissions or referral fees for the sale of financial products."
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.elementpointe.com/company/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ir is Co-Founder and Chief Executive Officer of Element Pointe Family Office, a multi-family office and investment advisory firm serving high-net-worth families and family offices"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.elementpointe.com/company/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "der, President, and Chief Investment Officer of Element Pointe Family Office, a multi-family office and investment advisory firm serving high-net-worth families and family offices"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.elementpointe.com/contact/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "contact",
+     "category_signal": "single_family_office",
+     "span": "u have investable assets above $15 million? Select an optionYesNo Do you have a single-family office today? Select an optionYesNo If no, are you interested in establishing a family"
+    }
+   }
+  ],
+  "category": "single_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "291324",
+  "firm_name": "ELYSEUM FAMILY OFFICE S.A.",
+  "domain": "elyseum-investment.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=0",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/291324/PDF/291324.pdf",
+    "observed_at": "2026-02-05",
+    "detail": {
+     "hnw_clients": null,
+     "nonhnw_clients": null,
+     "hnw_raum": null,
+     "raum_total": null,
+     "total_employees": null,
+     "org_form": "Other (specify)"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "106223",
+  "firm_name": "F L PUTNAM INVESTMENT MANAGEMENT CO.",
+  "domain": "flputnam.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=2823",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/106223/PDF/106223.pdf",
+    "observed_at": "2026-07-10",
+    "detail": {
+     "hnw_clients": "1488",
+     "nonhnw_clients": "1335",
+     "hnw_raum": "7039408994",
+     "raum_total": "9715433173",
+     "total_employees": "160",
+     "org_form": "Corporation"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "2A Form CRS Form ADV Part 2A F.L.Putnam Investment Management Company is an SEC-registered investment adviser and serves clients nationally.This website is limited to providing general info"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/our-team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "nstitutional Advisory (8) Investment Management (25) FLP Atrato Consulting (17) Family Office Services (4) AOG Funds (5) Mergers & Acquisitions (3) Business Development (7) Marketing"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/our-team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "2A Form CRS Form ADV Part 2A F.L.Putnam Investment Management Company is an SEC-registered investment adviser and serves clients nationally.This website is limited to providing general info"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/institutions/investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "2A Form CRS Form ADV Part 2A F.L.Putnam Investment Management Company is an SEC-registered investment adviser and serves clients nationally.This website is limited to providing general info"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/news/f-l-putnam-strengthens-new-hampshire-presence-with-acquisition-of-seascape-capital-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "the acquisition of Seascape Capital Management, LLC (Seascape), an independent registered investment adviser based in Portsmouth, New Hampshire, with more than $500 million in assets under"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/news/f-l-putnam-strengthens-new-hampshire-presence-with-acquisition-of-seascape-capital-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": ".com About F.L.Putnam Investment Management CompanyF.L.Putnam is an independent registered investment advisor that serves a broad and diverse group of clients including individuals, single"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/news/f-l-putnam-strengthens-new-hampshire-presence-with-acquisition-of-seascape-capital-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "2A Form CRS Form ADV Part 2A F.L.Putnam Investment Management Company is an SEC-registered investment adviser and serves clients nationally.This website is limited to providing general info"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/news/acquisition-of-michigan-based-arcadia-investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "uisition of Arcadia Investment Management Corporation (Arcadia), an independent registered investment adviser based in Kalamazoo, Mich., with more than $670 million in assets under manageme"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/news/acquisition-of-michigan-based-arcadia-investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": ".com About F.L.Putnam Investment Management CompanyF.L.Putnam is an independent registered investment advisor that serves a broad and diverse group of clients including individuals, single"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://flputnam.com/news/acquisition-of-michigan-based-arcadia-investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "2A Form CRS Form ADV Part 2A F.L.Putnam Investment Management Company is an SEC-registered investment adviser and serves clients nationally.This website is limited to providing general info"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "144136",
+  "firm_name": "FAMILY OFFICE RESEARCH, LLC",
+  "domain": "familyofficeresearch.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=115",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/144136/PDF/144136.pdf",
+    "observed_at": "2026-03-19",
+    "detail": {
+     "hnw_clients": "103",
+     "nonhnw_clients": "12",
+     "hnw_raum": "548634429",
+     "raum_total": "648208835",
+     "total_employees": "5",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "326990",
+  "firm_name": "FIDUCIARY FAMILY OFFICE, LLC",
+  "domain": "fiduciaryfo.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=46",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/326990/PDF/326990.pdf",
+    "observed_at": "2026-03-11",
+    "detail": {
+     "hnw_clients": "46",
+     "nonhnw_clients": "0",
+     "hnw_raum": "724647436",
+     "raum_total": "747668854",
+     "total_employees": "3",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "122448",
+  "firm_name": "FIFTH AVENUE FAMILY OFFICE",
+  "domain": "fifthavenuefamily.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=9",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/122448/PDF/122448.pdf",
+    "observed_at": "2026-03-16",
+    "detail": {
+     "hnw_clients": "9",
+     "nonhnw_clients": null,
+     "hnw_raum": "1339830991",
+     "raum_total": "1350847041",
+     "total_employees": "7",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://fifthavenuefamily.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "als dedicated to serving a select group of entrepreneurial families. We provide family office services that coordinate, manage and advise across the full-net-worth spectrum.Our goal"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://fifthavenuefamily.com/who-we-are/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "serving high-net-worth entrepreneurial families. We specialize in comprehensive family office services, including investment management, estate and legacy planning, and tax coordinat"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://fifthavenuefamily.com/who-we-are/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "serving high-net-worth entrepreneurial families. We specialize in comprehensive family office services, including investment management, estate and legacy planning, and tax coordinat"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://fifthavenuefamily.com/the-team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ient Services Maria\u2019s responsibilities are vital to the daily operations of our multi-family office and ensure that all client families benefit from their association with our off"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "334002",
+  "firm_name": "FIVE ELEVEN PARTNERS",
+  "domain": "five11partners.com",
+  "draft_category": "single_family_office",
+  "draft_note": "self-described SFO; client count consistent",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/334002/PDF/334002.pdf",
+    "observed_at": "2026-07-07",
+    "detail": {
+     "hnw_clients": "5",
+     "nonhnw_clients": null,
+     "hnw_raum": "162745852",
+     "raum_total": "162745852",
+     "total_employees": "7",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.five11partners.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "single_family_office",
+     "span": "ifference can be felt in every facet of our work.Five Eleven delivers a bespoke single-family office experience tailored to ultra-high-net-worth families. We combine the scale and"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.five11partners.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Founding of Five Eleven Partners on WealthManagement.comread morethe latestNew Wealth Management Firm, Five Eleven Partners, Launches to Redefine the Family Office Experienceread mo"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.five11partners.com/team/gil-calderon",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "single_family_office",
+     "span": "even Partners, Gil was the Chief Investment Officer at M4 Capital Management, a single-family office in Chicago. Previously, he served as a Director at Sawdust Investment Managemen"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.five11partners.com/team/keith-feinberg",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ners, Keith served as COO and Chief Wealth Strategist at Seven Mile Advisory, a multi-family office specializing in investment and financial planning. His earlier roles included P"
+    }
+   }
+  ],
+  "category": "single_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "310275",
+  "firm_name": "FREEDOM FAMILY OFFICE, LLC",
+  "domain": "talktofreedomsite.wordpress.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=116",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/310275/PDF/310275.pdf",
+    "observed_at": "2026-04-30",
+    "detail": {
+     "hnw_clients": "44",
+     "nonhnw_clients": "72",
+     "hnw_raum": "95195802",
+     "raum_total": "162140871",
+     "total_employees": "10",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "323432",
+  "firm_name": "HAMPSHIRE FAMILY OFFICE",
+  "domain": "hampshirefamilyoffice.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=62",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/323432/PDF/323432.pdf",
+    "observed_at": "2026-03-31",
+    "detail": {
+     "hnw_clients": "62",
+     "nonhnw_clients": null,
+     "hnw_raum": "822275386",
+     "raum_total": "865575192",
+     "total_employees": "5",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://www.hampshirefamilyoffice.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ts a superior experience, complete with access to curated private solutions and family office services.Our Firm Trusted partner focused on transcending expectationsLearn MoreOUR SERV"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.hampshirefamilyoffice.com/?page_id=67",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ties, LLC for nearly 15 years. At Fieldpoint, she built a successful outsourced family office practice serving ultra-high net worth families. Previously, Ms. Johnson was with Goldman"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.hampshirefamilyoffice.com/?page_id=49",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "e and hard to access private solutions and alternative investment opportunities.Family Office Services Complete and bespoke \u2013 our advisory platform and solutions are designed to meet"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "329496",
+  "firm_name": "INNOVATIVE FAMILY OFFICE LLC",
+  "domain": "innovativefo.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=276",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/329496/PDF/329496.pdf",
+    "observed_at": "2026-04-15",
+    "detail": {
+     "hnw_clients": "13",
+     "nonhnw_clients": "263",
+     "hnw_raum": "38246503",
+     "raum_total": "65815282",
+     "total_employees": "8",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://innovativefo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ent, providing an approachable, understandable wealth management experience.Our family office division, headed by a registered investment advisor, extends beyond traditional advisory"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://innovativefo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": ", so you can preserve your financial legacy for generations to come. Let's Talk Family Office Services We Offer Wealth Management With our holistic approach to wealth management, you"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://innovativefo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "rstandable wealth management experience.Our family office division, headed by a registered investment advisor, extends beyond traditional advisory services. We maintain strategic partnershi"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://innovativefo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ent, providing an approachable, understandable wealth management experience.Our family office division, headed by a registered investment advisor, extends beyond traditional advisory"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://innovativefo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": ", so you can preserve your financial legacy for generations to come. Let's Talk Family Office Services We Offer Wealth Management With our holistic approach to wealth management, you"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://innovativefo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "rstandable wealth management experience.Our family office division, headed by a registered investment advisor, extends beyond traditional advisory services. We maintain strategic partnershi"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "125101",
+  "firm_name": "JFG FAMILY OFFICE",
+  "domain": "jfgfamilyoffice.com",
+  "draft_category": "single_family_office",
+  "draft_note": "self-described SFO; ADV reports 162 individual clients (check: >5 contradicts one-family claim)",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/125101/PDF/125101.pdf",
+    "observed_at": "2026-05-04",
+    "detail": {
+     "hnw_clients": "154",
+     "nonhnw_clients": "8",
+     "hnw_raum": "4497847267",
+     "raum_total": "4529119285",
+     "total_employees": "62",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://jfgfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "single_family_office",
+     "span": "e of the Nation\u2019s Premier Integrated Family Offices Our Legacy Our history as a single family office spans 40 years and encompasses four generations. This legacy gives us a unique"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://jfgfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "t families. Our Clientele We serve an exclusive clientele with fully integrated family office services. Our human capital, philanthropic advising, financial planning, and investment"
+    }
+   }
+  ],
+  "category": "single_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "157511",
+  "firm_name": "LANDMARK MANAGEMENT, LLC",
+  "domain": "landmark-mgmt.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=0",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/157511/PDF/157511.pdf",
+    "observed_at": "2026-03-30",
+    "detail": {
+     "hnw_clients": "0",
+     "nonhnw_clients": "0",
+     "hnw_raum": "0",
+     "raum_total": "6294698147",
+     "total_employees": "30",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.landmark-mgmt.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Menu Close Menu > The Landmark Team Landmark Management, LLC is a fee-only SEC-registered investment adviser serving a small, select group of very high net worth individual and family clie"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "155003",
+  "firm_name": "MARCUARD FAMILY OFFICE LTD",
+  "domain": "marcuardfamilyoffice.com",
+  "draft_category": "multi_family_office",
+  "draft_note": "self-described MFO; ADV individual clients=77",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/155003/PDF/155003.pdf",
+    "observed_at": "2026-07-08",
+    "detail": {
+     "hnw_clients": "65",
+     "nonhnw_clients": "12",
+     "hnw_raum": "5514442526",
+     "raum_total": "8661817914",
+     "total_employees": "36",
+     "org_form": "Corporation"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.marcuardfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "Marcuard Family Office ist ein Multi Family Office in Z\u00fcrich, Schweiz DeutschDeutschEnglishPerspektivenKarriereKontaktMarcuard Fam"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.marcuardfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "gen meisternWarum wir IhrenBed\u00fcrfnissen entsprechen Marcuard Family Office: ein Multi-Family Office, das Sie umfassend, unabh\u00e4ngig und langfristig unterst\u00fctztLernen Sie unser Team"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.marcuardfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "ffice wurde 1998 in Z\u00fcrich gegr\u00fcndet und ist ein unabh\u00e4ngiges, partnergef\u00fchrtes Multi-Family Office.Warum?Als Family Office k\u00fcmmern wir uns umfassend um alle relevanten Verm\u00f6genst"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.marcuardfamilyoffice.com/team/chancen",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ffice wurde 1998 in Z\u00fcrich gegr\u00fcndet und ist ein unabh\u00e4ngiges, partnergef\u00fchrtes Multi-Family Office.Warum?Als Family Office k\u00fcmmern wir uns umfassend um alle relevanten Verm\u00f6genst"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.marcuardfamilyoffice.com/team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ffice wurde 1998 in Z\u00fcrich gegr\u00fcndet und ist ein unabh\u00e4ngiges, partnergef\u00fchrtes Multi-Family Office.Warum?Als Family Office k\u00fcmmern wir uns umfassend um alle relevanten Verm\u00f6genst"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.marcuardfamilyoffice.com/team/kultur",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ffice wurde 1998 in Z\u00fcrich gegr\u00fcndet und ist ein unabh\u00e4ngiges, partnergef\u00fchrtes Multi-Family Office.Warum?Als Family Office k\u00fcmmern wir uns umfassend um alle relevanten Verm\u00f6genst"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.marcuardfamilyoffice.com/team/team",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ffice wurde 1998 in Z\u00fcrich gegr\u00fcndet und ist ein unabh\u00e4ngiges, partnergef\u00fchrtes Multi-Family Office.Warum?Als Family Office k\u00fcmmern wir uns umfassend um alle relevanten Verm\u00f6genst"
+    }
+   }
+  ],
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "106806",
+  "firm_name": "MATTER FAMILY OFFICE",
+  "domain": "matterfamilyoffice.com",
+  "draft_category": "single_family_office",
+  "draft_note": "self-described SFO; ADV reports 226 individual clients (check: >5 contradicts one-family claim)",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/106806/PDF/106806.pdf",
+    "observed_at": "2026-07-08",
+    "detail": {
+     "hnw_clients": "128",
+     "nonhnw_clients": "98",
+     "hnw_raum": "3447188543",
+     "raum_total": "3811053690",
+     "total_employees": "55",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.matterfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "single_family_office",
+     "span": "ily Entrepreneurs Rising Generation Corporate Executives Families in Transition Single Family Office Matter Team Careers Insights & News Contact Us We help families thrive for gene"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.matterfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ing families140+core clientfamilies We provide an extensive suite of integrated family office services to meet your needs. Matter\u2019s interdisciplinary, client-centric approach to weal"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.matterfamilyoffice.com/who-we-are/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "single_family_office",
+     "span": "ily Entrepreneurs Rising Generation Corporate Executives Families in Transition Single Family Office Matter Team Careers Insights & News Contact Us Who We AreWe are your trusted ad"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.matterfamilyoffice.com/who-we-are/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ised to serve families for generations. 2025 Matter merged with IWP, a national multi-family office based in Denver. Founded by Charlie Willhoit in 2005, IWP brought innovative te"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.matterfamilyoffice.com/investment-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "single_family_office",
+     "span": "ily Entrepreneurs Rising Generation Corporate Executives Families in Transition Single Family Office Matter Team Careers Insights & News Contact Us Family Operations Wealth Plannin"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.matterfamilyoffice.com/project-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "single_family_office",
+     "span": "ily Entrepreneurs Rising Generation Corporate Executives Families in Transition Single Family Office Matter Team Careers Insights & News Contact Us Family Operations Wealth Plannin"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.matterfamilyoffice.com/the-matter-team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "single_family_office",
+     "span": "ily Entrepreneurs Rising Generation Corporate Executives Families in Transition Single Family Office Matter Team Careers Insights & News Contact Us Matter Team Our team has a commo"
+    }
+   }
+  ],
+  "category": "single_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "144516",
+  "firm_name": "NICHOLAS HOFFMAN & COMPANY, LLC",
+  "domain": "nhoffmanandco.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=399",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/144516/PDF/144516.pdf",
+    "observed_at": "2026-07-10",
+    "detail": {
+     "hnw_clients": "285",
+     "nonhnw_clients": "114",
+     "hnw_raum": "7774720984",
+     "raum_total": "8262465273",
+     "total_employees": "25",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://nhoffmanandco.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "ight, Trust Custom Strategies for Generational Wealth We are a private boutique wealth management firm specializing in crafting bespoke strategies to grow generational wealth. Throug"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "296362",
+  "firm_name": "PINE RIDGE ADVISERS LLC",
+  "domain": "pineridgeadvisers.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=22",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/296362/PDF/296362.pdf",
+    "observed_at": "2026-03-31",
+    "detail": {
+     "hnw_clients": "22",
+     "nonhnw_clients": "0",
+     "hnw_raum": "5188305563",
+     "raum_total": "14416008054",
+     "total_employees": "14",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "142856",
+  "firm_name": "PIONEER FAMILY OFFICE, LLC",
+  "domain": "piowealth.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=100",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/142856/PDF/142856.pdf",
+    "observed_at": "2026-04-10",
+    "detail": {
+     "hnw_clients": "60",
+     "nonhnw_clients": "40",
+     "hnw_raum": "218302104",
+     "raum_total": "956780912",
+     "total_employees": "5",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.piowealth.com/PFO/who-we-are",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "cial Planning Firm of 2019. Pioneer Family Office is proud to be a licensed SEC Registered Investment Advisor. CONTACT US To learn more, contact us or leave your details in the form below N"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.piowealth.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "e. Pioneer services include Holistic Financial Planning, Wealth Management, and Family Office services for affluent clients and high-net worth and ultra-high-net worth families. READ"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.piowealth.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "ies, Avi functions as the Managing Partner of Pioneer Family Office, which is a Registered Investment Advisor (RIA) licensed in the USA, based in Florida. In addition, Avi serves as an Exec"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.piowealth.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "e. Pioneer services include Holistic Financial Planning, Wealth Management, and Family Office services for affluent clients and high-net worth and ultra-high-net worth families. READ"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.piowealth.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "ies, Avi functions as the Managing Partner of Pioneer Family Office, which is a Registered Investment Advisor (RIA) licensed in the USA, based in Florida. In addition, Avi serves as an Exec"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "312154",
+  "firm_name": "PMG FAMILY OFFICE, LLC",
+  "domain": "pmgfamilyoffice.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=77",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/312154/PDF/312154.pdf",
+    "observed_at": "2026-06-05",
+    "detail": {
+     "hnw_clients": "35",
+     "nonhnw_clients": "42",
+     "hnw_raum": "132120160",
+     "raum_total": "144001478",
+     "total_employees": "2",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://pmgfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "cord with the SEC. Read our legal disclosures here. PMG Family Office, LLC is a registered investment adviser located in Plano, TX. PMG Family Office, LLC may only transact business in thos"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://pmgfamilyoffice.com/home-3/contact-us/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "contact",
+     "category_signal": "wealth_manager",
+     "span": "cord with the SEC. Read our legal disclosures here. PMG Family Office, LLC is a registered investment adviser located in Plano, TX. PMG Family Office, LLC may only transact business in thos"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "338563",
+  "firm_name": "POINTONE FAMILY OFFICE",
+  "domain": "p1fo.com",
+  "draft_category": "multi_family_office",
+  "draft_note": "self-described MFO; ADV individual clients=25",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338563/PDF/338563.pdf",
+    "observed_at": "2026-04-10",
+    "detail": {
+     "hnw_clients": "17",
+     "nonhnw_clients": "8",
+     "hnw_raum": "325124412",
+     "raum_total": "327091481",
+     "total_employees": "4",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.p1fo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "PointOne Family Office | Boutique Multi-Family Office top of page HomeAboutLeadershipPrivate AccessP1FO AddeparGoldman SachsVirtual D"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.p1fo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "AccessP1FO AddeparGoldman SachsVirtual Data RoomNot the 1%. The 0.1%.A Boutique Multi-Family Office Designed for Families Seeking Capital Partnership and Commercial ParticipationP"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.p1fo.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "capital partnership and commercial participation. PointOne Family Office (P1FO)Multi-family office serving the UHNW. Provides investment advisory, curated privates and directs, p"
+    }
+   }
+  ],
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "338839",
+  "firm_name": "PULLIAM FAMILY OFFICE, LLC",
+  "domain": "pulliamfamilyoffice.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=37",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338839/PDF/338839.pdf",
+    "observed_at": "2026-05-05",
+    "detail": {
+     "hnw_clients": "37",
+     "nonhnw_clients": "0",
+     "hnw_raum": "141743358",
+     "raum_total": "141743358",
+     "total_employees": "3",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.pulliamfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ate risk. Any discussion of goals, legacy planning, cash flow, coordination, or family office services is general in nature and should not be relied upon as a representation that any"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.pulliamfamilyoffice.com/about",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ate risk. Any discussion of goals, legacy planning, cash flow, coordination, or family office services is general in nature and should not be relied upon as a representation that any"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.pulliamfamilyoffice.com/services",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ate risk. Any discussion of goals, legacy planning, cash flow, coordination, or family office services is general in nature and should not be relied upon as a representation that any"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.pulliamfamilyoffice.com/contact",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "contact",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ate risk. Any discussion of goals, legacy planning, cash flow, coordination, or family office services is general in nature and should not be relied upon as a representation that any"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "324899",
+  "firm_name": "SAPIENT CAPITAL LLC",
+  "domain": "sapientcapital.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=980",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/324899/PDF/324899.pdf",
+    "observed_at": "2026-03-17",
+    "detail": {
+     "hnw_clients": "691",
+     "nonhnw_clients": "289",
+     "hnw_raum": "11779395232",
+     "raum_total": "13756996022",
+     "total_employees": "59",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://sapientcapital.com/about",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": ", consolidated financial reporting, advanced wealth planning, and comprehensive family office services. As an independent advisory firm, we serve families, individuals, endowments &"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://sapientcapital.com/about",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "ceSolutionsContactClient Login About We are Sapient Capital, a holistic private wealth management firm dedicated to providing full-service wealth advisory solutions. Our experience t"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://sapientcapital.com/contact",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "contact",
+     "category_signal": "ria_with_fo_practice",
+     "span": "g Consolidated Financial Reporting Wealth Planning Legacy & Succession Planning Family Office Services Other How Did you Hear About Us Referral Search Engine Source Of Wealth Inherit"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "131618",
+  "firm_name": "SENESCHAL FAMILY OFFICE",
+  "domain": "seneschalfamilyoffice.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "self-described MFO but ADV reports 227 individual clients -- a retail-scale book; propose wealth_manager, review the spans",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/131618/PDF/131618.pdf",
+    "observed_at": "2026-03-27",
+    "detail": {
+     "hnw_clients": "89",
+     "nonhnw_clients": "138",
+     "hnw_raum": "243796405",
+     "raum_total": "301275190",
+     "total_employees": "5",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.seneschalfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "broad. Our advice is objective and delivered at the elite standard of fiduciary multi-family office services. We are paid exclusively by our clients.How We ServeFamily Office Serv"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.seneschalfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Our advice is objective and delivered at the elite standard of fiduciary multi-family office services. We are paid exclusively by our clients.How We ServeFamily Office ServicesOur t"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.seneschalfamilyoffice.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "our Financial Partner Through Life\u2019s TransitionsWe are an independent, fee only wealth management firm serving the best interests of our clients domestically and abroad. Our advice i"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "335152",
+  "firm_name": "SESTANTE FAMILY OFFICE",
+  "domain": "sestante.com",
+  "draft_category": "multi_family_office",
+  "draft_note": "self-described MFO; ADV individual clients=14",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/335152/PDF/335152.pdf",
+    "observed_at": "2026-04-22",
+    "detail": {
+     "hnw_clients": "9",
+     "nonhnw_clients": "5",
+     "hnw_raum": "425659719",
+     "raum_total": "433884051",
+     "total_employees": "4",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://sestante.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "Elite Family Office Services for Exceptional Living As a discreet and exclusive multi-family office, we provide high-touch services to ultra-high-net-worth families and individual"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://sestante.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "dence and perspective to the stewardship of your capital. Working With Us Elite Family Office Services for Exceptional Living As a discreet and exclusive multi-family office, we prov"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://sestante.com/our-story/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ides comprehensive wealth management, generational and charitable planning, and family office services to help simplify our clients\u2019 lives. Our approach is built on understanding the"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://sestante.com/partners/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "industry-leading wealth management resource We leverage the resources of Schwab Family Office Services, where we have access to extensive intellectual capital and a dedicated support"
+    }
+   }
+  ],
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "300899",
+  "firm_name": "STOKES FAMILY OFFICE LLC",
+  "domain": "stokesfamilyoffice.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "website signals wealth_manager; ADV individual clients=724",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/300899/PDF/300899.pdf",
+    "observed_at": "2026-04-30",
+    "detail": {
+     "hnw_clients": "383",
+     "nonhnw_clients": "341",
+     "hnw_raum": "2355595295",
+     "raum_total": "3351688868",
+     "total_employees": "14",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/about-us/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "ked for 3 years in compliance and operations at a regional bank broker dealer / registered investment advisor and for nearly 5 years as a securities regulator. Charlie graduated from Jesuit"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/napa-top-dc-advisor-team-2026/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ts through wealth management services, retirement plan consulting services, and family office services. The Stokes Family Office\u2019s youthful leadership approaches the complexities of"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/napa-top-dc-advisor-team-2026/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "has over $3 billion in assets under management** and is a 100% family-owned SEC-registered investment adviser* located in New Orleans. As a fiduciary, the firm works on behalf of its client"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/stokes-family-office-exceeds3b-aum/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "Among Louisiana\u2019s Largest Registered Investment Advisors New Orleans\u2013based SEC\u2011registered investment adviser expands into Dallas and advances plans for flagship headquarters ahead of 40th"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/stokes-family-office-exceeds3b-aum/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "led home for decades. About Stokes Family Office Stokes Family Office is an SEC\u2011registered investment adviser headquartered in New Orleans, Louisiana. The firm was formed in 2019 following"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/stokes-family-office-exceeds3b-aum/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "Among Louisiana\u2019s Largest Registered Investment Advisors New Orleans\u2013based SEC\u2011registered investment adviser expands into Dallas and advances plans for flagship headquarters ahead of 40th"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/stokes-family-office-exceeds3b-aum/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "led home for decades. About Stokes Family Office Stokes Family Office is an SEC\u2011registered investment adviser headquartered in New Orleans, Louisiana. The firm was formed in 2019 following"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/napa-top-dc-advisor-team-2026/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ts through wealth management services, retirement plan consulting services, and family office services. The Stokes Family Office\u2019s youthful leadership approaches the complexities of"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://stokesfamilyoffice.com/insights/napa-top-dc-advisor-team-2026/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "has over $3 billion in assets under management** and is a 100% family-owned SEC-registered investment adviser* located in New Orleans. As a fiduciary, the firm works on behalf of its client"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "220519",
+  "firm_name": "SUMMIT TRAIL ADVISORS, LLC",
+  "domain": "summittrail.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=639",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/220519/PDF/220519.pdf",
+    "observed_at": "2026-05-26",
+    "detail": {
+     "hnw_clients": "588",
+     "nonhnw_clients": "51",
+     "hnw_raum": "16333311810",
+     "raum_total": "19941615810",
+     "total_employees": "94",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "130711",
+  "firm_name": "SUPERIOR PLANNING WEALTH MANAGEMENT & FAMILY OFFICE",
+  "domain": "superiorplanning.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=509",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/130711/PDF/130711.pdf",
+    "observed_at": "2026-06-02",
+    "detail": {
+     "hnw_clients": "78",
+     "nonhnw_clients": "431",
+     "hnw_raum": "215692294",
+     "raum_total": "349553158",
+     "total_employees": "12",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://superiorplanning.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": ", LLC an SEC Registered Investment Advisor Our full-service Wealth Management & Family Office group provides highly tailored services for clients with complex financial matters. W"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://superiorplanning.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "art with a Plan Wealth Management & Family Office Superior Planning, LLC an SEC Registered Investment Advisor Our full-service Wealth Management & Family Office group provides highly tailor"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://superiorplanning.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "LC (dba Superior Planning Wealth Management & Family Office) (SPWMFO) is an SEC registered investment advisor (CRD No. 130711) that offers financial planning programs and investment advisor"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://superiorplanning.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "nt advisory services offered through Carmel Capital Partners, LLC (CCP), an SEC registered investment advisor (CRD No. 123907), for select clients. Carmel Capital Partners, LLC Form ADV Par"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "106079",
+  "firm_name": "TARBOX FAMILY OFFICE, INC.",
+  "domain": "tarbox.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=208",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/106079/PDF/106079.pdf",
+    "observed_at": "2026-03-26",
+    "detail": {
+     "hnw_clients": "208",
+     "nonhnw_clients": null,
+     "hnw_raum": "839434232",
+     "raum_total": "953740765",
+     "total_employees": "8",
+     "org_form": "Corporation"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "We\u2019re Different Our History Who You Are What We Do Investing Wealth Management Family Office Services What We Think Client Dashboard Contact Us WE ARE TARBOX THE NEXT LEVEL OF WEALT"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Tarbox Family Office | Newport Beach Registered Investment Advisor Who We Are Meet Our People Meet Our Dogs We\u2019re Different Our History Who You Ar"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/history/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "multi_family_office",
+     "span": "y credentialed team distinguishes Tarbox as what is known in the industry as a \u201cmulti-family office\u201d. Over the years, our core values have remained the same. We look forward to th"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/history/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "We\u2019re Different Our History Who You Are What We Do Investing Wealth Management Family Office Services What We Think Client Dashboard Contact Us History of Tarbox Scroll Down Scroll"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/history/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ing), Tarbox sought to differentiate by highlighting its fiduciary approach and family office services provided. The hands-on, deeply integrated and customized services offered to a"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/history/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "d financial matters. 1985 Tarbox Equity Laura launches her own firm, becoming a Registered Investment Advisor. Working 60+ hour weeks, she was also teaching CFP\u00ae classes in the evenings, an"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/who-we-are/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "We\u2019re Different Our History Who You Are What We Do Investing Wealth Management Family Office Services What We Think Client Dashboard Contact Us Meet Our People Scroll Down Scroll Wh"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/who-we-are/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "wards SCUBA dived with sharks, manta rays, and my wife Tim Ryan Senior Manager, Family Office Services Raced in the largest collegiate bike race in the United States Lived in Rome fo"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/what-we-do/wealth-management/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "We\u2019re Different Our History Who You Are What We Do Investing Wealth Management Family Office Services What We Think Client Dashboard Contact Us Wealth Management Scroll Down Scroll"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tarbox.com/what-we-do/wealth-management/?scrollto=wealth_wrap_section",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "We\u2019re Different Our History Who You Are What We Do Investing Wealth Management Family Office Services What We Think Client Dashboard Contact Us Wealth Management Scroll Down Scroll"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "323249",
+  "firm_name": "TAYLOR FRIGON FAMILY OFFICE, LLC",
+  "domain": "tffamilyoffice.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=0",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/323249/PDF/323249.pdf",
+    "observed_at": "2026-05-13",
+    "detail": {
+     "hnw_clients": null,
+     "nonhnw_clients": null,
+     "hnw_raum": "19955040",
+     "raum_total": "19955040",
+     "total_employees": "11",
+     "org_form": "Limited Liability Company"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "159440",
+  "firm_name": "TFO FAMILY OFFICE PARTNERS",
+  "domain": "tfopartners.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=245 | DOMAIN SHARED with CRD 124407: resolve identity (ADR-0020)",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/159440/PDF/159440.pdf",
+    "observed_at": "2026-06-24",
+    "detail": {
+     "hnw_clients": "231",
+     "nonhnw_clients": "14",
+     "hnw_raum": "4958028911",
+     "raum_total": "5037052171",
+     "total_employees": "88",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "customized suite of solutions including wealth management, investment advisory, family office services, estate planning, tax consulting and compliance, trust services, family governa"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ing and Activities Visit TFO Wealth Partners Website TFO Family Office Partners Family Office Services for Families and Businesses TFO Family Office Partners\u2019 mission is empowering f"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ners then uses their expertise in investing, income taxes, estate planning, and family office services to build and implement plans to help clients\u2019 wealth endure life\u2019s inevitable t"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Wealth Management Services for Families and Businesses TFO Wealth Partners is a wealth management firm built to help families and businesses define and achieve their unique goals. Th"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "124407",
+  "firm_name": "TFO WEALTH PARTNERS",
+  "domain": "tfopartners.com",
+  "draft_category": "ria_with_fo_practice",
+  "draft_note": "website signals ria_with_fo_practice; ADV individual clients=1815 | DOMAIN SHARED with CRD 159440: resolve identity (ADR-0020)",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/124407/PDF/124407.pdf",
+    "observed_at": "2026-04-24",
+    "detail": {
+     "hnw_clients": "920",
+     "nonhnw_clients": "895",
+     "hnw_raum": "4680802295",
+     "raum_total": "5660890692",
+     "total_employees": "67",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "HTTPS://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "customized suite of solutions including wealth management, investment advisory, family office services, estate planning, tax consulting and compliance, trust services, family governa"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "HTTPS://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ing and Activities Visit TFO Wealth Partners Website TFO Family Office Partners Family Office Services for Families and Businesses TFO Family Office Partners\u2019 mission is empowering f"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "HTTPS://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ners then uses their expertise in investing, income taxes, estate planning, and family office services to build and implement plans to help clients\u2019 wealth endure life\u2019s inevitable t"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "HTTPS://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Wealth Management Services for Families and Businesses TFO Wealth Partners is a wealth management firm built to help families and businesses define and achieve their unique goals. Th"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "customized suite of solutions including wealth management, investment advisory, family office services, estate planning, tax consulting and compliance, trust services, family governa"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ing and Activities Visit TFO Wealth Partners Website TFO Family Office Partners Family Office Services for Families and Businesses TFO Family Office Partners\u2019 mission is empowering f"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ners then uses their expertise in investing, income taxes, estate planning, and family office services to build and implement plans to help clients\u2019 wealth endure life\u2019s inevitable t"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://TFOPARTNERS.COM/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "Wealth Management Services for Families and Businesses TFO Wealth Partners is a wealth management firm built to help families and businesses define and achieve their unique goals. Th"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "customized suite of solutions including wealth management, investment advisory, family office services, estate planning, tax consulting and compliance, trust services, family governa"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ing and Activities Visit TFO Wealth Partners Website TFO Family Office Partners Family Office Services for Families and Businesses TFO Family Office Partners\u2019 mission is empowering f"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ners then uses their expertise in investing, income taxes, estate planning, and family office services to build and implement plans to help clients\u2019 wealth endure life\u2019s inevitable t"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://tfopartners.com/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "Wealth Management Services for Families and Businesses TFO Wealth Partners is a wealth management firm built to help families and businesses define and achieve their unique goals. Th"
+    }
+   }
+  ],
+  "category": "ria_with_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "150748",
+  "firm_name": "TIMONIER",
+  "domain": "timonier.com",
+  "draft_category": "unresolved",
+  "draft_note": "no self-description span; ADV individual clients=186",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/150748/PDF/150748.pdf",
+    "observed_at": "2026-02-10",
+    "detail": {
+     "hnw_clients": "100",
+     "nonhnw_clients": "86",
+     "hnw_raum": "382476828",
+     "raum_total": "450303587",
+     "total_employees": "8",
+     "org_form": "Corporation"
+    }
+   }
+  ],
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "143112",
+  "firm_name": "WELLSPRING FAMILY OFFICE",
+  "domain": "wellspringfo.com",
+  "draft_category": "wealth_manager",
+  "draft_note": "self-described MFO but ADV reports 139 individual clients -- a retail-scale book; propose wealth_manager, review the spans",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf",
+    "observed_at": "2026-06-23",
+    "detail": {
+     "hnw_clients": "118",
+     "nonhnw_clients": "21",
+     "hnw_raum": "4929519362",
+     "raum_total": "5055010974",
+     "total_employees": "31",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://wellspringfo.com/who-we-are/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "g relationships with your family grounded in trust and understanding. As a true multi-family office, we take a fully individualized and integrated approach so you can live well, s"
+    }
+   }
+  ],
+  "category": "wealth_manager",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "crd": "338122",
+  "firm_name": "XCEPTION FAMILY OFFICE",
+  "domain": "xceptionfamilyoffice.com",
+  "draft_category": "multi_family_office",
+  "draft_note": "self-described MFO; ADV individual clients=28",
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338122/PDF/338122.pdf",
+    "observed_at": "2026-05-27",
+    "detail": {
+     "hnw_clients": "26",
+     "nonhnw_clients": "2",
+     "hnw_raum": "188290959",
+     "raum_total": "189340109",
+     "total_employees": "5",
+     "org_form": "Limited Liability Company"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "ents with quality and personalized attention. + More About Us Our Expertise Our Multi-Family Office Services Public Markets Investing Private Investment Opportunities Pre-Transact"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "flexibility and long-term stewardship of capital. Insurance Advisory Within our multi-family office model, life insurance is evaluated as a strategic planning tool rather than a p"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "alls, distributions, and capital account balances. Who We Serve Our Clients Our multi-family office is designed to serve a limited number of families whose financial lives have re"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Xception Family Office Xception Family Office Services Member Families Core Principles Team Client Portal Client Portal A Trusted Part"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ith quality and personalized attention. + More About Us Our Expertise Our Multi-Family Office Services Public Markets Investing Private Investment Opportunities Pre-Transaction and E"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com/investment-philosophy/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Investment Philosophy - Xception Family Office Investment Philosophy - Xception Family Office Services Member Families Core Principles Team Client Portal Client Portal Investment Phi"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com/our-services/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "multi_family_office",
+     "span": "flexibility and long-term stewardship of capital. Insurance Advisory Within our multi-family office model, life insurance is evaluated as a strategic planning tool rather than a p"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com/our-services/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Our Services - Xception Family Office Our Services - Xception Family Office Services Member Families Core Principles Team Client Portal Client Portal Our Services P"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com/our-team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ational efficiency. Prior to Xception, Cort founded Haber Investment Counsel, a multi-family office advising a select group of wealthy families on all aspects of\u2026 Read More Will H"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com/our-team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ational efficiency. Prior to Xception, Cort founded Haber Investment Counsel, a multi-family office advising a select group of wealthy families on all aspects of their balance she"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://xceptionfamilyoffice.com/our-team/",
+    "observed_at": "2026-07-12",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Our Team - Xception Family Office Our Team - Xception Family Office Services Member Families Core Principles Team Client Portal Client Portal Our Team M. Pa"
+    }
+   }
+  ],
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ }
+]

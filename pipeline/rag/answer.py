@@ -11,18 +11,26 @@ information (use the phone / the A-grade secondary / LinkedIn), not just bad new
 from __future__ import annotations
 
 import os
+import re
 
 from pipeline.rag import intent as qi
 from pipeline.rag.retrieve import by_filters, by_name, hybrid
 
 ANSWER_MODEL = os.getenv("ANSWER_MODEL", "gpt-4o-mini")
 
-_GRADE_RANK = {"A": 0, "B": 1, "C": 2, "D": 3, "F": 4}  # ascending: best (verified) first
+# Ascending: best email basis first. PUB (firm-published, proven) outranks A (vendor-deliverable but
+# inferred) > B (catch-all) > C (unconfirmed). D/F are quarantined and never reach a source card.
+_GRADE_RANK = {"PUB": 0, "A": 1, "B": 2, "C": 3, "D": 4, "F": 5}
+
+
+def _is_fo(h: dict) -> bool:
+    return h.get("entity_category") in ("single_family_office", "multi_family_office")
 
 
 def _grade_key(h: dict) -> tuple:
-    """Sort key: email grade ascending (A first), then retrieval score descending."""
-    return (_GRADE_RANK.get(h.get("primary_email_grade"), 9), -h.get("score", 0))
+    """Sort key: affirmed family offices first (policy: non-FOs are kept but never LEAD an answer),
+    then email grade ascending (PUB/A first), then retrieval score descending."""
+    return (0 if _is_fo(h) else 1, _GRADE_RANK.get(h.get("primary_email_grade"), 9), -h.get("score", 0))
 
 
 def _aum_words(aum) -> str | None:
@@ -31,28 +39,35 @@ def _aum_words(aum) -> str | None:
     return f"${aum / 1e9:.1f}B" if aum >= 1_000_000_000 else f"${aum / 1e6:.0f}M"
 
 
+# How precisely to describe each email grade to the customer (mandate: narrowest accurate wording).
+_EMAIL_SURE = {
+    "PUB": "published by the firm for this person",
+    "A": "vendor-reported deliverable for an inferred address (not proven to be this person's mailbox)",
+    "B": "plausible inference on a catch-all domain, unconfirmable",
+}
+
+
 def best_channel(h: dict) -> dict:
-    """Deterministic outreach routing from the verification grades. Returns
-    {channel, target, detail} -- the concrete 'how to reach them' for this record."""
+    """Deterministic outreach routing from the email grades. Returns {channel, target, detail} --
+    the concrete 'how to reach them'. A published individual address (PUB) is the strongest channel;
+    a vendor-deliverable inferred address (A) or catch-all (B) is emailable but honestly qualified."""
     pg, sg = h.get("primary_email_grade"), h.get("secondary_email_grade")
-    if pg in ("A", "B") and h.get("primary_contact_email"):
-        sure = "verified" if pg == "A" else "plausible (catch-all domain, unconfirmable)"
+    if pg in ("PUB", "A", "B") and h.get("primary_contact_email"):
         return {"channel": "email", "target": h["primary_contact_email"],
-                "detail": f"email {h.get('primary_contact_name')} directly ({sure})"}
-    if sg in ("A", "B") and h.get("secondary_contact_email"):
-        sure = "verified" if sg == "A" else "plausible"
+                "detail": f"email {h.get('primary_contact_name')} directly ({_EMAIL_SURE[pg]})"}
+    if sg in ("PUB", "A", "B") and h.get("secondary_contact_email"):
         return {"channel": "email", "target": h["secondary_contact_email"],
-                "detail": (f"primary contact's email could not be verified -- go through "
+                "detail": (f"no reachable address for the primary contact -- go through "
                            f"{h.get('secondary_contact_name')} ({h.get('secondary_contact_title')}), "
-                           f"whose address is {sure}")}
+                           f"whose address is {_EMAIL_SURE[sg]}")}
     if h.get("firm_phone"):
         return {"channel": "phone", "target": h["firm_phone"],
                 "detail": "no deliverable email on record -- call the office line"}
     if h.get("corporate_linkedin"):
         return {"channel": "linkedin", "target": h["corporate_linkedin"],
-                "detail": "no verified email or phone -- approach via the firm's LinkedIn"}
+                "detail": "no reachable email or phone -- approach via the firm's LinkedIn"}
     return {"channel": "research", "target": h.get("website"),
-            "detail": "no verified outreach channel on record"}
+            "detail": "no confirmed outreach channel on record"}
 
 
 SYSTEM = (
@@ -60,22 +75,35 @@ SYSTEM = (
     "using ONLY the provided records.\n"
     "Shape of every answer (write naturally -- no section headings, no labels):\n"
     "1. Open with one or two sentences that directly answer the question and name the strongest "
-    "target and why (e.g. verified contact + thesis fit). Never open with a list.\n"
+    "target and why (e.g. a firm-published or vendor-checked contact + thesis fit). Never open with "
+    "a list.\n"
     "2. Then, for each relevant firm (numbered, strongest first), write a short paragraph that ties "
     "its thesis/sectors/AUM to the user's question -- not a recitation of every field -- and ends by "
     "saying exactly how to reach them, following the record's 'Recommended outreach' line and stating "
     "the verification status in plain words. Never present an unverified address as confirmed.\n"
     "3. Close with one concrete, analyst-style next step (whom to start with and why, or a sharper "
     "query the user could ask, e.g. narrowing by state or AUM).\n"
+    "- WHY NOW: if a record has a 'Recent signal' line (a dated, sourced event -- a raise, hire, "
+    "merger, award), weave it in as the timely reason to reach out now. Never invent a signal; use "
+    "only the ones listed.\n"
     "Hard rules:\n"
     "- Use only the records below; never invent a firm, person, email, number, or fact.\n"
+    "- ENTITY HONESTY: each record has an 'Entity type'. Lead with affirmed family offices. A record "
+    "marked 'wealth manager' or 'RIA with a family-office practice' is NOT a family office -- if you "
+    "mention it, say so plainly and never call it a family office. Do not present a non-FO as a "
+    "family office to satisfy the question.\n"
     "- If a 'Dataset total' line is present, use THAT number for any count -- the listed records may "
     "be a subset.\n"
     "- If no record matches the criteria exactly, say so plainly, then offer the nearest records as "
     "closest options, clearly labelled as such.\n"
-    "- 'Verified' applies to EMAIL addresses only (grade A). Never call a phone number, LinkedIn "
-    "page, or the record itself 'verified'. Phone numbers come from the firm's SEC filing -- if you "
-    "qualify one, say exactly that.\n"
+    "- Email honesty (use the record's grade, never the word 'verified' loosely): PUB = an address "
+    "the firm itself publishes for this person (the strongest -- say 'firm-published'); A = an "
+    "inferred pattern a vendor reported deliverable (say 'vendor-checked, but an inferred address "
+    "not confirmed as theirs'); B = inferred on a catch-all domain ('plausible, unconfirmable'); "
+    "C = inferred, unconfirmed. Never call a phone, LinkedIn page, or the record itself 'verified'. "
+    "Phone numbers come from the firm's SEC filing -- say exactly that.\n"
+    "- Each contact was selected as the firm's allocation-authority decision-maker; where the "
+    "record's authority basis is 'title_inferred', say the authority is inferred from title.\n"
     "- Write in clear Markdown prose. Substantive, not padded.\n"
     "- Make the signal scannable: **bold** every load-bearing fact -- the firm name at the start of "
     "its item, contact names, email addresses, phone numbers, AUM figures, and city/state. A reader "
@@ -84,12 +112,25 @@ SYSTEM = (
 )
 
 
+# Plain labels for the entity category (ADR-0023: never present a non-FO as a family office).
+_CATEGORY_LABEL = {
+    "multi_family_office": "multi-family office", "single_family_office": "single-family office",
+    "wealth_manager": "wealth manager (NOT a family office)",
+    "ria_with_fo_practice": "RIA with a family-office practice (NOT a family office)",
+}
+
+
 def _render_one(i: int, h: dict) -> str:
     loc = ", ".join(x for x in (h.get("city"), h.get("state"), h.get("country")) if x)
     facts = [x for x in (loc or None,
                          f"founded {h['founded_year']}" if h.get("founded_year") else None,
                          f"AUM {_aum_words(h.get('aum_usd'))}" if h.get("aum_usd") else None) if x]
     lines = [f"{i}. {h['family_office_name']} ({' | '.join(facts) or 'details n/a'})"]
+    cat = _CATEGORY_LABEL.get(h.get("entity_category"))
+    if cat:
+        lines.append(f"   Entity type: {cat}")
+    if h.get("primary_selection_basis"):
+        lines.append(f"   Why this contact: {h['primary_selection_basis']}")
     if h.get("description"):
         lines.append(f"   About: {h['description']}")
     if h.get("investment_thesis"):
@@ -113,6 +154,8 @@ def _render_one(i: int, h: dict) -> str:
     ch = best_channel(h)
     lines.append(f"   Recommended outreach: {ch['detail']}" +
                  (f" -> {ch['target']}" if ch.get("target") else ""))
+    for s in (h.get("signals") or [])[:2]:  # the 'why now' -- dated, sourced recent events
+        lines.append(f"   Recent signal ({s['date']}, {s['type']}): {s['description']}")
     return "\n".join(lines)
 
 
@@ -121,7 +164,9 @@ def _render(hits: list[dict], total: int | None = None, method_note: str | None 
     if total is not None:
         parts.append(f"Dataset total matching the criteria: {total} record(s)."
                      + (f" ({method_note})" if method_note else ""))
-    parts += [_render_one(i, h) for i, h in enumerate(hits, 1)]
+    # affirmed family offices lead the record list handed to the model (policy: non-FOs never lead)
+    ordered = sorted(hits, key=lambda h: (0 if _is_fo(h) else 1, -h.get("score", 0)))
+    parts += [_render_one(i, h) for i, h in enumerate(ordered, 1)]
     return "\n".join(parts)
 
 
@@ -141,6 +186,12 @@ def _sources(hits: list[dict]) -> list[dict]:
             "phone": h.get("firm_phone"), "linkedin": h.get("corporate_linkedin"),
             "website": h.get("website"), "adv_filing_url": h.get("adv_filing_url"),
             "best_channel": ch["channel"], "best_channel_target": ch.get("target"),
+            "entity_category": h.get("entity_category"),
+            "is_family_office": h.get("entity_category") in ("single_family_office", "multi_family_office"),
+            "selection_basis": h.get("primary_selection_basis"),
+            "authority_basis": h.get("primary_authority_basis"),
+            "reachability": h.get("reachability_tier"), "confidence": h.get("confidence_score"),
+            "signals": (h.get("signals") or [])[:2],
             "matched": h["matched"], "score": h["score"],
         })
     return out
@@ -183,51 +234,88 @@ def _route(query: str, k: int) -> tuple:
     return q, hits, total, method_note
 
 
-def _messages(query: str, hits: list[dict], total, method_note) -> list[dict]:
+def _messages(query: str, hits: list[dict], total, method_note, repair: list[str] | None = None) -> list[dict]:
     user = (f"Question: {query}\n\nRecords:\n{_render(hits, total, method_note)}\n\n"
             "Answer as specified: verdict first, then the picks with outreach routing, then one "
             "next step.")
+    if repair:  # second attempt: name the exact grounding failures the first answer must not repeat
+        allowed = ", ".join(sorted({e for h in hits for e in
+                                    (h.get("primary_contact_email"), h.get("secondary_contact_email")) if e})) or "none"
+        user += ("\n\nYour previous answer FAILED an independent grounding check: "
+                 + "; ".join(repair)
+                 + f".\nThe ONLY email addresses you may write are: {allowed}. Do not state any other "
+                 "address. Do not name any firm not listed above. Rewrite the answer within these limits.")
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
 
 
 _NO_MATCH = "No matching family office is in the dataset for that query."
 
 
-def answer(query: str, k: int = 5) -> dict:
-    """Classify -> route -> retrieve -> ground an analyst-shaped answer. Returns
-    {answer, sources, query, intent}. (Non-streaming; the CLI and API clients use this.)"""
+def _compose(query: str, hits: list[dict], total, method_note) -> tuple[str, dict]:
+    """Generate -> independently check -> repair-once-or-refuse (ADR-0023). Returns
+    (released_text, verification). The final text is one the deterministic check passed, or a safe
+    grounded fallback -- never an answer that failed the check. Logs the verdict so the control is
+    visible in real runs."""
+    import logging
+
+    from pipeline.rag import checkanswer
     from pipeline.rag.oai import client
 
+    log = logging.getLogger("rag.answer")
+    text = client().chat.completions.create(
+        model=ANSWER_MODEL, temperature=0,
+        messages=_messages(query, hits, total, method_note)).choices[0].message.content or ""
+    v = checkanswer.check(text, hits, total)
+    verification = {"passed": v.ok, "failures": v.failures, "warnings": v.warnings, "repaired": False}
+    if not v.ok:
+        log.warning("grounding check FAILED for %r: %s -- repairing", query, v.failures)
+        text2 = client().chat.completions.create(
+            model=ANSWER_MODEL, temperature=0,
+            messages=_messages(query, hits, total, method_note, repair=v.failures)
+        ).choices[0].message.content or ""
+        v2 = checkanswer.check(text2, hits, total)
+        verification = {"passed": v2.ok, "failures": v2.failures, "warnings": v2.warnings, "repaired": True}
+        if v2.ok:
+            text = text2
+        else:  # still ungrounded -> refuse rather than ship it (a check must control release)
+            log.error("grounding check FAILED after repair for %r: %s -- refusing", query, v2.failures)
+            names = ", ".join(f"**{h['family_office_name']}**" for h in hits[:5])
+            text = ("I can't produce a fully grounded answer for that from the dataset without risking "
+                    f"an unsupported detail. The records retrieved were: {names}. Please narrow the "
+                    "query, or ask about one of these firms directly.")
+    else:
+        log.info("grounding check passed for %r (%d warnings)", query, len(v.warnings))
+    return text, verification
+
+
+def answer(query: str, k: int = 5) -> dict:
+    """Classify -> route -> retrieve -> ground -> INDEPENDENTLY CHECK before release (ADR-0023).
+    Returns {answer, sources, query, intent, verification}. Non-streaming; CLI/API/eval use this."""
     q, hits, total, method_note = _route(query, k)
     if not hits:
-        return {"answer": _NO_MATCH, "sources": [], "query": query, "intent": q.model_dump()}
-    resp = client().chat.completions.create(
-        model=ANSWER_MODEL, temperature=0, messages=_messages(query, hits, total, method_note))
-    return {"answer": resp.choices[0].message.content, "query": query,
-            "intent": q.model_dump(), "sources": _sources(hits)}
+        return {"answer": _NO_MATCH, "sources": [], "query": query, "intent": q.model_dump(),
+                "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
+    text, verification = _compose(query, hits, total, method_note)
+    return {"answer": text, "query": query, "intent": q.model_dump(),
+            "sources": _sources(hits), "verification": verification}
 
 
 def answer_stream(query: str, k: int = 5):
-    """Streaming variant (ADR-0017): yields dict events the serving layer encodes as NDJSON.
-
-    Event order is the UX: {"type":"meta"} ships intent + sources as soon as retrieval finishes
-    (~3s -- the coverage cards render immediately), then {"type":"delta"} chunks stream the answer
-    text as the model generates it, then {"type":"done"}. Perceived latency drops from
-    'generation finished' to 'retrieval finished'."""
-    from pipeline.rag.oai import client
-
+    """Streaming variant (ADR-0017/0023): yields NDJSON events. Order: {"type":"meta"} ships intent +
+    sources as soon as retrieval finishes (the coverage cards render immediately), then the answer is
+    composed AND passed through the independent grounding check BEFORE any text is released, then
+    {"type":"delta"} chunks stream the CHECKED text, then {"type":"done"} carries the verification
+    verdict. Grounding is enforced before release, not merely prompted (correction #5); the cost is
+    that first-text paint waits for the check rather than for the first generated token."""
     q, hits, total, method_note = _route(query, k)
     if not hits:
         yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": []}
         yield {"type": "delta", "text": _NO_MATCH}
-        yield {"type": "done"}
+        yield {"type": "done", "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
         return
     yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": _sources(hits)}
-    stream = client().chat.completions.create(
-        model=ANSWER_MODEL, temperature=0, stream=True,
-        messages=_messages(query, hits, total, method_note))
-    for chunk in stream:
-        delta = chunk.choices[0].delta.content if chunk.choices else None
-        if delta:
-            yield {"type": "delta", "text": delta}
-    yield {"type": "done"}
+    text, verification = _compose(query, hits, total, method_note)
+    for para in re.split(r"(?<=\n)", text):  # stream the released text in natural chunks
+        if para:
+            yield {"type": "delta", "text": para}
+    yield {"type": "done", "verification": verification}

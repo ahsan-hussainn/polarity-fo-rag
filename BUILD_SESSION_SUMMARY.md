@@ -1,5 +1,12 @@
 # Build session summary
 
+> **Correction note (2026-07-20, Bridge Mandate pass).** This is the **Stage 1** build summary, kept
+> as a point-in-time record. Two figures below were over-stated and are corrected by the pre-window
+> pass: "exactly 50 defensible records" was 50 SEC-discovered firms of which **24 are affirmed family
+> offices** after entity adjudication (ADR-0020); "88 verified emails" described vendor-*deliverable*
+> inferred addresses over the pre-curation set, and vendor-deliverable ≠ proven-to-be-the-person's
+> (ADR-0021). See `docs/findings/bridge-audit-reconciliation.md` and the corrected `METHODOLOGY.md`.
+
 **Approximate build time:** 8-10 hours of focused work across the 48-hour window.
 
 **Main sessions** (times are from the real commit history, not reconstructed):

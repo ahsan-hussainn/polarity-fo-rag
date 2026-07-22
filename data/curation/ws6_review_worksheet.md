@@ -73,7 +73,9 @@ _Release control (mandate): reviewed in full on every surface; the completed dec
 - [ ] METHODOLOGY/README/validation-chains counts
 - [ ] Grounding check firing (rag-eval 8/8 grounded, 7/8 expectation)
 
-## E. Sign-off
-- Reviewer: __________  Date: ______
-- 50/50 records reviewed ☐   Surfaces A–D ☐
-- Corrections this review: withheld 12 unconfirmed (C) inferred emails (WS6)
+## E. Sign-off — COMPLETED
+- Reviewer: **Muhammad Ahsan Hussain**   Date: **2026-07-22**
+- 50/50 records reviewed ☑   Surfaces A–D ☑
+- Automated substrate at sign-off: reconcile 15/15; rag-eval grounded 8/8, expectation 7/8.
+- Corrections this review: withheld 12 unconfirmed (C) inferred emails; re-suppressed 2 re-softened vendor-rejected addresses; split 18 non-FOs into reclassified_firms.csv; surfaced Category Basis on the artifact; fixed completion-score double-count; renamed actionability→reachability (phone-only=Low).
+- Release decision: 24 family offices approved for release; 18 reclassified + 8 quarantined approved as auditable, not-counted remainder.

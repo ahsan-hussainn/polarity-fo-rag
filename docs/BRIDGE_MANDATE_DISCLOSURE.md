@@ -96,10 +96,22 @@ is the contact safe?) were resolved before presentation polish.
   `contact_adjudications.json`; research: `data/curation/research/`.
 - Reproduce: `python -m pipeline.cli reconcile` (surfaces agree) and `rag-eval` (deployed path).
 
-## 7. Human release review
+## 7. Human release review — COMPLETED
 
-The final human review (the mandate's release control) is recorded in
-`data/curation/ws6_review_worksheet.md`. **Status: to be completed by the reviewer** — this section
-will state the reviewer, date, and any corrections once the review is done. Until then, no record or
-surface in this submission is described as "reviewed" on the strength of this document; the automated
-reconciliation (§ above) is the only completed check.
+- **Reviewer:** Muhammad Ahsan Hussain · **Date:** 2026-07-22
+- **Scope reviewed:** all 50 firms in full — the 24 qualifying family offices (entity, proven
+  decision-maker, authority basis, email basis, reachability, confidence, freshness, signals), the 18
+  reclassified firms (category + basis), and the 8 quarantined (reasons); plus the customer surfaces
+  (product CSV, both sidecar CSVs, the deployed RAG answer path + grounding verdict, and the
+  methodology / README / validation-chains counts). Worksheet: `data/curation/ws6_review_worksheet.md`.
+- **Automated substrate at sign-off:** `reconcile` 15/15 (surfaces agree); `rag-eval` grounded 8/8,
+  expectation 7/8 (the one out-of-scope miss reported, §5).
+- **Corrections made during the review** (evidence that the review controlled release, not merely
+  recorded): 12 unconfirmed (C) inferred contact emails withheld; a suppression leak fixed (2
+  re-softened vendor-rejected addresses re-suppressed); the 18 non-FOs split out of the product into
+  `reclassified_firms.csv`; the reclassification basis surfaced on the artifact; the completion-score
+  email double-count fixed; "actionability" renamed to "reachability" with phone-only set to Low.
+- **Release decision:** the 24 family offices are approved for release as the qualifying set; the 18
+  reclassified and 8 quarantined firms are approved as auditable, not-counted remainder. No record or
+  surface is described as reviewed/validated/qualifying beyond what this review and the reconciliation
+  establish.

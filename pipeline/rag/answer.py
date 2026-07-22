@@ -18,6 +18,13 @@ from pipeline.rag.retrieve import by_filters, by_name, hybrid
 
 ANSWER_MODEL = os.getenv("ANSWER_MODEL", "gpt-4o-mini")
 
+# Out-of-scope relevance floor (ADR-0026). If the NEAREST qualifying record is farther than this in
+# cosine distance, the query is not about the family-office dataset and we refuse rather than pitch the
+# top-k anyway. Pre-registered at the midpoint of the observed separation gap between in-scope queries
+# (nearest 0.24-0.50) and out-of-scope queries (nearest 0.79-1.00) -- chosen from the structure of the
+# gap, not tuned to the eval. Env-overridable so the floor is a knob, not a magic number in code.
+RELEVANCE_FLOOR = float(os.getenv("RAG_RELEVANCE_FLOOR", "0.64"))
+
 # Ascending: best email basis first. PUB (firm-published, proven) outranks A (vendor-deliverable but
 # inferred) > B (catch-all) > C (unconfirmed). D/F are quarantined and never reach a source card.
 _GRADE_RANK = {"PUB": 0, "A": 1, "B": 2, "C": 3, "D": 4, "F": 5}
@@ -198,23 +205,36 @@ def _sources(hits: list[dict]) -> list[dict]:
 
 
 def _route(query: str, k: int) -> tuple:
-    """Classify -> retrieve. Returns (intent, hits, total, method_note).
+    """Classify -> relevance-gate -> retrieve. Returns (intent, hits, total, method_note, out_of_scope).
 
     The classify call and the query embedding are independent network round-trips (~2s + ~1s), so
     they run CONCURRENTLY (ADR-0017): the embedding is computed speculatively while classification
-    decides the route, and simply goes unused on lookup/aggregate paths (it costs ~$0.0000004 --
-    wasting it is cheaper than serializing every discovery query)."""
+    decides the route. The embedding is now ALWAYS used -- for the out-of-scope relevance floor
+    (ADR-0026) that runs on every path before routing -- and again for discovery retrieval.
+
+    Out-of-scope floor: before routing, we ask whether the query is about the family-office dataset at
+    all (nearest_distance over ALL qualifying records). If the nearest record is beyond RELEVANCE_FLOOR
+    (or the index is empty), we return out_of_scope=True with no hits, so the answer layer refuses
+    instead of pitching the top-k. This closes the hole where 'discovery' was a catch-all that returned
+    firms for any query, and where an out-of-scope COUNT ('how many countries in Africa') would be
+    answered off the dataset total via the aggregate path."""
     from concurrent.futures import ThreadPoolExecutor
 
     from pipeline.rag.embed import embed_query
+    from pipeline.rag.retrieve import nearest_distance
 
     with ThreadPoolExecutor(max_workers=2) as ex:
-        f_vec = ex.submit(embed_query, query)     # speculative
+        f_vec = ex.submit(embed_query, query)     # used for the floor AND (on discovery) retrieval
         q = qi.classify(query)
+        qvec = f_vec.result()
         total = method_note = None
 
+        nd = nearest_distance(qvec)
+        if nd is None or nd > RELEVANCE_FLOOR:     # not about the dataset -> refuse, don't improvise
+            return q, [], None, None, True
+
         if q.intent == "lookup" and q.firm_name:
-            hits = by_name(q.firm_name) or hybrid(query, k=min(k, 3), qvec=f_vec.result())
+            hits = by_name(q.firm_name) or hybrid(query, k=min(k, 3), qvec=qvec)
         elif q.intent == "aggregate":
             total, hits = by_filters(state=q.state, min_aum=q.min_aum_usd, max_aum=q.max_aum_usd,
                                      sector_term=q.sector_term, limit=15)
@@ -222,7 +242,6 @@ def _route(query: str, k: int) -> tuple:
                 method_note = (f"sector matched by keyword '{q.sector_term}' over sectors/thesis/"
                                "description -- approximate, unlike the exact state/AUM filters")
         else:
-            qvec = f_vec.result()
             hits = hybrid(query, k=k, state=q.state, min_aum=q.min_aum_usd, max_aum=q.max_aum_usd,
                           qvec=qvec)
             if not hits and (q.state or q.min_aum_usd or q.max_aum_usd):
@@ -231,7 +250,7 @@ def _route(query: str, k: int) -> tuple:
                 hits = hybrid(query, k=k, qvec=qvec)
                 method_note = ("no record passed the exact filters; records below are nearest "
                                "matches only")
-    return q, hits, total, method_note
+    return q, hits, total, method_note, False
 
 
 def _messages(query: str, hits: list[dict], total, method_note, repair: list[str] | None = None) -> list[dict]:
@@ -249,6 +268,15 @@ def _messages(query: str, hits: list[dict], total, method_note, repair: list[str
 
 
 _NO_MATCH = "No matching family office is in the dataset for that query."
+
+# Out-of-scope refusal (ADR-0026): the query is not about the family-office dataset. Say what the
+# system does answer, so the refusal is useful, not a dead end. Narrowest accurate wording (mandate #7).
+_OUT_OF_SCOPE = (
+    "That question is outside what this dataset covers, so I don't have grounded records to answer it. "
+    "I answer questions about the family offices in this dataset -- which firms to approach, who the "
+    "decision-maker is, and how to reach them. Try asking about a firm, a location, an AUM range, or a "
+    "sector."
+)
 
 
 def _compose(query: str, hits: list[dict], total, method_note) -> tuple[str, dict]:
@@ -291,7 +319,10 @@ def _compose(query: str, hits: list[dict], total, method_note) -> tuple[str, dic
 def answer(query: str, k: int = 5) -> dict:
     """Classify -> route -> retrieve -> ground -> INDEPENDENTLY CHECK before release (ADR-0023).
     Returns {answer, sources, query, intent, verification}. Non-streaming; CLI/API/eval use this."""
-    q, hits, total, method_note = _route(query, k)
+    q, hits, total, method_note, oos = _route(query, k)
+    if oos:
+        return {"answer": _OUT_OF_SCOPE, "sources": [], "query": query, "intent": q.model_dump(),
+                "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
     if not hits:
         return {"answer": _NO_MATCH, "sources": [], "query": query, "intent": q.model_dump(),
                 "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
@@ -307,10 +338,10 @@ def answer_stream(query: str, k: int = 5):
     {"type":"delta"} chunks stream the CHECKED text, then {"type":"done"} carries the verification
     verdict. Grounding is enforced before release, not merely prompted (correction #5); the cost is
     that first-text paint waits for the check rather than for the first generated token."""
-    q, hits, total, method_note = _route(query, k)
-    if not hits:
+    q, hits, total, method_note, oos = _route(query, k)
+    if oos or not hits:
         yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": []}
-        yield {"type": "delta", "text": _NO_MATCH}
+        yield {"type": "delta", "text": _OUT_OF_SCOPE if oos else _NO_MATCH}
         yield {"type": "done", "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
         return
     yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": _sources(hits)}

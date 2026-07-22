@@ -95,6 +95,28 @@ def records_by_crd(cur, crds: list[str]) -> dict[str, dict]:
     return recs
 
 
+def nearest_distance(qvec: list[float]) -> float | None:
+    """Smallest cosine distance from the query embedding to ANY qualifying record -- the topical-
+    relevance signal the answer layer uses to detect out-of-scope queries (ADR-0026).
+
+    Deliberately UNFILTERED (no state/AUM): this measures whether the query is about the family-office
+    dataset at all, independent of any narrowing constraint -- "family offices in Ohio" is on-topic
+    even if Ohio has few matches. RRF scores cannot serve here: they are rank-based, so the top hit of
+    every query scores ~1/(RRF_K+1) regardless of true similarity; raw cosine distance is the number
+    that separates in-scope (~0.24-0.50) from out-of-scope (~0.79-1.00). Returns None if no qualifying
+    record exists (empty index)."""
+    from pipeline.rag.embed import _vec_literal
+
+    lit = _vec_literal(qvec)
+    with db.get_pool().connection() as c, c.cursor() as cur:
+        cur.execute("select d.embedding <=> %s::vector as dist "
+                    "from gold.rag_docs d join gold.records r using (crd) "
+                    f"where d.embedding is not null and r.{_RELEASE_GATE} "
+                    "order by d.embedding <=> %s::vector limit 1", (lit, lit))
+        row = cur.fetchone()
+    return float(row[0]) if row else None
+
+
 def by_name(name: str, limit: int = 3) -> list[dict]:
     """Lookup path: match a named firm directly (name or domain), no embedding round-trip."""
     like = f"%{name.strip()}%"

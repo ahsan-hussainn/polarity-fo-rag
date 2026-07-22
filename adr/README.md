@@ -49,3 +49,4 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0023](./0023-answer-verification-floor.md) | Independent answer-verification floor + surface consistency | Accepted |
 | [0024](./0024-product-shape-and-final-review.md) | Product shape (family offices only) + final-review release decisions | Accepted |
 | [0025](./0025-decision-grade-record-enrichment.md) | Decision-grade record enrichment: reachability, confidence, freshness, signals | Accepted |
+| [0026](./0026-out-of-scope-relevance-floor.md) | Out-of-scope relevance floor: deterministic cosine-distance scope gate | Accepted |

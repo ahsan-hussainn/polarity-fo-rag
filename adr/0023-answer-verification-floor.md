@@ -51,9 +51,10 @@ honesty — **not** free-form semantic faithfulness (a sentence can be misleadin
 grounded). Firm-name grounding is asserted indirectly (via emails + the category check), not by
 parsing every firm mention. Streaming now composes-and-checks before the first text token, trading
 ADR-0017's first-token latency for release-gated text (coverage cards still render at retrieval time).
-**Known gap, reported not hidden:** an out-of-scope query that shares a token with a firm (e.g.
-"weather in Zurich" → Marcuard) is answered about that firm; the answer is grounded but off-intent —
-the eval flags this case (`rag-eval`, expectation 7/8).
+**Known gap (now closed by ADR-0026):** an out-of-scope query was answered about the nearest firm(s)
+— "weather in Zurich" → Marcuard, and more broadly *any* off-topic query, because the check is
+structural (it verifies grounding in the retrieved set, not that the query was in scope). ADR-0026 adds
+a deterministic cosine-distance relevance floor that refuses out-of-scope queries before generation.
 
 ## What would change this
 

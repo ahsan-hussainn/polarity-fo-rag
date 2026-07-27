@@ -105,3 +105,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0024](./adr/0024-product-shape-and-final-review.md) | Product shape (family offices only) + final-review release decisions | Accepted |
 | [0025](./adr/0025-decision-grade-record-enrichment.md) | Decision-grade record enrichment: reachability, confidence, freshness, signals | Accepted |
 | [0026](./adr/0026-out-of-scope-relevance-floor.md) | Out-of-scope relevance floor: deterministic cosine-distance scope gate | Accepted |
+| [0027](./adr/0027-operating-layer-cycles-run-ledger.md) | Operating layer: scheduled cycles, run ledger, evidence-based staleness | Accepted |

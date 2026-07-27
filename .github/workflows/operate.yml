@@ -1,0 +1,61 @@
+# The Stage 2 scheduler (ADR-0027). GitHub Actions is the platform-kept run history the brief
+# requires: every scheduled cycle appears in the Actions tab with its own detail page and log,
+# independent of anything we could edit after the fact.
+#
+# Cadence: every 6 hours at :23 (odd minute -- top-of-the-hour cron on shared runners is routinely
+# delayed 15-60 min; :23 dodges the rush). Cron is UTC. The `concurrency` group guarantees a slow
+# cycle can never overlap the next one (no duplicated work, no corrupted state -- arch note 4).
+#
+# workflow_dispatch exists for smoke tests only. Dispatch runs are triggered by a human and are
+# NEVER counted toward the mandate's ">=2 scheduled runs executed without you triggering them";
+# the cycle records its trigger (github.event_name) in ops.runs so the ledger tells them apart.
+name: operate
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: operate
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  cycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Apply migrations (idempotent)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m pipeline.cli db-migrate
+
+      - name: Run operating cycle
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MILLIONVERIFIER_API_KEY: ${{ secrets.MILLIONVERIFIER_API_KEY }}
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m pipeline.cli operate --write --trigger "${{ github.event_name }}" 2>&1 | tee cycle-output.txt
+
+      - name: Upload raw cycle log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cycle-${{ github.run_id }}
+          path: cycle-output.txt
+          if-no-files-found: warn

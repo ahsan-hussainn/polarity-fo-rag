@@ -10,8 +10,10 @@ refreshes the retrieval index incrementally, and runs the reconcile release cont
 surface always serves what the system currently believes -- and closes its ledger row with
 tokens/cost/duration so every cycle accounts for itself.
 
-Day-1 scope, stated plainly: website-change trust events carry action='flagged' -- the substance
-classifier (re-extract + field-level diff deciding refresh/quarantine) is day-2 work, and discovery
+Website changes are classified for MATERIALITY (day-2, pipeline/ops/materiality.py): a hash flip
+triggers re-fetch + re-extraction and a field-level diff -- cosmetic changes are noted, material
+ones refresh silver through the standard path, and a vanished ratified decision-maker is flagged
+for human re-adjudication. Re-extraction is budget-capped per cycle with logged skips. Discovery
 tranches enter once the automated inclusion standard exists. A cycle never dies on one record:
 per-record failures are logged as events and the cycle continues; a reconcile failure fails the
 RUN (a release control that does not control the run's status would be Stage 1's named mistake).
@@ -29,12 +31,16 @@ OBSERVE_WORKERS = 8       # bounded pool: one home-page fetch per distinct firm 
 FETCH_TIMEOUT = 15
 
 
+MAX_RECLASSIFY_PER_CYCLE = 10  # LLM re-extraction budget per cycle; skips are logged, never silent
+
+
 def _monitored_firms() -> list[dict]:
     """Everything the system holds -- qualifying, reclassified, and quarantined alike. Quarantine
     removes a record from the product, not from monitoring; evidence can rehabilitate or worsen."""
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute("select crd, family_office_name, website, release_state, data_asof,"
-                    " primary_email_grade, secondary_email_grade from gold.records order by crd")
+                    " primary_contact_name, primary_email_grade, secondary_email_grade"
+                    " from gold.records order by crd")
         cols = [d[0] for d in cur.description]
         return [dict(zip(cols, r)) for r in cur.fetchall()]
 
@@ -54,10 +60,12 @@ def _fetch_home(url: str) -> dict:
             "duration_ms": dur, "url": page.url}
 
 
-def _observe_phase(firms: list[dict], workers: int) -> dict:
+def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
     stats = {"monitored": len(firms), "fetched": 0, "fetch_errors": 0,
-             "baselined": 0, "changed": 0, "dark": 0, "adv_filing_moved": 0}
+             "baselined": 0, "changed": 0, "dark": 0, "adv_filing_moved": 0,
+             "material": 0, "cosmetic": 0, "reclassify_skipped": 0}
     rid = rl.current_run()
+    reclassified = 0
 
     with_sites = [f for f in firms if f.get("website")]
     results: dict[str, dict] = {}
@@ -118,11 +126,26 @@ def _observe_phase(firms: list[dict], workers: int) -> dict:
                            "flagged")
         elif prior_hash and r["hash"] and prior_hash[0] != r["hash"]:
             stats["changed"] += 1
-            rl.trust_event(crd, "website_change", prior_hash[0][:16], r["hash"][:16],
-                           f"home-page text changed since run {prior_hash[2]} "
-                           f"({prior_hash[1]:%Y-%m-%d %H:%M}Z). Not yet classified as material or "
-                           "cosmetic -- the field-level re-extraction diff is day-2 work; flagged "
-                           "so that classification has a queue to read", "flagged")
+            if not write:
+                rl.trust_event(crd, "website_change", prior_hash[0][:16], r["hash"][:16],
+                               "home-page text changed (dry-run: materiality not classified)",
+                               "flagged")
+            elif reclassified >= MAX_RECLASSIFY_PER_CYCLE:
+                stats["reclassify_skipped"] += 1
+                rl.event("observe", "materiality_skip", target=crd, status="skipped",
+                         detail={"reason": f"per-cycle re-extraction budget "
+                                           f"({MAX_RECLASSIFY_PER_CYCLE}) reached"})
+                rl.trust_event(crd, "website_change", prior_hash[0][:16], r["hash"][:16],
+                               "home-page text changed but this cycle's re-extraction budget is "
+                               "spent; flag stands, classification next cycle", "flagged")
+            else:
+                reclassified += 1
+                from pipeline.ops import materiality
+                verdict = materiality.classify(f, write=write, prior_run=prior_hash)
+                if verdict["verdict"] == "material":
+                    stats["material"] += 1
+                elif verdict["verdict"] == "cosmetic":
+                    stats["cosmetic"] += 1
         elif not prior_hash and r["hash"]:
             stats["baselined"] += 1
     return stats
@@ -178,7 +201,7 @@ def run_cycle(*, write: bool = True, trigger: str = "local",
     t0 = time.monotonic()
     try:
         firms = _monitored_firms()
-        out["observe"] = _observe_phase(firms, workers)
+        out["observe"] = _observe_phase(firms, workers, write=write)
         out["rebuild"] = _rebuild_phase(write)
         out["status"] = "ok"
     except Exception as e:

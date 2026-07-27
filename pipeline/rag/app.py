@@ -41,7 +41,7 @@ def query(q: Query):
     if not q.question.strip():
         return JSONResponse({"error": "empty question"}, status_code=400)
     try:
-        return answer(q.question, k=min(max(q.k, 1), 10))
+        return answer(q.question, k=min(max(q.k, 1), 10), source="api")
     except Exception:
         # Log the full traceback server-side (Render logs); never echo error internals to the browser
         # -- an exception message can contain secrets (e.g. an auth header), so keep it off the wire.
@@ -61,7 +61,7 @@ def query_stream(q: Query):
 
     def gen():
         try:
-            for event in answer_stream(q.question, k=min(max(q.k, 1), 10)):
+            for event in answer_stream(q.question, k=min(max(q.k, 1), 10), source="ui"):
                 yield json.dumps(event, ensure_ascii=False) + "\n"
         except Exception:
             logging.getLogger("uvicorn.error").exception("stream query failed")

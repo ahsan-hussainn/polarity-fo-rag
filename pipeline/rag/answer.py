@@ -12,7 +12,9 @@ from __future__ import annotations
 
 import os
 import re
+import time
 
+from pipeline.ops import runlog
 from pipeline.rag import intent as qi
 from pipeline.rag.retrieve import by_filters, by_name, hybrid
 
@@ -205,7 +207,9 @@ def _sources(hits: list[dict]) -> list[dict]:
 
 
 def _route(query: str, k: int) -> tuple:
-    """Classify -> relevance-gate -> retrieve. Returns (intent, hits, total, method_note, out_of_scope).
+    """Classify -> relevance-gate -> retrieve. Returns (intent, hits, total, method_note,
+    out_of_scope, nearest_distance) -- the distance rides along so the query log (ADR-0026 Layer 3)
+    records what the scope gate actually saw, not just what it decided.
 
     The classify call and the query embedding are independent network round-trips (~2s + ~1s), so
     they run CONCURRENTLY (ADR-0017): the embedding is computed speculatively while classification
@@ -231,7 +235,7 @@ def _route(query: str, k: int) -> tuple:
 
         nd = nearest_distance(qvec)
         if nd is None or nd > RELEVANCE_FLOOR:     # not about the dataset -> refuse, don't improvise
-            return q, [], None, None, True
+            return q, [], None, None, True, nd
 
         if q.intent == "lookup" and q.firm_name:
             hits = by_name(q.firm_name) or hybrid(query, k=min(k, 3), qvec=qvec)
@@ -250,7 +254,7 @@ def _route(query: str, k: int) -> tuple:
                 hits = hybrid(query, k=k, qvec=qvec)
                 method_note = ("no record passed the exact filters; records below are nearest "
                                "matches only")
-    return q, hits, total, method_note, False
+    return q, hits, total, method_note, False, nd
 
 
 def _messages(query: str, hits: list[dict], total, method_note, repair: list[str] | None = None) -> list[dict]:
@@ -316,33 +320,49 @@ def _compose(query: str, hits: list[dict], total, method_note) -> tuple[str, dic
     return text, verification
 
 
-def answer(query: str, k: int = 5) -> dict:
+def _log_outcome(source: str, query: str, q, nd, outcome: str, verification: dict, t0: float) -> None:
+    """ADR-0026 Layer 3: every serving query lands in ops.query_log; never raises."""
+    runlog.log_query(source=source, query=query, intent=getattr(q, "intent", None),
+                     nearest_distance=nd, outcome=outcome, verification=verification,
+                     latency_ms=int((time.monotonic() - t0) * 1000))
+
+
+def answer(query: str, k: int = 5, source: str = "api") -> dict:
     """Classify -> route -> retrieve -> ground -> INDEPENDENTLY CHECK before release (ADR-0023).
     Returns {answer, sources, query, intent, verification}. Non-streaming; CLI/API/eval use this."""
-    q, hits, total, method_note, oos = _route(query, k)
+    t0 = time.monotonic()
+    q, hits, total, method_note, oos, nd = _route(query, k)
+    clean = {"passed": True, "failures": [], "warnings": [], "repaired": False}
     if oos:
+        _log_outcome(source, query, q, nd, "refused_out_of_scope", clean, t0)
         return {"answer": _OUT_OF_SCOPE, "sources": [], "query": query, "intent": q.model_dump(),
-                "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
+                "verification": clean}
     if not hits:
+        _log_outcome(source, query, q, nd, "no_match", clean, t0)
         return {"answer": _NO_MATCH, "sources": [], "query": query, "intent": q.model_dump(),
-                "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
+                "verification": clean}
     text, verification = _compose(query, hits, total, method_note)
+    _log_outcome(source, query, q, nd,
+                 "answered" if verification["passed"] else "refused_verification", verification, t0)
     return {"answer": text, "query": query, "intent": q.model_dump(),
             "sources": _sources(hits), "verification": verification}
 
 
-def answer_stream(query: str, k: int = 5):
+def answer_stream(query: str, k: int = 5, source: str = "ui"):
     """Streaming variant (ADR-0017/0023): yields NDJSON events. Order: {"type":"meta"} ships intent +
     sources as soon as retrieval finishes (the coverage cards render immediately), then the answer is
     composed AND passed through the independent grounding check BEFORE any text is released, then
     {"type":"delta"} chunks stream the CHECKED text, then {"type":"done"} carries the verification
     verdict. Grounding is enforced before release, not merely prompted (correction #5); the cost is
     that first-text paint waits for the check rather than for the first generated token."""
-    q, hits, total, method_note, oos = _route(query, k)
+    t0 = time.monotonic()
+    q, hits, total, method_note, oos, nd = _route(query, k)
     if oos or not hits:
+        clean = {"passed": True, "failures": [], "warnings": [], "repaired": False}
         yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": []}
         yield {"type": "delta", "text": _OUT_OF_SCOPE if oos else _NO_MATCH}
-        yield {"type": "done", "verification": {"passed": True, "failures": [], "warnings": [], "repaired": False}}
+        yield {"type": "done", "verification": clean}
+        _log_outcome(source, query, q, nd, "refused_out_of_scope" if oos else "no_match", clean, t0)
         return
     yield {"type": "meta", "query": query, "intent": q.model_dump(), "sources": _sources(hits)}
     text, verification = _compose(query, hits, total, method_note)
@@ -350,3 +370,5 @@ def answer_stream(query: str, k: int = 5):
         if para:
             yield {"type": "delta", "text": para}
     yield {"type": "done", "verification": verification}
+    _log_outcome(source, query, q, nd,
+                 "answered" if verification["passed"] else "refused_verification", verification, t0)

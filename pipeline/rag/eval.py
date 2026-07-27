@@ -84,7 +84,7 @@ class Result:
 def run() -> dict:
     results: list[Result] = []
     for c in CASES:
-        d = answer(c["q"])
+        d = answer(c["q"], source="eval")
         v = d.get("verification", {"passed": True, "repaired": False})
         try:
             exp = bool(c["want"](d))

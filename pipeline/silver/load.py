@@ -34,12 +34,20 @@ def _reg_domain(url: str | None) -> str | None:
 
 
 def _firms_from_bronze(limit: int | None) -> list[dict]:
-    """Group bronze 'website' captures into per-firm bundles (one bundle per CRD)."""
+    """Group bronze 'website' captures into per-firm bundles (one bundle per CRD).
+
+    Bronze is append-only, so a re-fetched site has MULTIPLE captures of the same page over time.
+    Extraction must read only the LATEST capture per (firm, page_url) -- concatenating historical
+    versions would blend stale and fresh text into one document (harmless when every site was
+    fetched exactly once, poisonous under the Stage 2 refresh loop)."""
     sql = (
-        "select id, entity_key, raw->>'firm_name', raw->>'page_type', raw->>'page_url', "
-        "       raw->>'title', raw->>'text' "
-        "from bronze.captures where source = 'website' and coalesce(raw->>'text','') <> '' "
-        "order by entity_key, id"
+        "select id, entity_key, firm_name, page_type, page_url, title, text from ("
+        "  select distinct on (entity_key, raw->>'page_url')"
+        "         id, entity_key, raw->>'firm_name' as firm_name, raw->>'page_type' as page_type,"
+        "         raw->>'page_url' as page_url, raw->>'title' as title, raw->>'text' as text"
+        "  from bronze.captures where source = 'website' and coalesce(raw->>'text','') <> ''"
+        "  order by entity_key, raw->>'page_url', id desc"
+        ") latest order by entity_key, id"
     )
     firms: dict[str, dict] = {}
     with db.get_conn() as c, c.cursor() as cur:

@@ -72,12 +72,18 @@ def _content_for(r: dict) -> str:
     return "".join(parts)
 
 
-def embed_texts(texts: list[str], model: str | None = None) -> list[list[float]]:
-    """The embedding seam. One batched OpenAI call; returns one vector per input text."""
+def embed_texts(texts: list[str], model: str | None = None, *, return_usage: bool = False):
+    """The embedding seam. One batched OpenAI call; returns one vector per input text.
+    With return_usage=True returns (vectors, {"prompt_tokens": n}) so callers can feed the ops
+    cost ledger instead of discarding what the call cost."""
     from pipeline.rag.oai import client
 
     resp = client().embeddings.create(model=model or EMBED_MODEL, input=texts)
-    return [d.embedding for d in resp.data]
+    vectors = [d.embedding for d in resp.data]
+    if return_usage:
+        usage = getattr(resp, "usage", None)
+        return vectors, {"prompt_tokens": getattr(usage, "prompt_tokens", 0) or 0}
+    return vectors
 
 
 def embed_query(text: str) -> list[float]:
@@ -88,8 +94,16 @@ def _vec_literal(vec: list[float]) -> str:
     return "[" + ",".join(f"{x:.6f}" for x in vec) + "]"
 
 
-def build_index(write: bool = False) -> dict:
-    """Render every gold record, embed the batch, and upsert into gold.rag_docs."""
+EMBED_BATCH = 500  # the embeddings API caps items per request at 2048; stay well under it
+
+
+def build_index(write: bool = False, incremental: bool = False) -> dict:
+    """Render every gold record, embed, and upsert into gold.rag_docs.
+
+    incremental=True embeds only records whose rendered content differs from what the index already
+    holds -- the mode scheduled cycles use, so an unchanged dataset costs zero embedding tokens and
+    the index cannot silently drift from gold as the record count climbs. Records deleted from gold
+    (e.g. the curation-gate exclusions) are dropped from the index for the same reason."""
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute("select crd, family_office_name, city, state, country, founded_year, aum_usd, "
                     "investment_thesis, description, investing_sectors, primary_contact_name, "
@@ -98,19 +112,33 @@ def build_index(write: bool = False) -> dict:
         rows = [dict(zip(cols, r)) for r in cur.fetchall()]
 
     docs = [(r["crd"], _content_for(r)) for r in rows]
-    out = {"documents": len(docs), "written": write, "model": EMBED_MODEL}
+    todo = docs
+    if incremental:
+        with db.get_conn() as c, c.cursor() as cur:
+            cur.execute("select crd, content from gold.rag_docs")
+            existing = dict(cur.fetchall())
+        todo = [(crd, content) for crd, content in docs if existing.get(crd) != content]
+
+    out = {"documents": len(docs), "to_embed": len(todo), "written": write,
+           "incremental": incremental, "model": EMBED_MODEL}
     if not write:
         out["sample"] = docs[0][1] if docs else None
         return out
 
-    vectors = embed_texts([d[1] for d in docs])
+    tokens = 0
     with db.get_conn() as c, c.cursor() as cur:
-        for (crd, content), vec in zip(docs, vectors):
-            cur.execute(
-                "insert into gold.rag_docs (crd, content, embedding) values (%s, %s, %s::vector) "
-                "on conflict (crd) do update set content=excluded.content, "
-                "embedding=excluded.embedding, updated_at=now()",
-                (crd, content, _vec_literal(vec)))
+        for i in range(0, len(todo), EMBED_BATCH):
+            chunk = todo[i:i + EMBED_BATCH]
+            vectors, usage = embed_texts([d[1] for d in chunk], return_usage=True)
+            tokens += usage.get("prompt_tokens", 0)
+            for (crd, content), vec in zip(chunk, vectors):
+                cur.execute(
+                    "insert into gold.rag_docs (crd, content, embedding) values (%s, %s, %s::vector) "
+                    "on conflict (crd) do update set content=excluded.content, "
+                    "embedding=excluded.embedding, updated_at=now()",
+                    (crd, content, _vec_literal(vec)))
+        cur.execute("delete from gold.rag_docs where crd not in (select crd from gold.records)")
+        removed = cur.rowcount
         c.commit()
-    out["embedded"] = len(vectors)
+    out.update(embedded=len(todo), tokens=tokens, removed_stale_docs=removed)
     return out

@@ -191,9 +191,10 @@ def cmd_rag_index(args):
     from pipeline.rag import embed
 
     print("=" * 64)
-    print(f"RAG INDEX ({'WRITE' if args.write else 'dry-run'})")
+    print(f"RAG INDEX ({'WRITE' if args.write else 'dry-run'}"
+          f"{', incremental' if args.incremental else ''})")
     print("=" * 64)
-    result = embed.build_index(write=args.write)
+    result = embed.build_index(write=args.write, incremental=args.incremental)
     print(json.dumps(result, indent=2, ensure_ascii=False))
     if not args.write:
         print("\n(dry-run: nothing embedded. add --write to build the index.)")
@@ -203,7 +204,7 @@ def cmd_rag_query(args):
     """Ask the Micro-RAG a question over the gold dataset."""
     from pipeline.rag import answer as ra
 
-    result = ra.answer(args.question, k=args.k)
+    result = ra.answer(args.question, k=args.k, source="cli")
     print("=" * 64)
     print(f"Q: {result['query']}")
     print("=" * 64)
@@ -271,6 +272,21 @@ def cmd_signal_apply(args):
     if args.path:
         kwargs["path"] = args.path
     print(json.dumps(curate.apply_signals(**kwargs), indent=2))
+
+
+def cmd_operate(args):
+    """Assessment Stage 2 (ADR-0027): one unattended operating cycle, fully ledgered in ops.*."""
+    import sys
+
+    from pipeline.ops import cycle
+
+    print("=" * 64)
+    print(f"OPERATE CYCLE ({'WRITE' if args.write else 'dry-run'}, trigger={args.trigger})")
+    print("=" * 64)
+    out = cycle.run_cycle(write=args.write, trigger=args.trigger, workers=args.workers)
+    print(json.dumps(out, indent=2, default=str))
+    if out.get("status") != "ok":
+        sys.exit(1)  # the scheduler's run history must show a failed cycle as failed
 
 
 def cmd_reconcile(args):
@@ -407,6 +423,8 @@ def main():
 
     ri = sub.add_parser("rag-index", help="Embed gold into gold.rag_docs for hybrid retrieval")
     ri.add_argument("--write", action="store_true", help="persist embeddings (default: dry-run)")
+    ri.add_argument("--incremental", action="store_true",
+                    help="embed only records whose rendered content changed (cycle mode)")
     ri.set_defaults(func=cmd_rag_index)
     rq = sub.add_parser("rag-query", help="Ask the Micro-RAG a question over gold")
     rq.add_argument("question", help="the question to ask")
@@ -435,6 +453,13 @@ def main():
     sa.set_defaults(func=cmd_signal_apply)
     sub.add_parser("reconcile", help="WS6: assert every surface (CSV, DB, retrieval, docs) agrees").set_defaults(
         func=cmd_reconcile)
+
+    op = sub.add_parser("operate", help="Stage 2 (ADR-0027): run one unattended operating cycle")
+    op.add_argument("--write", action="store_true", help="persist all effects (default: dry-run)")
+    op.add_argument("--trigger", default="local",
+                    help="what invoked this run: schedule | workflow_dispatch | local")
+    op.add_argument("--workers", type=int, default=8, help="bounded fetch pool size")
+    op.set_defaults(func=cmd_operate)
 
     g = sub.add_parser("build-gold", help="Silver -> gold: decision-grade FO-MAX-shaped records")
     g.add_argument("--write", action="store_true", help="persist to gold.records (default: dry-run)")

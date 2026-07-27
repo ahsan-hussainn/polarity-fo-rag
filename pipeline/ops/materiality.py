@@ -41,29 +41,36 @@ def _current_silver(crd: str) -> dict | None:
             "team": {p[0].strip().lower(): (p[1], p[2]) for p in people}}
 
 
-def _diff_facts(old: dict, ext) -> list[str]:
-    """Human-readable field deltas between silver's beliefs and a fresh extraction."""
-    deltas: list[str] = []
+def _diff_facts(old: dict, ext) -> tuple[list[str], list[str]]:
+    """Deltas between silver's beliefs and a fresh extraction, split into FACT-shaped changes
+    (material: sectors, founded year, roster, titles) and WORDING changes (thesis/description
+    prose). The split is a measured decision, not taste: overnight scheduled cycles (runs 4-6)
+    showed the same six dynamic-page firms re-flagging 'material' every cycle on thesis/description
+    rewording alone -- LLM extraction paraphrases prose differently per run, so prose inequality is
+    variance, not evidence. Fact-shaped fields are stable under re-extraction; only they refresh
+    silver."""
+    material: list[str] = []
+    wording: list[str] = []
     if (old["thesis"] or "") != (ext.thesis or ""):
-        deltas.append("thesis changed")
+        wording.append("thesis wording shifted")
     if (old["description"] or "") != (ext.description or ""):
-        deltas.append("description changed")
+        wording.append("description wording shifted")
     if old["founded_year"] != ext.founded_year:
-        deltas.append(f"founded_year {old['founded_year']} -> {ext.founded_year}")
+        material.append(f"founded_year {old['founded_year']} -> {ext.founded_year}")
     new_sectors = sorted(ext.sectors or [])
     if old["sectors"] != new_sectors:
-        deltas.append(f"sectors {old['sectors']} -> {new_sectors}")
+        material.append(f"sectors {old['sectors']} -> {new_sectors}")
     new_team = {m.name.strip().lower(): (m.title, m.is_principal) for m in ext.team}
     gone = sorted(set(old["team"]) - set(new_team))
     added = sorted(set(new_team) - set(old["team"]))
     if gone:
-        deltas.append(f"people no longer listed: {', '.join(gone[:5])}")
+        material.append(f"people no longer listed: {', '.join(gone[:5])}")
     if added:
-        deltas.append(f"people newly listed: {', '.join(added[:5])}")
+        material.append(f"people newly listed: {', '.join(added[:5])}")
     for name in set(old["team"]) & set(new_team):
         if (old["team"][name][0] or "") != (new_team[name][0] or ""):
-            deltas.append(f"title changed for {name}: {old['team'][name][0]!r} -> {new_team[name][0]!r}")
-    return deltas
+            material.append(f"title changed for {name}: {old['team'][name][0]!r} -> {new_team[name][0]!r}")
+    return material, wording
 
 
 def classify(firm: dict, *, write: bool, prior_run) -> dict:
@@ -104,20 +111,23 @@ def classify(firm: dict, *, write: bool, prior_run) -> dict:
                  usd=rl.usd_for("gpt-4o-mini", tin, tout),
                  detail={"pages": len(texted), "provider": result.provider})
 
-        deltas = _diff_facts(old, result.extraction)
-        out["deltas"] = deltas
+        material, wording = _diff_facts(old, result.extraction)
+        out["deltas"] = material
 
         # The raw capture is history either way (append-only; identical pages dedupe to 0 rows).
         if write:
             db.insert_captures([web._page_to_bronze_row(crd, name, p) for p in texted])
 
         since = f"since run {prior_run[2]} ({prior_run[1]:%Y-%m-%d %H:%M}Z)" if prior_run else ""
-        if not deltas:
+        if not material:
             out["verdict"] = "cosmetic"
+            detail = (f"prose wording shifted ({', '.join(wording)}) -- extraction variance on "
+                      "dynamic page content, not a fact change" if wording
+                      else "extracted facts identical")
             rl.trust_event(crd, "website_change", prior_run[0][:16] if prior_run else None, None,
-                           f"home-page text changed {since} but re-extraction found identical facts "
-                           "(thesis, description, sectors, roster all unchanged) -- classified "
-                           "cosmetic (dynamic page content); no record change", "noted")
+                           f"home-page text changed {since}; {detail}. Fact fields (sectors, "
+                           "founded year, roster, titles) all unchanged -- classified cosmetic; "
+                           "silver not rewritten", "noted")
             return out
 
         out["verdict"] = "material"
@@ -125,7 +135,7 @@ def classify(firm: dict, *, write: bool, prior_run) -> dict:
             ids = _bronze_ids_for(crd, urls)
             sl._persist({"crd": crd, "firm_name": name}, result, urls, ids, home)
         rl.trust_event(crd, "website_change", prior_run[0][:16] if prior_run else None, None,
-                       f"site facts changed {since}: {'; '.join(deltas[:6])} -- silver refreshed "
+                       f"site facts changed {since}: {'; '.join(material[:6])} -- silver refreshed "
                        "through the standard path (verification state preserved); gold rebuilds "
                        "this cycle", "refreshed")
 

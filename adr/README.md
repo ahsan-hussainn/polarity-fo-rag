@@ -52,3 +52,4 @@ Files are `NNNN-kebab-title.md`, four-digit sequential. Use [`_template.md`](./_
 | [0026](./0026-out-of-scope-relevance-floor.md) | Out-of-scope relevance floor: deterministic cosine-distance scope gate | Accepted |
 | [0027](./0027-operating-layer-cycles-run-ledger.md) | Operating layer: scheduled cycles, run ledger, evidence-based staleness | Accepted |
 | [0028](./0028-qualifying-500-tiered-ontology.md) | Qualifying-record ontology for the 500: tiered, labeled, never blended | Accepted |
+| [0029](./0029-automated-inclusion-gate.md) | Automated inclusion gate: deterministic triage, human release, measured precision | Accepted |

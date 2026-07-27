@@ -289,6 +289,19 @@ def cmd_operate(args):
         sys.exit(1)  # the scheduler's run history must show a failed cycle as failed
 
 
+def cmd_gate(args):
+    """ADR-0029: automated inclusion gate under the ADR-0028 tiered standard."""
+    from pipeline.gold import gate
+
+    if args.retro:
+        print(json.dumps(gate.retro(write=args.write), indent=2))
+        return
+    if not args.keys:
+        print("nothing to do: pass entity keys or --retro")
+        return
+    print(json.dumps(gate.run_gate(args.keys, write=args.write), indent=2))
+
+
 def cmd_reconcile(args):
     """WS6: assert every surface tells one story; exit non-zero if any disagree."""
     import sys
@@ -453,6 +466,13 @@ def main():
     sa.set_defaults(func=cmd_signal_apply)
     sub.add_parser("reconcile", help="WS6: assert every surface (CSV, DB, retrieval, docs) agrees").set_defaults(
         func=cmd_reconcile)
+
+    ga = sub.add_parser("gate", help="Stage 2 (ADR-0029): automated inclusion gate (ADR-0028 standard)")
+    ga.add_argument("keys", nargs="*", help="entity keys to evaluate (crd:<n> / plain CRD)")
+    ga.add_argument("--retro", action="store_true",
+                    help="calibration: score all human-labeled entities, report agreement")
+    ga.add_argument("--write", action="store_true", help="persist decisions (default: dry-run)")
+    ga.set_defaults(func=cmd_gate)
 
     op = sub.add_parser("operate", help="Stage 2 (ADR-0027): run one unattended operating cycle")
     op.add_argument("--write", action="store_true", help="persist all effects (default: dry-run)")

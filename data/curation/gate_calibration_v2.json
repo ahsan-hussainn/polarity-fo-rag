@@ -1,0 +1,103 @@
+﻿{
+  "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+  "labeled": 59,
+  "buckets": {
+    "human_wealth_manager": {
+      "n": 11,
+      "gate": {
+        "needs_evidence:-": 2,
+        "exclude:-": 2,
+        "affirm:multi_family_office": 5,
+        "affirm:embedded_fo_practice": 2
+      }
+    },
+    "human_affirmed_fo": {
+      "n": 24,
+      "gate": {
+        "affirm:multi_family_office": 20,
+        "exclude:-": 3,
+        "needs_evidence:-": 1
+      }
+    },
+    "human_quarantined": {
+      "n": 5,
+      "gate": {
+        "exclude:-": 2,
+        "needs_evidence:-": 1,
+        "affirm:multi_family_office": 2
+      }
+    },
+    "human_ria_fo_practice": {
+      "n": 10,
+      "gate": {
+        "needs_evidence:-": 2,
+        "affirm:multi_family_office": 4,
+        "exclude:-": 3,
+        "affirm:embedded_fo_practice": 1
+      }
+    },
+    "human_excluded": {
+      "n": 9,
+      "gate": {
+        "exclude:-": 9
+      }
+    }
+  },
+  "disagreements": [
+    {
+      "crd": "144136",
+      "human": "human_wealth_manager",
+      "gate": "affirm:multi_family_office",
+      "score": 80
+    },
+    {
+      "crd": "296362",
+      "human": "human_affirmed_fo",
+      "gate": "exclude:-",
+      "score": 15
+    },
+    {
+      "crd": "150748",
+      "human": "human_affirmed_fo",
+      "gate": "exclude:-",
+      "score": 20
+    },
+    {
+      "crd": "334002",
+      "human": "human_affirmed_fo",
+      "gate": "needs_evidence:-",
+      "score": 40
+    },
+    {
+      "crd": "157511",
+      "human": "human_affirmed_fo",
+      "gate": "exclude:-",
+      "score": 25
+    },
+    {
+      "crd": "131618",
+      "human": "human_wealth_manager",
+      "gate": "affirm:multi_family_office",
+      "score": 80
+    },
+    {
+      "crd": "300899",
+      "human": "human_wealth_manager",
+      "gate": "affirm:multi_family_office",
+      "score": 80
+    },
+    {
+      "crd": "130711",
+      "human": "human_wealth_manager",
+      "gate": "affirm:multi_family_office",
+      "score": 70
+    },
+    {
+      "crd": "106079",
+      "human": "human_wealth_manager",
+      "gate": "affirm:multi_family_office",
+      "score": 95
+    }
+  ],
+  "recall_on_human_affirmed_fo": "20/24"
+}

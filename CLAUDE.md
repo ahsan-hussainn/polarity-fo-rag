@@ -1,17 +1,20 @@
 # CLAUDE.md — project context
 
-Family Office Dataset + Micro-RAG. PolarityIQ Differentiator — Stage 1 passed; now in the
-**pre-window Bridge Mandate correction phase** before Stage 2 (50 → 500 records, operated over time).
+Family Office Dataset + Micro-RAG. PolarityIQ Differentiator — Stage 1 passed; pre-window Bridge
+Mandate corrections complete (signed off 2026-07-22). **Now INSIDE the Stage 2 operating window.**
 Read this first each session. Keep it current.
 
-## Current phase: Bridge Mandate corrections (pre-window, no deadline)
+## Current phase: Stage 2 operating window (Mon 2026-07-27 12:00 → Sat 2026-08-01 12:00 +05)
 
-Stage 1 feedback (`D:\Polarity IQ Final Round\Stage 2\Ahsan Bridge Mandate.pdf`) requires correcting
-the original 50 before they become the base of the 500. Governing finding: checks measured but did
-not control release. WS0 audit: `docs/findings/bridge-audit-reconciliation.md`. Standards (fixed
-before measurement): ADR-0019 release/quarantine, ADR-0020 entity standard, ADR-0021 decision-maker
-standard. Language rule everywhere: narrowest accurate status word — "vendor reported deliverable,"
-never "verified"; counts regenerated from the artifact, never hand-carried.
+Brief: `D:\Polarity IQ Final Round\Stage 2\Differentiator Stage 2 _v9_2026.docx`. Mandate: 24 → 500
+qualifying records, kept current by scheduled unattended cycles; an agent using retrieval as a tool;
+one new retrieval capability; everything read from what the system did while running. Plan, hard
+gates, window-completion checklist, and locked decisions: **`docs/OPERATING_PLAN.md`** (deploy +
+scheduling + day-2 checkpoint email by Wed 12:00 — internal target Mon/Tue night). Time log:
+`docs/SESSION_LOG.md`. Pre-window correction record: `docs/BRIDGE_MANDATE_DISCLOSURE.md`; standards
+ADR-0019/0020/0021 still govern release. Language rule everywhere: narrowest accurate status word —
+"vendor reported deliverable," never "verified"; counts regenerated from the artifact, never
+hand-carried.
 
 ## The one thing that matters most
 

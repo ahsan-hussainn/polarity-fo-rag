@@ -1,6 +1,6 @@
 # WS6 — Final human review worksheet
 
-_Release control (mandate): reviewed in full on every surface; the completed decisions are the evidence. Reconciliation: 13/13 surfaces agree (`python -m pipeline.cli reconcile`). Product = 42 rows (24 qualifying FOs + 18 labeled non-FOs); quarantined = 8._
+_Release control (mandate): reviewed in full on every surface; the completed decisions are the evidence. Reconciliation: 13/13 checks agreed when this worksheet was created (2026-07-21); 15/15 at the final 2026-07-22 sign-off after WS6 added two checks (`python -m pipeline.cli reconcile`). Product = 42 rows (24 qualifying FOs + 18 labeled non-FOs); quarantined = 8. (Post-sign-off the product split into three files; see the disclosure.)_
 
 ## A. The 24 qualifying family offices
 | # | Firm | Primary contact | Authority | Email | ✔/note |

@@ -4,7 +4,8 @@
 the release/entity/decision-maker standards before the Stage 2 window opens, and requires: *"Disclose
 all pre-window work; it enters under the same evidence and reporting standards as everything else you
 submit."* This document is that disclosure. Every number here is reconciled against the final artifact
-(`python -m pipeline.cli reconcile`, 13/13 surfaces agree, 2026-07-20/21).
+(`python -m pipeline.cli reconcile` — 15/15 checks agree at the 2026-07-22 sign-off; this header
+previously said 13/13, written before WS6 added two checks — corrected 2026-07-27, see §7).
 
 ---
 

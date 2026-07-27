@@ -1,6 +1,6 @@
 # Methodology summary — how the system finds, enriches, and adjudicates the dataset
 
-The full reasoning trail is in `adr/` (22 records) and `docs/findings/`. Every number below is
+The full reasoning trail is in `adr/` (indexed in `CLAUDE.md`) and `docs/findings/`. Every number below is
 reconciled against the final artifact (`data/gold/family_office_dataset.csv`, 2026-07-20), not
 estimated. This reflects the corrected state after the Bridge Mandate pre-window pass
 (`docs/findings/bridge-audit-reconciliation.md`); it supersedes the original Stage 1 figures, which
@@ -72,7 +72,11 @@ addresses are withheld, not shipped as guesses).
   crawl (a Stage 2 job).
 - **Some authority rests on ownership, not an investment title** (e.g. a sole owner ADV-titled CCO);
   where "runs the investment process" is inferred rather than stated, the record says so.
-- **Time-sensitive signals** (recent investments, hires, news) are not yet built — a Stage 2
-  requirement, not present here.
+- **Time-sensitive signals** (recent investments, hires, news): the fields and an initial
+  population were built pre-window (migration 0014; 27 dated + sourced signals across 17 of the 24
+  FOs, in `data/gold/record_signals.csv` and surfaced by the RAG). What was NOT built pre-window is
+  the operating loop that keeps them current — that is Stage 2 window work. (An earlier version of
+  this file said signals were "not yet built"; that understated the delivered state and contradicted
+  the disclosure — corrected 2026-07-27.)
 - The `is_principal` extractor over-includes (measured; see the benchmark below); `Principal Count`
   is a raw extraction count, not a validated headcount.

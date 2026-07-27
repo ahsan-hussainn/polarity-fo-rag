@@ -1,8 +1,10 @@
 # polarity-fo-rag
 
 Family Office Dataset + Micro-RAG pipeline. PolarityIQ Differentiator.
-Stage 1 passed; currently in the **pre-window Bridge Mandate correction phase** (see
-`docs/findings/bridge-audit-reconciliation.md` and ADRs 0019–0022).
+Stage 1 passed; Bridge Mandate pre-window corrections complete (signed off 2026-07-22; see
+`docs/BRIDGE_MANDATE_DISCLOSURE.md`). **Now inside the Stage 2 operating window**
+(2026-07-27 → 2026-08-01): scaling to 500 records under scheduled, unattended operation —
+plan and gates in [`docs/OPERATING_PLAN.md`](./docs/OPERATING_PLAN.md).
 
 ## What this is
 
@@ -10,8 +12,9 @@ An automated system that **discovers, enriches, and adjudicates** family office 
 them through a production-shaped Retrieval-Augmented Generation (RAG) pipeline that answers
 natural-language queries grounded in the dataset.
 
-**What the current gold layer holds** (reconciled against `data/gold/family_office_dataset.csv`,
-2026-07-20): of 50 SEC-discovered firms, **24 are affirmed multi-family offices** (entity proven
+**What the gold layer held at the pre-window sign-off** (reconciled 2026-07-22; the Stage 2 climb
+grows these numbers — `python -m pipeline.cli reconcile` regenerates the current counts from the
+artifacts): of 50 SEC-discovered firms, **24 are affirmed multi-family offices** (entity proven
 under ADR-0020 *and* decision-maker proven under ADR-0021 — these are the `qualifying` records); 18
 are firms whose "family office" label was marketing, kept but labeled as wealth managers /
 RIAs-with-an-FO-practice and **not** counted as family offices; 8 are quarantined (2 not a family
@@ -19,7 +22,7 @@ office, 6 unresolved). Every high-value cell carries its basis; a validation res
 field unsafe changes what the product may release. No single-family offices appear — true SFOs are
 exempt from SEC registration, so the SEC-derived method structurally cannot reach them.
 
-Two things are true of every part of this repo:
+Three things are true of every part of this repo:
 
 1. **The dataset is the product.** The pipeline is the delivery mechanism. A great RAG on a thin or
    over-claimed dataset fails. Effort goes to the data first.
@@ -37,14 +40,14 @@ cold-starts in ~30–60 s).
 
 | Deliverable | Where |
 |---|---|
-| Gold dataset CSV (24 affirmed family offices) + auditable sidecars | [`family_office_dataset.csv`](./data/gold/family_office_dataset.csv), [`reclassified_firms.csv`](./data/gold/reclassified_firms.csv), [`quarantined.csv`](./data/gold/quarantined.csv) |
+| Gold dataset CSV (affirmed family offices) + auditable sidecars | [`family_office_dataset.csv`](./data/gold/family_office_dataset.csv), [`reclassified_firms.csv`](./data/gold/reclassified_firms.csv), [`quarantined.csv`](./data/gold/quarantined.csv) |
 | Methodology summary | [`METHODOLOGY.md`](./METHODOLOGY.md) |
 | Records with a full validation chain | [`docs/validation-chains.md`](./docs/validation-chains.md) |
 | Measured principal-selection benchmark (proxy labels, FP/FN) | [`docs/findings/validation-layer.md`](./docs/findings/validation-layer.md) |
 | Entity + decision-maker adjudication findings | [`docs/findings/entity-adjudication.md`](./docs/findings/entity-adjudication.md), [`decision-maker-evidence.md`](./docs/findings/decision-maker-evidence.md) |
 | RAG documentation note | [`docs/rag-note.md`](./docs/rag-note.md) |
 | Build session summary (Stage 1) | [`BUILD_SESSION_SUMMARY.md`](./BUILD_SESSION_SUMMARY.md) |
-| Reasoning trail | [`adr/`](./adr/) (22 ADRs) + [`docs/findings/`](./docs/findings/) |
+| Reasoning trail | [`adr/`](./adr/) (indexed in [`CLAUDE.md`](./CLAUDE.md)) + [`docs/findings/`](./docs/findings/) |
 
 ## Layout
 

@@ -23,11 +23,14 @@ WEB_UA = "PolarityIQ Research (ahsannhu17@gmail.com)"
 DATA_RAW = "data/raw"
 
 # --- Family-office classification (ADR-0004) ---
-# Strong: the phrase "family office" (and single/multi variants) in the firm name.
+# Strong: the phrase "family office(s)" (and single/multi variants) in the firm name. The optional
+# plural matters: the 2026-07-27 source census measured 11 SEC-feed firms named "... Family
+# Offices" (Colony, WE, Cherry Creek, ...) that the singular-only pattern silently dropped --
+# near-certain genuine FOs lost to one character.
 STRONG_NAME_PATTERNS = [
-    re.compile(r"\bfamily\s+office\b", re.I),
-    re.compile(r"\bmulti[\s-]?family\s+office\b", re.I),
-    re.compile(r"\bsingle[\s-]?family\s+office\b", re.I),
+    re.compile(r"\bfamily\s+offices?\b", re.I),
+    re.compile(r"\bmulti[\s-]?family\s+offices?\b", re.I),
+    re.compile(r"\bsingle[\s-]?family\s+offices?\b", re.I),
 ]
 # Medium: family-linked capital/wealth naming that is often (not always) a family office.
 MEDIUM_NAME_PATTERNS = [

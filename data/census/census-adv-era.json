@@ -1,0 +1,288 @@
+{
+  "feed_file": "IA_FIRM_SEC_Feed.xml (cached 07/11/2026)",
+  "firms_scanned": 23519,
+  "firmtype_distribution": {
+    "Registered": 16962,
+    "ERA": 6557
+  },
+  "baseline_reproduction": {
+    "count": 439,
+    "note": "union of strong/medium/free-text/client-mix; expected ~439 vs data/raw/adv_candidates.jsonl",
+    "total": 439,
+    "Registered": 427,
+    "ERA": 12
+  },
+  "tiers": {
+    "b_strong_name": {
+      "total": 71,
+      "Registered": 65,
+      "ERA": 6
+    },
+    "b_freetext_fo": {
+      "total": 184,
+      "Registered": 184,
+      "ERA": 0
+    },
+    "b_medium_name": {
+      "total": 54,
+      "Registered": 48,
+      "ERA": 6
+    },
+    "b_client_mix": {
+      "total": 162,
+      "Registered": 162,
+      "ERA": 0
+    },
+    "w_name_family_broad": {
+      "total": 152,
+      "Registered": 140,
+      "ERA": 12
+    },
+    "w_domain_family": {
+      "total": 64,
+      "Registered": 64,
+      "ERA": 0
+    },
+    "w_domain_fo_abbrev": {
+      "total": 34,
+      "Registered": 33,
+      "ERA": 1
+    },
+    "w_other_family_desc": {
+      "total": 49,
+      "Registered": 49,
+      "ERA": 0
+    },
+    "w_struct_hnw_only_le15": {
+      "total": 130,
+      "Registered": 130,
+      "ERA": 0
+    },
+    "w_struct_fewclients_highraum": {
+      "total": 232,
+      "Registered": 232,
+      "ERA": 0
+    }
+  },
+  "net_new_vs_baseline": {
+    "b_strong_name": {
+      "total": 0,
+      "Registered": 0,
+      "ERA": 0,
+      "with_website": 0
+    },
+    "b_freetext_fo": {
+      "total": 0,
+      "Registered": 0,
+      "ERA": 0,
+      "with_website": 0
+    },
+    "b_medium_name": {
+      "total": 0,
+      "Registered": 0,
+      "ERA": 0,
+      "with_website": 0
+    },
+    "b_client_mix": {
+      "total": 0,
+      "Registered": 0,
+      "ERA": 0,
+      "with_website": 0
+    },
+    "w_name_family_broad": {
+      "total": 29,
+      "Registered": 25,
+      "ERA": 4,
+      "with_website": 25
+    },
+    "w_domain_family": {
+      "total": 29,
+      "Registered": 29,
+      "ERA": 0,
+      "with_website": 29
+    },
+    "w_domain_fo_abbrev": {
+      "total": 12,
+      "Registered": 12,
+      "ERA": 0,
+      "with_website": 12
+    },
+    "w_other_family_desc": {
+      "total": 45,
+      "Registered": 45,
+      "ERA": 0,
+      "with_website": 41
+    },
+    "w_struct_hnw_only_le15": {
+      "total": 3,
+      "Registered": 3,
+      "ERA": 0,
+      "with_website": 3
+    },
+    "w_struct_fewclients_highraum": {
+      "total": 128,
+      "Registered": 128,
+      "ERA": 0,
+      "with_website": 104
+    }
+  },
+  "overlaps": {
+    "w_name_family_broad & w_domain_family": 44,
+    "w_name_family_broad & w_domain_fo_abbrev": 23,
+    "w_name_family_broad & w_other_family_desc": 2,
+    "w_name_family_broad & w_struct_hnw_only_le15": 5,
+    "w_name_family_broad & w_struct_fewclients_highraum": 9,
+    "w_name_family_broad & BASELINE": 123,
+    "w_domain_family & w_domain_fo_abbrev": 31,
+    "w_domain_family & w_other_family_desc": 2,
+    "w_domain_family & w_struct_hnw_only_le15": 2,
+    "w_domain_family & w_struct_fewclients_highraum": 2,
+    "w_domain_family & BASELINE": 35,
+    "w_domain_fo_abbrev & w_other_family_desc": 1,
+    "w_domain_fo_abbrev & w_struct_hnw_only_le15": 1,
+    "w_domain_fo_abbrev & w_struct_fewclients_highraum": 1,
+    "w_domain_fo_abbrev & BASELINE": 22,
+    "w_other_family_desc & w_struct_hnw_only_le15": 1,
+    "w_other_family_desc & w_struct_fewclients_highraum": 3,
+    "w_other_family_desc & BASELINE": 4,
+    "w_struct_hnw_only_le15 & w_struct_fewclients_highraum": 82,
+    "w_struct_hnw_only_le15 & BASELINE": 127,
+    "w_struct_fewclients_highraum & BASELINE": 104
+  },
+  "enrichability": {},
+  "unions": {
+    "family_word_union(name|domain|otherdesc)": {
+      "total": 219,
+      "Registered": 207,
+      "ERA": 12
+    },
+    "family_word_union_net_new": {
+      "total": 92,
+      "Registered": 88,
+      "ERA": 4,
+      "with_website": 84
+    },
+    "structural_union(hnw_only|fewclients_highraum)": {
+      "total": 280,
+      "Registered": 280,
+      "ERA": 0
+    },
+    "structural_union_net_new": {
+      "total": 131,
+      "Registered": 131,
+      "ERA": 0,
+      "with_website": 107
+    },
+    "structural_union_net_new_no_familyword": {
+      "total": 129,
+      "Registered": 129,
+      "ERA": 0
+    },
+    "all_widened_union": {
+      "total": 487,
+      "Registered": 475,
+      "ERA": 12
+    },
+    "all_widened_union_net_new": {
+      "total": 222,
+      "Registered": 218,
+      "ERA": 4,
+      "with_website": 190
+    }
+  },
+  "era_view": {
+    "b_strong_name": 6,
+    "b_freetext_fo": 0,
+    "b_medium_name": 6,
+    "w_name_family_broad": 12,
+    "w_domain_family": 0,
+    "w_other_family_desc": 0,
+    "era_total": 6557,
+    "era_baseline_name_or_freetext": 12,
+    "era_family_word_union": 12,
+    "era_family_word_union_with_website": 6,
+    "era_family_union_net_new_vs_baseline": 4
+  },
+  "data_availability_findings": {
+    "era_feed_location": "No separate ERA compilation report exists in the SEC programmatic manifest. The manifest publishes exactly 3 feeds: IA_FIRM_SEC_Feed (RIA+ERA combined), IA_FIRM_STATE_Feed, IA_INDVL_Feed. ERAs are inside the SEC firm feed, flagged Rgstn/@FirmType=ERA. All 6557 ERAs already analyzed locally.",
+    "sec_foia_landing_pages": "Old sec.gov FOIA ADV-data landing URLs now 404; the CompilationReports manifest is the authoritative programmatic source.",
+    "baseline_strong_regex_plural_gap": {
+      "finding": "Baseline STRONG_NAME_PATTERNS uses \bfamily\\s+office\b (singular) which silently drops firms named ...Family Offices (plural).",
+      "sec_feed_singular_name_hits": 71,
+      "sec_feed_singular_or_plural_hits": 82,
+      "plural_only_missed": 11,
+      "examples": [
+        "COLONY FAMILY OFFICES",
+        "CHERRY CREEK FAMILY OFFICES",
+        "RIVERGLADES FAMILY OFFICES",
+        "COMPOUND FAMILY OFFICES",
+        "HERITAGE FAMILY OFFICES",
+        "QP GLOBAL FAMILY OFFICES",
+        "DOUBLE EAGLE FAMILY OFFICES",
+        "WE FAMILY OFFICES",
+        "LEGACY ROAD FAMILY OFFICES",
+        "LEGACY BRIDGE PRIVATE FAMILY OFFICES",
+        "ARDEN GLOBAL FAMILY OFFICES"
+      ],
+      "fix": "change office to offices? ; recovers 11 near-certain genuine FOs at ~90pct precision"
+    }
+  },
+  "state_feed_adjacent": {
+    "state_feed_file": "IA_FIRM_STATE_Feed_07_26_2026.xml.gz",
+    "firms_scanned": 21763,
+    "firmtype": {
+      "null": 21763
+    },
+    "strong_familyoffice_name": 36,
+    "medium_family_name": 38,
+    "name_family_broad": 106,
+    "domain_family": 45,
+    "union_name_or_domain_family_signal": 116,
+    "note": "Same ADV XML format, filed with states (advisers typically <100M AUM). BEYOND assigned ADV+ERA scope but same classifiers apply. Item5 client-mix detail is sparse for state filers so structural tiers not evaluated here; name+domain signal only."
+  },
+  "precision_estimates_ESTIMATE": {
+    "basis": "Estimates, not measured. Grounded in (a) manual read of net-new sample firm names per tier, (b) known base rate 24 affirmed / 59 enriched = 41pct on baseline-quality candidates. Genuine-FO = would affirm as a real family office (MFO/SFO) under human adjudication.",
+    "baseline_439": {
+      "est_affirm_rate": "30-45pct",
+      "reasoning": "blended: name/free-text family-office tiers high, client_mix(162) and medium(54) lower; 41pct measured on the enriched subset"
+    },
+    "w_name_family_broad_netnew_29": {
+      "est_affirm_rate": "50-60pct",
+      "reasoning": "includes 11 plural family-offices (near-certain) + family-branded wealth shops; noise from real-estate multi-family/single-family + family-ventures VC"
+    },
+    "w_domain_family_netnew_29": {
+      "est_affirm_rate": "60-75pct",
+      "reasoning": "firm bought a *familyoffice*.com domain = presents as FO; noise e.g. oakwoodmultifamily.com (real estate)"
+    },
+    "w_domain_fo_abbrev_netnew_marginal_1": {
+      "est_affirm_rate": "n/a",
+      "reasoning": "all but 1 already in domain_family; near-zero marginal value"
+    },
+    "w_other_family_desc_netnew_45": {
+      "est_affirm_rate": "25-40pct",
+      "reasoning": "client-type free-text says family LP/trust; mostly ordinary RIAs with some family accounts (Wells Fargo, RBC, Plante Moran); a minority are real SFOs (Okabena, Ulysses, Dumaine)"
+    },
+    "w_struct_fewclients_highraum_netnew_128": {
+      "est_affirm_rate": "10-20pct",
+      "reasoning": "few clients + >100M RAUM does NOT distinguish FO from boutique hedge fund / concentrated institutional manager; sample is dominated by hedge funds (Ortelius, Atom, Peconic, Nicholas)"
+    },
+    "state_feed_family_signal_116": {
+      "est_affirm_rate": "45-60pct",
+      "reasoning": "state-registered ...Family Office named firms are typically genuine small MFOs; lower AUM, thinner contact data"
+    }
+  },
+  "reachability_verdict": {
+    "question": "Can affirmed-family-office classes alone reach 500 records?",
+    "current_affirmed": 24,
+    "total_distinct_candidate_universe_ADV_ERA": "439 baseline + 222 net-new widened = 661 distinct firms (every family-name/domain/free-text/structural signal, RIA+ERA)",
+    "realistic_affirmed_ceiling_ADV_ERA_only": {
+      "baseline_439_x_0.35": "~150",
+      "family_signal_netnew_92_x_0.50": "~46",
+      "structural_only_netnew_129_x_0.13": "~17",
+      "era_marginal": "~3",
+      "total": "~215 (range ~180-250)"
+    },
+    "verdict": "ADV + ERA ALONE CANNOT REACH 500 AFFIRMED. Absolute candidate ceiling across every tier is ~661 firms; at realistic affirm rates the affirmed ceiling is ~180-250. Net-new beyond the current 439 baseline is 222 candidates (190 enrichable-with-website), yielding ~60-70 additional affirmed.",
+    "to_reach_500": "Requires sources beyond SEC-registered ADV+ERA. Highest-value adjacent: (1) STATE adviser feed (+~116 family-signal candidates, ~50pct affirm = ~55, same format, download now); (2) IRS 990-PF private foundations (per ADR-0004, family foundations = SFO proxies); (3) 13F filers; (4) fix plural regex (+11 immediately). Even summing ADV+ERA+state+990-PF, 500 AFFIRMED genuine-FO is aggressive and likely needs commercial-list augmentation."
+  }
+}

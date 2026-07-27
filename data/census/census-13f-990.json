@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "generated": "2026-07-27",
+    "purpose": "Size 13F and 990-PF discovery source classes for scaling the family-office dataset from 24 to 500 qualifying records",
+    "goal_context": "SFOs are exempt from SEC ADV registration, so the ADV feed cannot find them; 13F (>$100M in 13F securities) and 990-PF (family foundations as leads) are the two candidate net-new channels",
+    "user_agent_used": "PolarityFO research ahsanhussain17999@gmail.com",
+    "every_number_basis": "All counts regenerated from live API/file artifacts stored in this census dir; estimates explicitly labeled with basis",
+    "apis_used": {
+      "edgar_fts": "https://efts.sec.gov/LATEST/search-index (backend of sec.gov/edgar/search) - returns 100 hits/page, aggregations cap at 30 entity buckets, FTS coverage is 2001-present",
+      "edgar_form_index": "https://www.sec.gov/Archives/edgar/full-index/2026/QTR{2,3}/form.idx",
+      "edgar_submissions": "https://data.sec.gov/submissions/CIK##########.json (13F filers carry NO SIC code - cannot auto-classify SFO vs hedge fund)",
+      "propublica_np": "https://projects.propublica.org/nonprofits/api/v2/ (search.json + organizations/{ein}.json)"
+    }
+  },
+
+  "task_a_13f": {
+    "universe_active_2026": {
+      "form_13fhr_filings_QTR2_2026": 9307,
+      "form_13fhr_filings_QTR3_2026_partial": 2633,
+      "note_QTR3": "QTR3 partial as of 2026-07-27; the Q2-2026 holdings wave (period ending 6/30, due 8/14) has not fully landed yet",
+      "distinct_active_13fhr_filers_QTR2_plus_QTR3": 8842,
+      "distinct_active_filers_normalized_names": 8808
+    },
+    "fts_family_office_all_time": {
+      "note": "EDGAR full-text search, form=13F-HR, phrase 'family office', coverage 2001-2026-07-20",
+      "matching_filings": 892,
+      "distinct_ciks_any_mention": 52,
+      "distinct_ciks_name_contains_family_office": 32,
+      "interpretation": "Phrase match over document text over-captures (includes trust companies/advisers who merely mention family office). Name-contains is the tighter signal."
+    },
+    "name_pattern_match_active_2026": {
+      "tier1_name_contains_family_office": 28,
+      "tier2_name_contains_family_not_office": 40,
+      "tier2_breakdown": {
+        "family_wealth_management_advisor": 24,
+        "family_capital": 3,
+        "family_holdings_investment_group_fund": 3,
+        "family_trust_foundation": 2
+      },
+      "tier2_note": "Tier-2 is dominated by 'X Family Wealth/Management' RIAs and multi-family offices - wealth managers, not single-family offices"
+    },
+    "adv_overlap": {
+      "full_adv_feed_distinct_normalized_names": 26535,
+      "method": "Exact match on normalized names (uppercase, strip punctuation + entity suffixes LLC/LP/INC/etc). ADV uses CRD, 13F uses CIK - no shared key, so name-match is the only join. Undercounts overlap on name variants, so net-new figures are a slight UPPER bound.",
+      "whole_universe_13f_in_adv": 6624,
+      "whole_universe_13f_in_adv_pct": 0.752,
+      "whole_universe_13f_not_in_adv_netnew_pool": 2184,
+      "whole_universe_13f_not_in_adv_pct": 0.248,
+      "name_matched_tier1_in_adv": 24,
+      "name_matched_tier1_netnew": 4,
+      "name_matched_tier2_in_adv": 31,
+      "name_matched_tier2_netnew": 9,
+      "key_finding": "Name-matched 'family office'/'family' 13F filers are OVERWHELMINGLY already ADV-registered (multi-family offices register). Only 13 of ~68 name-matched are net-new. The exempt SFOs that ARE net-new mostly do NOT carry 'family' in their name."
+    },
+    "netnew_pool_composition_2184": {
+      "identifiable_non_fo_institutions": {
+        "banks": 197,
+        "insurers": 62,
+        "pensions": 73,
+        "foundations_endowments_universities": 55,
+        "subtotal": 387
+      },
+      "family_named": 13,
+      "neutral_named_remainder": 1688,
+      "neutral_pool_sfo_density_sample": {
+        "sample_size": 30,
+        "plausible_sfo_by_name": "2-4 (e.g. MISHPACHA HOLDINGS, CANERECTOR)",
+        "estimated_rate": "7-13%",
+        "note": "Sample also contained foreign banks (BNP Paribas, Banque Transatlantique), insurers (Allstate, Cigna), a sovereign fund (Australia Future Fund), VC/PE GPs, hedge funds, and corporations (United Airlines) - so most of the neutral pool is NOT SFO"
+      }
+    },
+    "netnew_sfo_estimate": {
+      "name_identifiable_family_named_operating_sfos": {
+        "count": 9,
+        "list": ["Duquesne Family Office", "Intrepid Family Office", "Kopp Family Office", "CVA Family Office", "West Family Investments", "American Family Investments", "LCC Family Corp", "SEG Family Corp", "TLT Family Holdco"],
+        "excluded_as_noise": ["George Kaiser Family Foundation (foundation)", "Alpha Family Trust (trust)", "Family Capital Trust Co (trust co)", "FRG Family Wealth Advisors (RIA)"]
+      },
+      "knowable_neutral_named_sfos_confirmed_in_netnew_pool": {
+        "examples": ["Soros Fund Management", "MSD Capital (Dell)", "Canerector", "Mishpacha Holdings"],
+        "validation": "Confirmed present in the not-in-ADV pool; submissions API shows they also file SC 13D + Forms 3/4/5 (concentrated holders), consistent with SFO"
+      },
+      "high_confidence_net_new_records": "13-15 (name-identifiable + knowable neutral-named SFOs)",
+      "broad_neutral_pool_extrapolation": {
+        "estimate": "120-220 SFOs may hide in the 1,688 neutral net-new names (7-13% density x 1688)",
+        "precision": "LOW - name gives no signal for neutrally-named SFOs; each requires per-candidate research to distinguish SFO from hedge fund / PE GP / foreign institution / corporation. Submissions API does NOT classify (no SIC on 13F filers).",
+        "confidence": "wide error bars"
+      },
+      "realistic_qualifying_yield_for_dataset": {
+        "estimate": "40-90 net-new qualifying family-office records",
+        "reasoning": "13-15 high-confidence + a research-limited fraction of the neutral pool. Each neutral candidate needs (1) identification as an SFO not a fund/corp, then (2) affirmative entity establishment (ADR-0020) and a contactable investment decision-maker (ADR-0021). Many neutral candidates will fail verification. Yield is dominated by how much per-candidate research effort is invested.",
+        "caveat": "13F only catches SFOs with >$100M in US-listed equities/options; SFOs holding mainly private companies/real estate (e.g. Bezos Expeditions, Walton Enterprises) do NOT appear in the 13F universe at all - confirmed absent from 2026 13F filers"
+      }
+    }
+  },
+
+  "task_b_990pf": {
+    "framing": "990-PF is a LEAD source, not a countable-entity source. The countable entity for the dataset is a family OFFICE; a family FOUNDATION is a grantmaking vehicle that signals family wealth but is a distinct entity from any associated family office.",
+    "national_family_foundation_name_count": {
+      "value": 29676,
+      "method": "ProPublica v2 search q='family foundation' summed across 50 states + DC (per-state to bypass the 10,000-result Elasticsearch display cap on the national query)",
+      "top_states": {"CA": 3825, "FL": 3121, "NY": 2681, "TX": 1916, "IL": 1394},
+      "match_quality": "Name-based; top NTEE codes are T22/T20/T21 (private independent/grantmaking/corporate foundations)"
+    },
+    "sample_characterization": {
+      "sample_size": 250,
+      "sampling": "EINs pulled across spread pages (0,40,...,360) of the national result to span the relevance ranking",
+      "files_990pf_ft2": 205,
+      "files_990pf_pct": 0.82,
+      "private_foundation_by_foundation_code_2_3_4": 209,
+      "asset_median_usd": 592508,
+      "asset_p90_usd": 10568697,
+      "asset_max_usd": 1526002008,
+      "over_100m_count": 6,
+      "over_100m_pct": 0.024,
+      "over_50m_count": 6,
+      "over_25m_count": 12,
+      "over_10m_count": 26,
+      "over_100m_orgs": ["Patterson Family Foundation ($1.53B)", "Davis Family Foundation ($1.36B)", "Hunter Family Foundation ($287M)", "Argyros Family Foundation ($198M)", "Bezos Family Foundation ($165M)", "Farmer Family Foundation ($161M)"]
+    },
+    "derived_national_estimates": {
+      "family_private_foundations_990pf": {
+        "value": 24334,
+        "basis": "29,676 name matches x 82% 990-PF rate (sample-extrapolated)"
+      },
+      "family_foundations_over_100m_assets": {
+        "point_estimate": 712,
+        "of_which_990pf": 584,
+        "basis": "29,676 x 2.4% (6/250 sample). CI is wide: 6/250 -> ~0.9-5.2% -> roughly 260-1,540 nationally",
+        "precision": "MODERATE - based on 6 sample hits"
+      }
+    },
+    "leads_to_fo_conversion": {
+      "countable_entity_gap": "A large family foundation is NOT a family office. Conversion requires affirmative evidence of a distinct operating family-office entity associated with the same family.",
+      "evidence_that_establishes_the_fo_entity": [
+        "A distinctly-named family office entity sharing principals/officers with the foundation (e.g. Bezos Expeditions alongside Bezos Family Foundation)",
+        "Family office website / press / LinkedIn presence of FO investment staff",
+        "An SEC ADV (if registered MFO) or 13F filing by the office entity",
+        "Officers/trustees + 'books in care of' listed on the 990-PF itself (starting point for the family, not proof of an FO)"
+      ],
+      "conversion_rate_estimate": "10-25% of >$100M foundation leads convert to a verifiable family-office record",
+      "conversion_reasoning": "Not every wealthy family with a foundation runs a separate family office; where one exists, affirmatively establishing it (ADR-0020) and finding a contactable investment decision-maker (ADR-0021) filters further. Per-lead research is high-effort.",
+      "realistic_qualifying_yield_for_dataset": {
+        "from_over_100m_pool": "60-175 FO records (10-25% of ~700 leads)",
+        "note": "Extending below $100M (>$25M foundations, ~4.8% of 29,676 = ~1,400) widens the lead pool but lowers conversion quality and raises effort per record",
+        "illustration": "Bezos Family Foundation was in the sample; its associated family office (Bezos Expeditions) does NOT file 13F - the two channels are complementary, and the foundation is the lead that points to the office"
+      }
+    }
+  },
+
+  "bottom_line": {
+    "channel_13f": "8,842 active 13F filers; 75% already ADV-reachable. Net-new SFO channel = 13-15 high-confidence name/known-identifiable, plus an estimated 120-220 neutrally-named SFOs hidden in a 1,688 net-new pool requiring per-candidate research. Realistic net-new qualifying yield: 40-90 records.",
+    "channel_990pf": "29,676 family foundations nationally, ~82% are 990-PF private foundations, but only ~2.4% (~700) exceed $100M. These are LEADS, not FO entities. Realistic FO-record yield after conversion: 60-175 records, high research cost per lead.",
+    "combined_net_new_toward_500": "Order-of-magnitude 100-265 net-new qualifying records plausibly sourceable from these two channels combined, heavily verification-effort-bounded; neither channel is a turnkey list. The 13F channel is higher precision but small; the 990-PF channel is larger but lead-quality with low conversion.",
+    "caveat": "All yield figures are effort-dependent estimates, not counts. Only the raw filing/entity counts (8,842 filers; 892 FTS filings; 29,676 foundations; sample rates) are measured."
+  }
+}

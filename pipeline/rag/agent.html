@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PolarityIQ — Coverage Agent</title>
+<style>
+  :root { --bg:#0e1116; --panel:#161b23; --line:#242c38; --text:#dde4ee; --dim:#8b96a8;
+          --accent:#4f8ef7; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text);
+         font: 15px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif; padding: 28px 16px 60px; }
+  main { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 20px; } h1 span { color: var(--dim); font-weight: 400; }
+  p.sub { color: var(--dim); margin: 6px 0 18px; font-size: 13.5px; }
+  a { color: var(--accent); }
+  textarea { width: 100%; min-height: 84px; background: var(--panel); color: var(--text);
+             border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+             font: inherit; resize: vertical; }
+  .row { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+  button { background: var(--accent); color: #fff; border: 0; border-radius: 8px;
+           padding: 9px 18px; font: 600 14px inherit; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: wait; }
+  .sample { background: var(--panel); color: var(--dim); border: 1px solid var(--line);
+            font-weight: 400; font-size: 12.5px; }
+  #status { margin: 18px 0 10px; color: var(--dim); font-size: 13.5px; }
+  .verdict { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+             border-radius: 10px; padding: 14px 16px; margin: 10px 0 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+          padding: 13px 16px; margin: 10px 0; }
+  .card h3 { font-size: 15px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 2px 9px; border-radius: 20px; border: 1px solid var(--line);
+           text-transform: uppercase; letter-spacing: .4px; }
+  .b-strong { color: #59d999; border-color: #59d99955; }
+  .b-moderate { color: #e9c46a; border-color: #e9c46a55; }
+  .b-weak { color: #e07a5f; border-color: #e07a5f55; }
+  ul { margin: 6px 0 0 18px; } li { margin: 2px 0; }
+  .dim { color: var(--dim); font-size: 13px; }
+  .warn { color: #e9c46a; }
+  .section-h { margin: 16px 0 4px; font-size: 13px; text-transform: uppercase;
+               letter-spacing: .6px; color: var(--dim); }
+  .refused { border-left-color: #e07a5f; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Coverage Agent <span>· goal in, evidenced picks out</span></h1>
+  <p class="sub">Give the agent a commercial goal in plain English. It plans its own retrieval over
+  the qualifying family-office dataset, then answers with per-record confidence and evidence.
+  Every answer passes an independent release check before you see it; when evidence is too thin,
+  the agent says so instead of guessing. <a href="/">Direct retrieval</a> ·
+  <a href="/agent/tools">tool schemas</a></p>
+
+  <textarea id="goal" placeholder="e.g. Identify the family offices best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each."></textarea>
+  <div class="row">
+    <button id="run">Run goal</button>
+    <button class="sample" data-g="Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.">LP fit: healthcare fund</button>
+    <button class="sample" data-g="Which three family offices should a real-assets fund contact first this quarter, and why now?">Real assets: who first?</button>
+  </div>
+  <div id="status"></div>
+  <div id="out"></div>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+document.querySelectorAll('.sample').forEach(b => b.onclick = () => { $('#goal').value = b.dataset.g; });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+$('#run').onclick = async () => {
+  const goal = $('#goal').value.trim();
+  if (!goal) return;
+  $('#run').disabled = true;
+  $('#out').innerHTML = '';
+  $('#status').textContent = 'The agent is working — planning retrieval, comparing records, then passing an independent release check. Typically 20–60 seconds.';
+  try {
+    const r = await fetch('/agent/goal', { method: 'POST',
+      headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ goal }) });
+    if (!r.ok) { const e = await r.json().catch(() => ({}));
+      $('#status').innerHTML = '<span class="warn">' + esc(e.error || ('The service returned an error (' + r.status + ').')) + '</span>'; return; }
+    render(await r.json());
+    $('#status').textContent = '';
+  } catch (e) {
+    $('#status').innerHTML = '<span class="warn">Could not reach the service. It may be cold-starting — try again in ~30 seconds.</span>';
+  } finally { $('#run').disabled = false; }
+};
+
+function render(d) {
+  const a = d.answer, v = d.verification || {};
+  const refused = v.refused || !v.passed;
+  let h = '<div class="verdict' + (refused ? ' refused' : '') + '">' + esc(a.verdict) +
+          '<div class="dim" style="margin-top:6px">' +
+          (v.passed ? 'Passed the independent release check' + (v.repaired ? ' (after one repair)' : '') : 'Withheld by the release check') +
+          ' · ' + d.steps + ' steps · session log: run ' + d.run_id + '</div></div>';
+  if (a.picks?.length) {
+    h += '<div class="section-h">Picks, most confident first</div>';
+    for (const p of a.picks) {
+      h += '<div class="card"><h3>' + esc(p.firm) +
+           ' <span class="badge b-' + esc(p.confidence) + '">' + esc(p.confidence) + ' fit</span></h3>' +
+           '<div style="margin-top:4px">' + esc(p.fit_summary) + '</div>' +
+           '<ul>' + p.evidence.map(e => '<li class="dim">' + esc(e) + '</li>').join('') + '</ul>' +
+           (p.caveats?.length ? '<ul>' + p.caveats.map(c => '<li class="dim warn">' + esc(c) + '</li>').join('') + '</ul>' : '') +
+           (p.outreach ? '<div class="dim" style="margin-top:6px">Outreach: ' + esc(p.outreach) + '</div>' : '') +
+           '</div>';
+    }
+  }
+  if (a.abstained?.length) {
+    h += '<div class="section-h">Held back — evidence too thin to claim a fit</div><ul>' +
+         a.abstained.map(x => '<li class="dim">' + esc(x) + '</li>').join('') + '</ul>';
+  }
+  if (a.coverage_note) h += '<div class="section-h">Coverage</div><div class="dim">' + esc(a.coverage_note) + '</div>';
+  if (a.next_steps?.length) h += '<div class="section-h">Next steps</div><ul>' +
+        a.next_steps.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>';
+  if (a.limitations?.length) h += '<div class="section-h">Limitations</div><ul>' +
+        a.limitations.map(x => '<li class="dim">' + esc(x) + '</li>').join('') + '</ul>';
+  $('#out').innerHTML = h;
+}
+</script>
+</body>
+</html>

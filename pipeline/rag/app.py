@@ -19,11 +19,16 @@ from pipeline.rag.answer import answer, answer_stream
 
 app = FastAPI(title="PolarityIQ Micro-RAG", description="Grounded Q&A over a decision-grade FO dataset")
 _HTML = (pathlib.Path(__file__).parent / "index.html").read_text(encoding="utf-8")
+_AGENT_HTML = (pathlib.Path(__file__).parent / "agent.html").read_text(encoding="utf-8")
 
 
 class Query(BaseModel):
     question: str
     k: int = 5
+
+
+class Goal(BaseModel):
+    goal: str
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -47,6 +52,36 @@ def query(q: Query):
         # -- an exception message can contain secrets (e.g. an auth header), so keep it off the wire.
         logging.getLogger("uvicorn.error").exception("query failed")
         return JSONResponse({"error": "The service hit an internal error answering that query."},
+                            status_code=500)
+
+
+@app.get("/agent", response_class=HTMLResponse)
+def agent_page() -> str:
+    return _AGENT_HTML
+
+
+@app.get("/agent/tools")
+def agent_tools():
+    """The agent's tool interfaces, live -- the schema deliverable, served from the running code."""
+    from pipeline.agent.tools import openai_tools
+
+    return {"tools": openai_tools()}
+
+
+@app.post("/agent/goal")
+def agent_goal(g: Goal):
+    """Run one goal session (ADR-0031). Synchronous: a session is a few tool-calling model turns
+    (~15-60s). The response carries the structured answer, the release-check verdict, and the
+    run_id whose ops.run_events rows are the raw, unedited session log."""
+    if not g.goal.strip():
+        return JSONResponse({"error": "empty goal"}, status_code=400)
+    try:
+        from pipeline.agent.loop import run_goal
+
+        return run_goal(g.goal, trigger="api")
+    except Exception:
+        logging.getLogger("uvicorn.error").exception("agent goal failed")
+        return JSONResponse({"error": "The agent hit an internal error on that goal."},
                             status_code=500)
 
 

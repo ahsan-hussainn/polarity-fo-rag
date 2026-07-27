@@ -290,6 +290,14 @@ def cmd_operate(args):
         sys.exit(1)  # the scheduler's run history must show a failed cycle as failed
 
 
+def cmd_agent_goal(args):
+    """ADR-0031: run one goal session through the agent, fully ledgered."""
+    from pipeline.agent.loop import run_goal
+
+    out = run_goal(args.goal, trigger="cli")
+    print(json.dumps(out, indent=2, ensure_ascii=False))
+
+
 def cmd_queue_seed(args):
     """ADR-0029: load discovery candidates into the cycle-advanced queue."""
     from pipeline.ops import discovery
@@ -478,6 +486,10 @@ def main():
     sa.set_defaults(func=cmd_signal_apply)
     sub.add_parser("reconcile", help="WS6: assert every surface (CSV, DB, retrieval, docs) agrees").set_defaults(
         func=cmd_reconcile)
+
+    ag = sub.add_parser("agent-goal", help="Stage 2 (ADR-0031): run a natural-language goal through the agent")
+    ag.add_argument("goal", help="the goal, in plain English")
+    ag.set_defaults(func=cmd_agent_goal)
 
     qs = sub.add_parser("queue-seed", help="Stage 2 (ADR-0029): seed the discovery queue from a candidates JSONL")
     qs.add_argument("path", help="candidates JSONL (from discover-adv)")

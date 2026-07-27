@@ -12,8 +12,11 @@ ADV_MANIFEST_URL = (
     "CompilationReports.manifest.json"
 )
 ADV_FEED_BASE = "https://reports.adviserinfo.sec.gov/reports/CompilationReports/"
-# We want the SEC-registered firm feed (RIAs + ERAs), not the state or individuals feeds.
+# SEC-registered firm feed (RIAs + ERAs) and the state-registered adviser feed (same XML shape,
+# advisers typically <$100M AUM -- the small genuine MFOs the SEC feed structurally excludes;
+# census 2026-07-27 measured ~116 family-signal candidates there).
 ADV_FEED_PREFIX = "IA_FIRM_SEC_Feed_"
+ADV_STATE_FEED_PREFIX = "IA_FIRM_STATE_Feed_"
 
 # --- Website enrichment fetch (Stage 2) ---
 # Descriptive UA so a site operator can see who we are; we fetch only a few public pages per firm.

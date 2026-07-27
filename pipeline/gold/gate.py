@@ -48,7 +48,8 @@ def assemble(entity_key: str) -> dict:
     ev: dict = {"entity_key": entity_key}
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute(
-            "select raw from bronze.captures where source = 'sec_form_adv' and entity_key = %s "
+            "select raw from bronze.captures "
+            "where source in ('sec_form_adv', 'state_form_adv') and entity_key = %s "
             "order by id desc limit 1", (crd,))
         row = cur.fetchone()
         ev["adv"] = row[0] if row else None

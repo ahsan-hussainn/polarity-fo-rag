@@ -32,6 +32,7 @@ FETCH_TIMEOUT = 15
 
 
 MAX_RECLASSIFY_PER_CYCLE = 10  # LLM re-extraction budget per cycle; skips are logged, never silent
+DISCOVER_PER_CYCLE = int(__import__("os").getenv("OPS_DISCOVER_PER_CYCLE", "15"))
 
 
 def _monitored_firms() -> list[dict]:
@@ -202,6 +203,8 @@ def run_cycle(*, write: bool = True, trigger: str = "local",
     try:
         firms = _monitored_firms()
         out["observe"] = _observe_phase(firms, workers, write=write)
+        from pipeline.ops import discovery
+        out["discover"] = discovery.process_tranche(limit=DISCOVER_PER_CYCLE, write=write)
         out["rebuild"] = _rebuild_phase(write)
         out["status"] = "ok"
     except Exception as e:

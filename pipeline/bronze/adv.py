@@ -22,20 +22,22 @@ from pipeline import config
 
 # --------------------------------------------------------------------------- download
 
-def current_feed_filename(ua: str = config.SEC_UA) -> str:
-    """Read the SEC manifest and return the current SEC-registered firm feed filename."""
+def current_feed_filename(ua: str = config.SEC_UA, prefix: str = config.ADV_FEED_PREFIX) -> str:
+    """Read the SEC manifest and return the current firm-feed filename for the given prefix
+    (SEC-registered by default; pass config.ADV_STATE_FEED_PREFIX for state registrants)."""
     req = urllib.request.Request(config.ADV_MANIFEST_URL, headers={"User-Agent": ua})
     manifest = json.loads(urllib.request.urlopen(req, timeout=60).read())
     for f in manifest.get("files", []):
-        if f.get("name", "").startswith(config.ADV_FEED_PREFIX):
+        if f.get("name", "").startswith(prefix):
             return f["name"]
-    raise RuntimeError("No SEC firm feed found in ADV manifest")
+    raise RuntimeError(f"No firm feed matching {prefix!r} in ADV manifest")
 
 
-def download_feed(ua: str = config.SEC_UA, cache_dir: str = config.DATA_RAW) -> str:
+def download_feed(ua: str = config.SEC_UA, cache_dir: str = config.DATA_RAW,
+                  prefix: str = config.ADV_FEED_PREFIX) -> str:
     """Download (and cache) the current firm feed, returning the path to the uncompressed XML."""
     os.makedirs(cache_dir, exist_ok=True)
-    fn = current_feed_filename(ua)
+    fn = current_feed_filename(ua, prefix)
     xml_path = os.path.join(cache_dir, fn.replace(".xml.gz", ".xml"))
     if os.path.exists(xml_path) and os.path.getsize(xml_path) > 1_000_000:
         return xml_path  # already cached
@@ -185,10 +187,11 @@ def classify(rec: FirmRecord) -> Optional[Candidate]:
     return None
 
 
-def discover(xml_path: Optional[str] = None) -> dict:
-    """Run discovery over the feed. Returns a summary dict and the list of candidates."""
+def discover(xml_path: Optional[str] = None, feed: str = "sec") -> dict:
+    """Run discovery over a feed ('sec' or 'state'). Returns a summary + candidate list."""
     if xml_path is None:
-        xml_path = download_feed()
+        prefix = config.ADV_STATE_FEED_PREFIX if feed == "state" else config.ADV_FEED_PREFIX
+        xml_path = download_feed(prefix=prefix)
     t0 = time.time()
     total = 0
     candidates: list[Candidate] = []

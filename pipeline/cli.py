@@ -20,12 +20,13 @@ from pipeline.bronze import adv
 
 
 def cmd_discover_adv(args):
-    result = adv.discover(xml_path=args.xml)
+    result = adv.discover(xml_path=args.xml, feed=args.feed)
     candidates = result.pop("candidates")
 
     # write candidates (bronze output) to gitignored data/raw as JSONL
     os.makedirs(config.DATA_RAW, exist_ok=True)
-    out = os.path.join(config.DATA_RAW, "adv_candidates.jsonl")
+    suffix = "_state" if args.feed == "state" else ""
+    out = os.path.join(config.DATA_RAW, f"adv_candidates{suffix}.jsonl")
     with open(out, "w", encoding="utf-8") as fh:
         for c in candidates:
             fh.write(json.dumps({"tier": c.tier, "reasons": c.reasons, **c.firm}) + "\n")
@@ -289,6 +290,15 @@ def cmd_operate(args):
         sys.exit(1)  # the scheduler's run history must show a failed cycle as failed
 
 
+def cmd_queue_seed(args):
+    """ADR-0029: load discovery candidates into the cycle-advanced queue."""
+    from pipeline.ops import discovery
+
+    out = discovery.seed_queue(args.path, source=args.source, tiers=tuple(args.tiers.split(",")),
+                               limit=args.limit, write=args.write)
+    print(json.dumps(out, indent=2))
+
+
 def cmd_gate(args):
     """ADR-0029: automated inclusion gate under the ADR-0028 tiered standard."""
     from pipeline.gold import gate
@@ -389,6 +399,8 @@ def main():
 
     d = sub.add_parser("discover-adv", help="Stage 1: discover FO candidates from SEC Form ADV")
     d.add_argument("--xml", default=None, help="path to a pre-downloaded feed XML (optional)")
+    d.add_argument("--feed", default="sec", choices=("sec", "state"),
+                   help="which registry feed: sec (RIA+ERA, default) or state-registered advisers")
     d.set_defaults(func=cmd_discover_adv)
 
     sub.add_parser("db-check", help="verify Supabase connectivity + extensions + schemas").set_defaults(
@@ -466,6 +478,14 @@ def main():
     sa.set_defaults(func=cmd_signal_apply)
     sub.add_parser("reconcile", help="WS6: assert every surface (CSV, DB, retrieval, docs) agrees").set_defaults(
         func=cmd_reconcile)
+
+    qs = sub.add_parser("queue-seed", help="Stage 2 (ADR-0029): seed the discovery queue from a candidates JSONL")
+    qs.add_argument("path", help="candidates JSONL (from discover-adv)")
+    qs.add_argument("--source", required=True, choices=("sec_adv", "state_adv"))
+    qs.add_argument("--tiers", default="strong,medium", help="comma-separated tiers to queue")
+    qs.add_argument("--limit", type=int, default=None)
+    qs.add_argument("--write", action="store_true", help="persist (default: dry-run)")
+    qs.set_defaults(func=cmd_queue_seed)
 
     ga = sub.add_parser("gate", help="Stage 2 (ADR-0029): automated inclusion gate (ADR-0028 standard)")
     ga.add_argument("keys", nargs="*", help="entity keys to evaluate (crd:<n> / plain CRD)")

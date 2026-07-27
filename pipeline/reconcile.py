@@ -41,6 +41,7 @@ def run() -> dict:
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute("select release_state, count(*) from gold.records group by 1")
         db_state = dict(cur.fetchall())
+        db_total = sum(db_state.values())
         cur.execute("select count(*) from gold.records where release_state='qualifying'")
         db_qual = cur.fetchone()[0]
         cur.execute("select count(*) from gold.records where release_state='unresolved' "
@@ -60,12 +61,17 @@ def run() -> dict:
         cur.execute("select count(*) from gold.records where release_state='qualifying' and person_status is distinct from 'proven'")
         qual_unproven_person = cur.fetchone()[0]
 
-    # 1. three files partition the 50; product == qualifying FOs
+    # 1. the three exports partition every record the system holds; product == qualifying FOs.
+    #    Totals are DERIVED from the database, never hardcoded, so these hold at any dataset size
+    #    (the Stage 1 versions asserted the literal numbers 50/24/18, which breaks on the first
+    #    record the Stage 2 climb adds -- and a release control that fails on growth teaches
+    #    people to ignore it).
     check("product CSV == DB qualifying", len(prod) == db_qual, f"CSV {len(prod)} vs DB {db_qual}")
     check("reclassified CSV == DB reclassified", len(reclass) == db_reclass, f"CSV {len(reclass)} vs DB {db_reclass}")
     check("quarantine CSV == DB quarantined", len(quar) == db_quar, f"CSV {len(quar)} vs DB {db_quar}")
-    check("three files partition all 50", len(prod) + len(reclass) + len(quar) == 50,
-          f"{len(prod)}+{len(reclass)}+{len(quar)}")
+    check("three exports partition all held records",
+          len(prod) + len(reclass) + len(quar) == db_total,
+          f"{len(prod)}+{len(reclass)}+{len(quar)} vs DB total {db_total}")
 
     # 2. the product is family offices ONLY, each with a proven person
     check("product is family offices only (no non-FO leaked in)", not non_fo_in_prod, f"{len(non_fo_in_prod)} leaked")
@@ -80,19 +86,29 @@ def run() -> dict:
     graded_reject = [r for r in prod if r["Primary Email Grade"] in REJECTED_GRADES and r["Primary Email"].strip()]
     check("no D/F-graded address shipped operational", not graded_reject, f"{len(graded_reject)} rows")
 
-    # 4. counts
-    check("exactly 24 qualifying family offices", len(prod) == 24, f"{len(prod)}")
-    check("18 reclassified firms, all wealth_manager/ria_with_fo_practice", len(reclass) == 18
-          and all(r["Entity Category"] in ("wealth_manager", "ria_with_fo_practice") for r in reclass),
-          f"{len(reclass)}")
+    # 4. categorical integrity (counts themselves are covered by the derived checks above)
+    check("some qualifying family offices exist", len(prod) > 0, f"{len(prod)}")
+    check("reclassified are all wealth_manager/ria_with_fo_practice",
+          all(r["Entity Category"] in ("wealth_manager", "ria_with_fo_practice") for r in reclass),
+          f"{len(reclass)} rows")
 
-    # 5. retrieval corpus: only qualifying FOs retrievable
+    # 5. retrieval corpus: only qualifying FOs retrievable. Probes are SAMPLED from the live
+    #    exports (never hardcoded firm names) so the check keeps meaning as the dataset grows.
     from pipeline.rag.retrieve import by_name
-    unretr_q = all(len(by_name(r["Firm Name"].split(",")[0][:18])) == 0 for r in quar[:3])
-    unretr_r = len(by_name("Tarbox")) == 0 and len(by_name("Chilton")) == 0  # reclassified now unretrievable
-    check("quarantined firms NOT retrievable", unretr_q, "checked 3")
-    check("reclassified non-FOs NOT retrievable", unretr_r, "Tarbox/Chilton")
-    check("a qualifying FO IS retrievable", len(by_name("Wellspring")) > 0, "Wellspring")
+
+    def _probe(row):  # distinctive name prefix, same lookup technique the UI uses
+        name = row.get("Family Office Name") or row.get("Firm Name") or ""
+        return name.split(",")[0][:18]
+
+    quar_hits = [_probe(r) for r in quar[:3] if len(by_name(_probe(r))) > 0]
+    reclass_hits = [_probe(r) for r in reclass[:3] if len(by_name(_probe(r))) > 0]
+    prod_miss = [_probe(r) for r in prod[:2] if len(by_name(_probe(r))) == 0]
+    check("quarantined firms NOT retrievable", not quar_hits,
+          f"sampled {min(3, len(quar))}; hits: {quar_hits}")
+    check("reclassified non-FOs NOT retrievable", not reclass_hits,
+          f"sampled {min(3, len(reclass))}; hits: {reclass_hits}")
+    check("qualifying FOs ARE retrievable", not prod_miss,
+          f"sampled {min(2, len(prod))}; misses: {prod_miss}")
 
     passed = sum(ok for _, ok, _ in checks)
     return {

@@ -36,12 +36,12 @@ for: order of work is by product consequence, and deviations get recorded here, 
 - **Concurrency:** bounded worker pool (~8) with per-host politeness + exponential backoff; batch
   caps sized so a cycle finishes well under the 6h cadence; DB work-claiming so an interrupted run
   resumes instead of duplicating (also the architecture-note §4 answer).
-- **500-bar standard: entity-strict, field-permissive.** Only affirmed FO classes count toward 500;
-  a counted record does NOT need a proven contact or graded email (honest labels + trust-ranked, per
-  the locked 2026-07-19 policy). Reclassified wealth managers never count. If the Mon-night source
-  census shows this cannot reach 500, the fallback is decided then via a superseding ADR amending
-  ADR-0024 — before mass measurement, never after. Climb target ~510–520 so quarantines don't drop
-  the end-of-window count below the bar.
+- **500-bar standard: entity-strict, field-permissive — RESOLVED to a tiered ontology (ADR-0028,
+  decided by Ahsan 2026-07-27 day 1, census-triggered, before mass discovery).** Three counted,
+  always-labeled, never-blended categories: SFO, MFO, embedded_fo_practice (evidenced, real bar).
+  Wealth managers never count. A counted record does NOT need a proven contact or graded email
+  (honest labels + trust-ranked, per the locked 2026-07-19 policy). Climb target ~510–520 so
+  quarantines don't drop the end-of-window count below the bar.
 - **Agent:** same Render service, `/agent` route; framework-free tool loop behind the provider seam;
   v1 tools: structured_search, semantic_search, fit_rank, get_record, quarantine_summary
   (per-record, metadata-only). Deterministic post-output gate (checkanswer extended), abstention

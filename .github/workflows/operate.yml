@@ -14,6 +14,11 @@ name: operate
 on:
   schedule:
     - cron: "23 */6 * * *"
+    # Jitter tolerance (ADR-0027 contingency, added 2026-07-27): the first-ever 12:23 UTC slot was
+    # dropped by GitHub (documented behavior for new schedules under load). This daily line adds a
+    # near-term occurrence and the push itself re-registers the schedule. Runs remain platform-
+    # fired; this is a committed code change, not a manual trigger.
+    - cron: "40 13 * * *"
   workflow_dispatch: {}
 
 concurrency:

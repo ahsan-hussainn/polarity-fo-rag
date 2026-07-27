@@ -19,6 +19,11 @@ on:
     # near-term occurrence and the push itself re-registers the schedule. Runs remain platform-
     # fired; this is a committed code change, not a manual trigger.
     - cron: "40 13 * * *"
+    # Second jitter line (2026-07-27 19:10 PKT): 13:40 UTC also dropped -- two dropped slots on
+    # day one of a brand-new workflow. GitHub's scheduler is known to warm up slowly on new
+    # workflows; extra daily lines give it more delivery chances tonight and get pruned (with a
+    # commit saying so) once the 6h heartbeat proves reliable.
+    - cron: "53 14 * * *"
   workflow_dispatch: {}
 
 concurrency:

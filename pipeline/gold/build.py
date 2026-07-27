@@ -12,6 +12,7 @@ from __future__ import annotations
 import csv
 import os
 import re
+from datetime import date
 
 from pipeline import db
 
@@ -478,7 +479,8 @@ def build(write: bool = False) -> dict:
             row["is_stale"] = None
             if filed and row.get("release_state") == "qualifying":
                 y, m = (int(x) for x in filed[:7].split("-"))
-                months = (2026 - y) * 12 + (7 - m)  # relative to the build month (2026-07)
+                today = date.today()  # relative to when THIS build runs, so scheduled rebuilds stay honest
+                months = (today.year - y) * 12 + (today.month - m)
                 row["is_stale"] = months > 15
             out["firms"] += 1
             if p:

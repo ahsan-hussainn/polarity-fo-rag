@@ -70,7 +70,9 @@ def _combine(pages: list[dict]) -> tuple[str, list[str], list[int], str | None]:
 
 def _persist(firm: dict, result: ex.ExtractionResult, urls: list[str], ids: list[int],
              home: str | None) -> int:
-    """Upsert one firm and replace its people. Returns the number of people written."""
+    """Upsert one firm and replace its people, preserving validation-layer state by name.
+
+    Returns (people_written, verification_rows_restored)."""
     e = result.extraction
     by = f"{result.provider}:{result.model}"
     with db.get_conn() as c, c.cursor() as cur:
@@ -89,7 +91,17 @@ def _persist(firm: dict, result: ex.ExtractionResult, urls: list[str], ids: list
              e.sectors, e.founded_year, urls, ids, by,
              json.dumps(result.usage, ensure_ascii=False)),
         )
-        # People: extraction is the source of truth for the roster, so replace wholesale on re-run.
+        # People: extraction is the source of truth for the ROSTER, but the validation layer owns
+        # the email chain -- replacing wholesale used to wipe email/status/grade on every re-run,
+        # which under scheduled operation would destroy vendor-verified state each cycle. Snapshot
+        # the verification columns by person name, replace the roster, then restore them onto the
+        # people still on it. A person who left the roster takes their verification state with them.
+        cur.execute(
+            "select lower(name), email, email_pattern, email_status,"
+            " email_verification::text, quality_grade"
+            " from silver.people where firm_crd = %s and email is not null",
+            (firm["crd"],))
+        kept = {r[0]: r[1:] for r in cur.fetchall()}
         cur.execute("delete from silver.people where firm_crd = %s", (firm["crd"],))
         for m in e.team:
             cur.execute(
@@ -98,8 +110,16 @@ def _persist(firm: dict, result: ex.ExtractionResult, urls: list[str], ids: list
                 " values (%s,%s,%s,%s,%s,%s,%s)",
                 (firm["crd"], m.name, m.title, m.is_principal, m.principal_reason, home, by),
             )
+        restored = 0
+        for name_l, (em, pat, status, verif, grade) in kept.items():
+            cur.execute(
+                "update silver.people set email=%s, email_pattern=%s, email_status=%s,"
+                " email_verification=%s::jsonb, quality_grade=%s"
+                " where firm_crd = %s and lower(name) = %s",
+                (em, pat, status, verif, grade, firm["crd"], name_l))
+            restored += cur.rowcount
         c.commit()
-    return len(e.team)
+    return len(e.team), restored
 
 
 def run(provider: str | None = None, *, limit: int | None = None, write: bool = False) -> dict:
@@ -108,7 +128,7 @@ def run(provider: str | None = None, *, limit: int | None = None, write: bool = 
     firms = _firms_from_bronze(limit)
     out = {"provider": extractor.name, "written": write, "firms": [],
            "firms_processed": 0, "people": 0, "principals": 0,
-           "input_tokens": 0, "output_tokens": 0}
+           "verification_restored": 0, "input_tokens": 0, "output_tokens": 0}
 
     for firm in firms:
         text, urls, ids, home = _combine(firm["pages"])
@@ -116,7 +136,8 @@ def run(provider: str | None = None, *, limit: int | None = None, write: bool = 
         e = result.extraction
         principals = sum(1 for m in e.team if m.is_principal)
         if write:
-            _persist(firm, result, urls, ids, home)
+            _, restored = _persist(firm, result, urls, ids, home)
+            out["verification_restored"] += restored
 
         usage = result.usage or {}
         out["input_tokens"] += usage.get("prompt_tokens", 0)

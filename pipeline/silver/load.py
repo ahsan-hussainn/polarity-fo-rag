@@ -33,7 +33,7 @@ def _reg_domain(url: str | None) -> str | None:
     return net or None
 
 
-def _firms_from_bronze(limit: int | None) -> list[dict]:
+def _firms_from_bronze(limit: int | None, crds: set[str] | None = None) -> list[dict]:
     """Group bronze 'website' captures into per-firm bundles (one bundle per CRD).
 
     Bronze is append-only, so a re-fetched site has MULTIPLE captures of the same page over time.
@@ -56,7 +56,7 @@ def _firms_from_bronze(limit: int | None) -> list[dict]:
             f = firms.setdefault(crd, {"crd": crd, "firm_name": name, "pages": []})
             f["pages"].append({"bronze_id": bid, "page_type": ptype or "home",
                                "url": url, "title": title, "text": text})
-    ordered = list(firms.values())
+    ordered = [f for f in firms.values() if crds is None or f["crd"] in crds]
     return ordered[:limit] if limit else ordered
 
 
@@ -130,10 +130,15 @@ def _persist(firm: dict, result: ex.ExtractionResult, urls: list[str], ids: list
     return len(e.team), restored
 
 
-def run(provider: str | None = None, *, limit: int | None = None, write: bool = False) -> dict:
-    """Build silver from bronze website captures. Extracts always; persists only if write=True."""
+def run(provider: str | None = None, *, limit: int | None = None, write: bool = False,
+        crds: set[str] | None = None) -> dict:
+    """Build silver from bronze website captures. Extracts always; persists only if write=True.
+
+    `crds` scopes the rebuild to named firms -- extraction is not deterministic, so a blanket
+    rebuild rewords cells on records nobody asked about (ADR-0029 promotion path relies on this).
+    """
     extractor = ex.get_extractor(provider)
-    firms = _firms_from_bronze(limit)
+    firms = _firms_from_bronze(limit, crds)
     out = {"provider": extractor.name, "written": write, "firms": [],
            "firms_processed": 0, "people": 0, "principals": 0,
            "verification_restored": 0, "input_tokens": 0, "output_tokens": 0}

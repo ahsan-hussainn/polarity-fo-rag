@@ -320,6 +320,22 @@ def cmd_gate(args):
     print(json.dumps(gate.run_gate(args.keys, write=args.write), indent=2))
 
 
+def cmd_gate_review(args):
+    """ADR-0029: assemble the human-review sheet for gate decisions (a draft is not a decision)."""
+    from pipeline.gold import review
+
+    out = review.sheet(args.out, decisions=tuple(args.decisions.split(",")), limit=args.limit)
+    print(json.dumps(out, indent=2))
+
+
+def cmd_gate_ratify(args):
+    """ADR-0029: load ratified gate reviews, then promote affirmed firms into the product."""
+    from pipeline.gold import review
+
+    out = review.ratify(args.path, write=args.write, promote=not args.no_promote)
+    print(json.dumps(out, indent=2))
+
+
 def cmd_reconcile(args):
     """WS6: assert every surface tells one story; exit non-zero if any disagree."""
     import sys
@@ -505,6 +521,22 @@ def main():
                     help="calibration: score all human-labeled entities, report agreement")
     ga.add_argument("--write", action="store_true", help="persist decisions (default: dry-run)")
     ga.set_defaults(func=cmd_gate)
+
+    gr = sub.add_parser("gate-review",
+                        help="Stage 2 (ADR-0029): export gate decisions to a human-review sheet")
+    gr.add_argument("--out", default="data/curation/gate_review_sheet.json")
+    gr.add_argument("--decisions", default="affirm",
+                    help="comma-separated gate decisions to review (affirm,needs_evidence,exclude)")
+    gr.add_argument("--limit", type=int, default=None)
+    gr.set_defaults(func=cmd_gate_review)
+
+    gy = sub.add_parser("gate-ratify",
+                        help="Stage 2 (ADR-0029): apply ratified gate reviews + promote to gold")
+    gy.add_argument("--path", default="data/curation/gate_adjudications.json")
+    gy.add_argument("--write", action="store_true", help="persist (default: dry-run)")
+    gy.add_argument("--no-promote", action="store_true",
+                    help="load adjudications only; skip the silver+gold rebuild")
+    gy.set_defaults(func=cmd_gate_ratify)
 
     op = sub.add_parser("operate", help="Stage 2 (ADR-0027): run one unattended operating cycle")
     op.add_argument("--write", action="store_true", help="persist all effects (default: dry-run)")

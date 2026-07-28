@@ -1,0 +1,1194 @@
+[
+ {
+  "entity_key": "crd:110990",
+  "crd": "110990",
+  "firm_name": "LONG FAMILY OFFICE",
+  "source": "state_adv",
+  "website": "HTTP://WWW.LONGFAMILYOFFICE.COM",
+  "city": "WILMINGTON",
+  "state": "NC",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "affirm",
+   "category": "multi_family_office",
+   "score": 60,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'LONG FAMILY OFFICE' states family office",
+     "points": 40
+    },
+    {
+     "rule": "site_fo_selfdesc",
+     "detail": "site text states 'family office' 12 times",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-27 20:27:48.707517+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 12,
+  "extracted": {
+   "team": [
+    {
+     "name": "Randy M. Long",
+     "title": "Founder",
+     "principal": true
+    },
+    {
+     "name": "Ellen Long",
+     "title": "Co-Founder",
+     "principal": true
+    },
+    {
+     "name": "Micah Long",
+     "title": "Co-Founder",
+     "principal": true
+    }
+   ],
+   "thesis": "Helping families grow an enduring legacy through financial planning and business consulting.",
+   "sectors": [],
+   "founded_year": 2011
+  },
+  "evidence_classes": [
+   "adv_item5",
+   "website"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/110990/PDF/110990.pdf",
+    "observed_at": "2026-07-01",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 15,
+     "nonhnw_clients": 15,
+     "hnw_raum": 40202000,
+     "raum_total": 51605000,
+     "total_employees": 4,
+     "org_form": "Corporation",
+     "legal_name": "R.M. LONG INVESTMENT ADVISORY, INC.",
+     "business_name": "LONG FAMILY OFFICE"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.longfamilyoffice.com/story",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "egal practice that focused on estate planning and business organizations, and a wealth management firm that focused on building and preserving family legacies. But in 2007, my father"
+    }
+   }
+  ],
+  "draft_category": "multi_family_office",
+  "draft_note": "gate affirm at 60 on rules ['name_fo_strong', 'site_fo_selfdesc']",
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:120053",
+  "crd": "120053",
+  "firm_name": "CORNERSTONE FAMILY OFFICE, LLC",
+  "source": "state_adv",
+  "website": "HTTP://WWW.CORNERSTONEFAMILYOFFICE.COM",
+  "city": "MAYFIELD HEIGHTS",
+  "state": "OH",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "affirm",
+   "category": "multi_family_office",
+   "score": 85,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'CORNERSTONE FAMILY OFFICE, LLC' states family office",
+     "points": 40
+    },
+    {
+     "rule": "site_fo_practice",
+     "detail": "site names an FO practice: 'family office services'",
+     "points": 25
+    },
+    {
+     "rule": "site_fo_selfdesc",
+     "detail": "site text states 'family office' 27 times",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-27 20:27:36.936158+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 27,
+  "extracted": {
+   "team": [
+    {
+     "name": "Catherine G. Veres",
+     "title": "Founding Principal and President",
+     "principal": true
+    },
+    {
+     "name": "Carrie A. Rosko",
+     "title": "Principal and Senior Vice President",
+     "principal": true
+    },
+    {
+     "name": "Mindy J. Pritchard",
+     "title": "Director",
+     "principal": false
+    },
+    {
+     "name": "Carrie Beth Lang",
+     "title": "Director",
+     "principal": false
+    },
+    {
+     "name": "Abigail Veres Colvin",
+     "title": "Senior Associate",
+     "principal": false
+    },
+    {
+     "name": "Aletheia K. Uechi",
+     "title": "Senior Associate",
+     "principal": false
+    },
+    {
+     "name": "Noah L. Veres",
+     "title": "Senior Associate",
+     "principal": false
+    },
+    {
+     "name": "Jenny L. Nally",
+     "title": "Associate",
+     "principal": false
+    },
+    {
+     "name": "Traci C. Kruchan",
+     "title": "Office Manager",
+     "principal": false
+    },
+    {
+     "name": "Susan M. Guip",
+     "title": "Administrative Assistant",
+     "principal": false
+    }
+   ],
+   "thesis": "",
+   "sectors": [],
+   "founded_year": 2001
+  },
+  "evidence_classes": [
+   "adv_item5",
+   "website"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/120053/PDF/120053.pdf",
+    "observed_at": "2026-04-30",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 39,
+     "nonhnw_clients": 0,
+     "hnw_raum": 0,
+     "raum_total": null,
+     "total_employees": 11,
+     "org_form": "Limited Liability Company",
+     "legal_name": "CORNERSTONE FAMILY OFFICE, LLC",
+     "business_name": "CORNERSTONE FAMILY OFFICE, LLC"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://cornerstonefamilyoffice.com/about-cornerstone/",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "t CornerstoneDear Friends,Established in 2001, Cornerstone continues to provide family office services to a select group of wealthy individuals and their families. Our capabilities h"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://cornerstonefamilyoffice.com/our-team/",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "after attaining the level of Partner/Senior Vice President in another boutique multi-family office. A graduate of Duquesne University with a BSBA in accounting, Cathi has spent h"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://cornerstonefamilyoffice.com/our-team/",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "multi_family_office",
+     "span": "ng the level of manager. She further expanded her work experience at a boutique multi-family office, rising to the level of Vice President. Carrie joined Cornerstone Family Office"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://cornerstonefamilyoffice.com/our-team/",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "D FINANCIAL PLANNER\u2122 professional. She has extensive experience in all areas of family office services and is responsible for overall management of the firm.Cathi is a member of the"
+    }
+   }
+  ],
+  "draft_category": "multi_family_office",
+  "draft_note": "gate affirm at 85 on rules ['name_fo_strong', 'site_fo_practice', 'site_fo_selfdesc'] | CONTRADICTION: gate says multi_family_office, site language says a service line -- if it is a practice, the counted category is embedded_fo_practice",
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:120278",
+  "crd": "120278",
+  "firm_name": "WEALTHY & WISE FAMILY OFFICE",
+  "source": "state_adv",
+  "website": "HTTPS://WWW.WEALTHYANDWISEFAMILYOFFICE.COM",
+  "city": "COLUMBIA",
+  "state": "MD",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "affirm",
+   "category": "multi_family_office",
+   "score": 60,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'WEALTHY & WISE FAMILY OFFICE' states family office",
+     "points": 40
+    },
+    {
+     "rule": "site_fo_practice",
+     "detail": "site names an FO practice: 'Family Office team'",
+     "points": 25
+    },
+    {
+     "rule": "site_fo_selfdesc",
+     "detail": "site text states 'family office' 30 times",
+     "points": 20
+    }
+   ],
+   "contradictions": [
+    {
+     "rule": "retail_scale",
+     "detail": "174 non-HNW clients -- retail RIA shape",
+     "points": -25
+    }
+   ],
+   "decided_at": "2026-07-27 20:27:04.732113+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 30,
+  "extracted": {
+   "team": [
+    {
+     "name": "Dr. Daniel Tai Young Lee",
+     "title": "Founder & Chief Advisor",
+     "principal": true
+    },
+    {
+     "name": "Sangwoo Park",
+     "title": "CEO",
+     "principal": true
+    },
+    {
+     "name": "Steve Hsin",
+     "title": "CFO / Family Legacy Strategist",
+     "principal": true
+    },
+    {
+     "name": "Genti Cici",
+     "title": "Global Investment Strategist",
+     "principal": true
+    },
+    {
+     "name": "Endrit-Lloshi",
+     "title": "US Financial Advisor / Portfolio Manager",
+     "principal": true
+    },
+    {
+     "name": "JaeKyun Kwak",
+     "title": "Investment Advisor",
+     "principal": true
+    },
+    {
+     "name": "Gilyoung Lee",
+     "title": "Rising Gen Leadership Training Specialist",
+     "principal": false
+    },
+    {
+     "name": "Cameron Elaine Teeter",
+     "title": "Executive Assistant",
+     "principal": false
+    },
+    {
+     "name": "Kyunghee Hong",
+     "title": "Client Relationship Officer",
+     "principal": false
+    },
+    {
+     "name": "Yuna Choi",
+     "title": "Accounting and Compliance Specialist",
+     "principal": false
+    }
+   ],
+   "thesis": "We believe long-term, diversified, and value-oriented investments are the key to multigenerational prosperity.",
+   "sectors": [
+    "Wealth Management",
+    "Financial Planning",
+    "Investment Strategy",
+    "Tax Management",
+    "Retirement Planning",
+    "Venture Capital Investment Management",
+    "Estate Planning",
+    "Philanthropy",
+    "Concierge Services"
+   ],
+   "founded_year": null
+  },
+  "evidence_classes": [
+   "adv_item5",
+   "website"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/120278/PDF/120278.pdf",
+    "observed_at": "2026-03-30",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 14,
+     "nonhnw_clients": 174,
+     "hnw_raum": 51200000,
+     "raum_total": 63100000,
+     "total_employees": 6,
+     "org_form": "Corporation",
+     "legal_name": "PTC INTERNATIONAL PORTFOLIO MANAGEMENT, INC.",
+     "business_name": "WEALTHY & WISE FAMILY OFFICE"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "HTTPS://WWW.WEALTHYANDWISEFAMILYOFFICE.COM",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "multi_family_office",
+     "span": "e, headquartered in Columbia, Maryland USA is the first private and independent Multi-Family Office in Korea. It is also the only Family Office Exchange member in Korea. Beside Co"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.wealthyandwisefamilyoffice.com/about",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "multi_family_office",
+     "span": "acy of these family values. \u200b \u200bFor over 20 years, W&W FO has been Korea's first multi-family office. The mission of W&W FO is to enhance the health and happiness of our clients' f"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://www.wealthyandwisefamilyoffice.com/about",
+    "observed_at": "2026-07-27",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "mpany, the Wealthy & Wise Family Office team is committed to providing tailored family office services with unbiased views and strictly abiding by our fiduciary duty to clients. Our"
+    }
+   }
+  ],
+  "draft_category": "multi_family_office",
+  "draft_note": "gate affirm at 60 on rules ['name_fo_strong', 'site_fo_practice', 'site_fo_selfdesc'] | ADV reports 188 individual clients -- retail-scale book contradicts MFO | gate contradiction retail_scale: 174 non-HNW clients -- retail RIA shape",
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:125163",
+  "crd": "125163",
+  "firm_name": "COGENT CAPITAL GROUP",
+  "source": "state_adv",
+  "website": null,
+  "city": null,
+  "state": null,
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 35,
+   "evidence": [
+    {
+     "rule": "adv_freetext_fo",
+     "detail": "ADV Item 5.G other-services text states family office",
+     "points": 15
+    },
+    {
+     "rule": "structural_fo_shape",
+     "detail": "HNW RAUM share 0.91, 10 clients",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-27 20:26:19.862553+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/125163/PDF/125163.pdf",
+    "observed_at": "2026-04-03",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 6,
+     "nonhnw_clients": 4,
+     "hnw_raum": 80445064,
+     "raum_total": 88265493,
+     "total_employees": 1,
+     "org_form": "Corporation",
+     "legal_name": "MIND SPAN, INC.",
+     "business_name": "COGENT CAPITAL GROUP"
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 35 on rules ['adv_freetext_fo', 'structural_fo_shape'] | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:125939",
+  "crd": "125939",
+  "firm_name": "FAMILY OFFICE ADVISORS LLC",
+  "source": "state_adv",
+  "website": "HTTP://WWW.FOALLC.COM",
+  "city": "NEW YORK",
+  "state": "NY",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 40,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'FAMILY OFFICE ADVISORS LLC' states family office",
+     "points": 40
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-27 20:26:31.922683+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/125939/PDF/125939.pdf",
+    "observed_at": "2026-03-20",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 0,
+     "nonhnw_clients": 0,
+     "hnw_raum": null,
+     "raum_total": null,
+     "total_employees": 2,
+     "org_form": "Limited Liability Company",
+     "legal_name": "FAMILY OFFICE ADVISORS LLC",
+     "business_name": "FAMILY OFFICE ADVISORS LLC"
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 40 on rules ['name_fo_strong'] | NAME-ONLY RISK: the affirmative evidence is essentially the firm's name; ADR-0028 calls a marketing label without a practice non-counting | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:127918",
+  "crd": "127918",
+  "firm_name": "THOMAS JACKSON FAMILY OFFICE, INC.",
+  "source": "state_adv",
+  "website": null,
+  "city": "OMAHA",
+  "state": "NE",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 40,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'THOMAS JACKSON FAMILY OFFICE, INC.' states family office",
+     "points": 40
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-27 20:26:41.859713+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/127918/PDF/127918.pdf",
+    "observed_at": "2026-03-13",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": null,
+     "nonhnw_clients": null,
+     "hnw_raum": null,
+     "raum_total": null,
+     "total_employees": 2,
+     "org_form": "Corporation",
+     "legal_name": "THOMAS JACKSON FAMILY OFFICE, INC.",
+     "business_name": "THOMAS JACKSON FAMILY OFFICE, INC."
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 40 on rules ['name_fo_strong'] | NAME-ONLY RISK: the affirmative evidence is essentially the firm's name; ADR-0028 calls a marketing label without a practice non-counting | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:139916",
+  "crd": "139916",
+  "firm_name": "ROUND OAK CAPITAL LLC",
+  "source": "state_adv",
+  "website": "HTTPS://WWW.LINKEDIN.COM/COMPANY/ROUND-OAK-CAPITAL",
+  "city": "CHARLOTTESVILLE",
+  "state": "VA",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 35,
+   "evidence": [
+    {
+     "rule": "adv_freetext_fo",
+     "detail": "ADV Item 5.G other-services text states family office",
+     "points": 15
+    },
+    {
+     "rule": "structural_fo_shape",
+     "detail": "HNW RAUM share 0.99, 5 clients",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-27 20:26:35.440639+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/139916/PDF/139916.pdf",
+    "observed_at": "2026-07-24",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 5,
+     "nonhnw_clients": null,
+     "hnw_raum": 23543727,
+     "raum_total": 23897884,
+     "total_employees": 1,
+     "org_form": "Limited Liability Company",
+     "legal_name": "ROUND OAK CAPITAL LLC",
+     "business_name": "ROUND OAK CAPITAL LLC"
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 35 on rules ['adv_freetext_fo', 'structural_fo_shape'] | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:147160",
+  "crd": "147160",
+  "firm_name": "LEGACY FAMILY OFFICE, LLC",
+  "source": "state_adv",
+  "website": "HTTPS://WWW.LINKEDIN.COM/COMPANY/LEGACY-FAMILY-OFFICE/",
+  "city": "BONITA SPRINGS",
+  "state": "FL",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 55,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'LEGACY FAMILY OFFICE, LLC' states family office",
+     "points": 40
+    },
+    {
+     "rule": "adv_freetext_fo",
+     "detail": "ADV Item 5.G other-services text states family office",
+     "points": 15
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-27 20:27:11.196554+00:00",
+   "run_id": 8
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/147160/PDF/147160.pdf",
+    "observed_at": "2026-03-16",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 26,
+     "nonhnw_clients": 4,
+     "hnw_raum": 63404055,
+     "raum_total": 65060442,
+     "total_employees": 3,
+     "org_form": "Limited Liability Company",
+     "legal_name": "LEGACY FAMILY OFFICE, LLC",
+     "business_name": "LEGACY FAMILY OFFICE, LLC"
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 55 on rules ['adv_freetext_fo', 'name_fo_strong'] | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:151620",
+  "crd": "151620",
+  "firm_name": "ATRATO ASSET MANAGEMENT LLC",
+  "source": "state_adv",
+  "website": null,
+  "city": null,
+  "state": null,
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 35,
+   "evidence": [
+    {
+     "rule": "adv_freetext_fo",
+     "detail": "ADV Item 5.G other-services text states family office",
+     "points": 15
+    },
+    {
+     "rule": "structural_fo_shape",
+     "detail": "HNW RAUM share 1.00, 11 clients",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-28 04:00:10.322252+00:00",
+   "run_id": 14
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/151620/PDF/151620.pdf",
+    "observed_at": "2026-02-13",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 11,
+     "nonhnw_clients": null,
+     "hnw_raum": 86887091,
+     "raum_total": 86887091,
+     "total_employees": 1,
+     "org_form": "Limited Liability Company",
+     "legal_name": "ATRATO ASSET MANAGEMENT LLC",
+     "business_name": "ATRATO ASSET MANAGEMENT LLC"
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 35 on rules ['adv_freetext_fo', 'structural_fo_shape'] | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:154529",
+  "crd": "154529",
+  "firm_name": "AVANT GARDE CAPITAL",
+  "source": "state_adv",
+  "website": "HTTPS://WWW.AVANT-GARDECAPITAL.COM",
+  "city": "ATLANTA",
+  "state": "GA",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 35,
+   "evidence": [
+    {
+     "rule": "adv_freetext_fo",
+     "detail": "ADV Item 5.G other-services text states family office",
+     "points": 15
+    },
+    {
+     "rule": "structural_fo_shape",
+     "detail": "HNW RAUM share 0.82, 8 clients",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-28 04:01:52.147032+00:00",
+   "run_id": 14
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/154529/PDF/154529.pdf",
+    "observed_at": "2026-06-08",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 6,
+     "nonhnw_clients": 2,
+     "hnw_raum": 388456,
+     "raum_total": 471669,
+     "total_employees": 3,
+     "org_form": "Limited Liability Company",
+     "legal_name": "AVANT GARDE CAPITAL, LLC",
+     "business_name": "AVANT GARDE CAPITAL"
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 35 on rules ['adv_freetext_fo', 'structural_fo_shape'] | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:156284",
+  "crd": "156284",
+  "firm_name": "BONNEVILLE MULTI-FAMILY OFFICE",
+  "source": "state_adv",
+  "website": "https://www.facebook.com/mike.roan.908",
+  "city": null,
+  "state": null,
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "needs_evidence",
+   "category": null,
+   "score": 40,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'BONNEVILLE MULTI-FAMILY OFFICE' states family office",
+     "points": 40
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-28 04:00:21.135261+00:00",
+   "run_id": 14
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/156284/PDF/156284.pdf",
+    "observed_at": "2023-02-02",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 2,
+     "nonhnw_clients": 16,
+     "hnw_raum": 7000000,
+     "raum_total": 8300000,
+     "total_employees": 1,
+     "org_form": "Sole Proprietorship",
+     "legal_name": "ROAN, MICHAEL CLARK",
+     "business_name": "BONNEVILLE MULTI-FAMILY OFFICE"
+    }
+   }
+  ],
+  "draft_category": "unresolved",
+  "draft_note": "gate needs_evidence at 40 on rules ['name_fo_strong'] | NAME-ONLY RISK: the affirmative evidence is essentially the firm's name; ADR-0028 calls a marketing label without a practice non-counting | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:158302",
+  "crd": "158302",
+  "firm_name": "MACI FAMILY OFFICE ADVISORS",
+  "source": "state_adv",
+  "website": null,
+  "city": "NEW YORK",
+  "state": "NY",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "affirm",
+   "category": "multi_family_office",
+   "score": 60,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'MACI FAMILY OFFICE ADVISORS' states family office",
+     "points": 40
+    },
+    {
+     "rule": "structural_fo_shape",
+     "detail": "HNW RAUM share 0.96, 15 clients",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-28 03:59:50.701140+00:00",
+   "run_id": 14
+  },
+  "site_fo_phrase_count": 0,
+  "extracted": null,
+  "evidence_classes": [
+   "adv_item5"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/158302/PDF/158302.pdf",
+    "observed_at": "2026-03-18",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 15,
+     "nonhnw_clients": null,
+     "hnw_raum": 23500000,
+     "raum_total": 24500000,
+     "total_employees": 2,
+     "org_form": "Corporation",
+     "legal_name": "MACI CAPITAL SOLUTIONS INC.",
+     "business_name": "MACI FAMILY OFFICE ADVISORS"
+    }
+   }
+  ],
+  "draft_category": "multi_family_office",
+  "draft_note": "gate affirm at 60 on rules ['name_fo_strong', 'structural_fo_shape'] | NAME-ONLY RISK: the affirmative evidence is essentially the firm's name; ADR-0028 calls a marketing label without a practice non-counting | no website self-description span captured -- one evidence class only, so ADR-0020 cannot affirm this row as it stands",
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:166010",
+  "crd": "166010",
+  "firm_name": "MERIWETHER FAMILY OFFICE, LLC",
+  "source": "state_adv",
+  "website": "HTTPS://MERIWETHERFAMILYOFFICE.COM/",
+  "city": "PORTLAND",
+  "state": "OR",
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "affirm",
+   "category": "multi_family_office",
+   "score": 60,
+   "evidence": [
+    {
+     "rule": "name_fo_strong",
+     "detail": "firm name 'MERIWETHER FAMILY OFFICE, LLC' states family office",
+     "points": 40
+    },
+    {
+     "rule": "site_fo_selfdesc",
+     "detail": "site text states 'family office' 9 times",
+     "points": 20
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-28 03:59:41.927588+00:00",
+   "run_id": 14
+  },
+  "site_fo_phrase_count": 9,
+  "extracted": {
+   "team": [
+    {
+     "name": "Mark Blake",
+     "title": "Managing Director",
+     "principal": true
+    },
+    {
+     "name": "Zalena Carr",
+     "title": "Administrative Assistant",
+     "principal": false
+    }
+   ],
+   "thesis": "Mark specializes in very high touch wealth preservation and growth by matching individuals and families with outside investment managers to preserve, grow and t",
+   "sectors": [],
+   "founded_year": 2014
+  },
+  "evidence_classes": [
+   "adv_item5",
+   "website"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/166010/PDF/166010.pdf",
+    "observed_at": "2026-02-05",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": null,
+     "nonhnw_clients": null,
+     "hnw_raum": null,
+     "raum_total": null,
+     "total_employees": 2,
+     "org_form": "Limited Liability Company",
+     "legal_name": "MERIWETHER FAMILY OFFICE, LLC",
+     "business_name": "MERIWETHER FAMILY OFFICE, LLC"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "HTTPS://MERIWETHERFAMILYOFFICE.COM/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "to content Home Team Contact Our Home \u00a92014 Meriwether Family Office, LLC is a registered investment advisor in the state of Oregon. Meriwether Family Office, LLC may not transact business"
+    }
+   }
+  ],
+  "draft_category": "multi_family_office",
+  "draft_note": "gate affirm at 60 on rules ['name_fo_strong', 'site_fo_selfdesc']",
+  "category": "multi_family_office",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ },
+ {
+  "entity_key": "crd:169271",
+  "crd": "169271",
+  "firm_name": "BROWNING CAPITAL MANAGEMENT LLC",
+  "source": "state_adv",
+  "website": "HTTP://WWW.BROWNINGCM.COM",
+  "city": null,
+  "state": null,
+  "gate": {
+   "gate_version": "gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule after calibration on the 59 labeled entities; FROZEN before mass discovery -- further changes require an ADR)",
+   "decision": "affirm",
+   "category": "embedded_fo_practice",
+   "score": 60,
+   "evidence": [
+    {
+     "rule": "site_fo_practice",
+     "detail": "site names an FO practice: 'family office services'",
+     "points": 25
+    },
+    {
+     "rule": "site_fo_selfdesc",
+     "detail": "site text states 'family office' 12 times",
+     "points": 20
+    },
+    {
+     "rule": "adv_freetext_fo",
+     "detail": "ADV Item 5.G other-services text states family office",
+     "points": 15
+    }
+   ],
+   "contradictions": [],
+   "decided_at": "2026-07-28 04:01:23.063164+00:00",
+   "run_id": 14
+  },
+  "site_fo_phrase_count": 12,
+  "extracted": {
+   "team": [
+    {
+     "name": "Scott D. Browning, J.D., CPA",
+     "title": "Managing Partner",
+     "principal": true
+    },
+    {
+     "name": "Dylan J. Browning",
+     "title": null,
+     "principal": false
+    },
+    {
+     "name": "Christine E. Browning",
+     "title": "Client Service Administrator",
+     "principal": false
+    }
+   ],
+   "thesis": "Browning Capital Management LLC provides holistic asset management services tailored to high-net worth individuals and their families, integrating investment ma",
+   "sectors": [
+    "Wealth management",
+    "Family office",
+    "Insurance",
+    "Financial planning",
+    "Estate planning",
+    "Risk management",
+    "Tax planning",
+    "Real estate analysis",
+    "Retirement planning",
+    "Philanthropic planning"
+   ],
+   "founded_year": 2013
+  },
+  "evidence_classes": [
+   "adv_item5",
+   "website"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/169271/PDF/169271.pdf",
+    "observed_at": "2026-05-20",
+    "detail": {
+     "registry": "state_form_adv",
+     "hnw_clients": 22,
+     "nonhnw_clients": 14,
+     "hnw_raum": 39689561,
+     "raum_total": 45353061,
+     "total_employees": 2,
+     "org_form": "Limited Liability Company",
+     "legal_name": "BROWNING CAPITAL MANAGEMENT LLC",
+     "business_name": "BROWNING CAPITAL MANAGEMENT LLC"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://www.browningcm.com/index.html",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "basis. As such, it is included in our fee schedule for investment management or family office services. While investments are a key concern, having adequate insurance, a proper estat"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://www.browningcm.com/index.html",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "Investment Advisory Services offered through Browning Capital Management LLC, a Registered Investment Advisor\u00a9 Browning Capital Management LLC All Rights ReservedInsurance License No. OG355"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://www.browningcm.com/about-us.html",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "Investment Advisory Services offered through Browning Capital Management LLC, a Registered Investment Advisor\u00a9 Browning Capital Management LLC All Rights ReservedInsurance License No. OG355"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://www.browningcm.com/advisory-services.html",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "wealth_manager",
+     "span": "Investment Advisory Services offered through Browning Capital Management LLC, a Registered Investment Advisor\u00a9 Browning Capital Management LLC All Rights ReservedInsurance License No. OG355"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://www.browningcm.com/bcm-team.html",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "Investment Advisory Services offered through Browning Capital Management LLC, a Registered Investment Advisor\u00a9 Browning Capital Management LLC All Rights ReservedInsurance License No. OG355"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "http://www.browningcm.com/investment-management.html",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "Investment Advisory Services offered through Browning Capital Management LLC, a Registered Investment Advisor\u00a9 Browning Capital Management LLC All Rights ReservedInsurance License No. OG355"
+    }
+   }
+  ],
+  "draft_category": "embedded_fo_practice",
+  "draft_note": "gate affirm at 60 on rules ['adv_freetext_fo', 'site_fo_practice', 'site_fo_selfdesc'] | category 3 bar: a NAMED practice substantiated by the firm's own materials AND a second source -- a tagline is not a practice (ADR-0028)",
+  "category": "embedded_fo_practice",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "",
+  "decided_by": null
+ }
+]

@@ -25,9 +25,15 @@ import re
 from pipeline import config, db
 from pipeline.ops import runlog as rl
 
-GATE_VERSION = ("gate-v2 (2026-07-27; v1 pre-registered, v2 adds the site self-description rule "
-                "after calibration on the 59 labeled entities; FROZEN before mass discovery -- "
-                "further changes require an ADR)")
+GATE_VERSION = ("gate-v3 (2026-07-28; v1 pre-registered, v2 added the site self-description rule "
+                "after calibration on the 59 labeled entities, v3 requires published self-evidence "
+                "for any affirm per ADR-0033; changes require a superseding ADR)")
+
+# ADR-0033: rules sourced from what the FIRM publishes about itself, as opposed to what a registry
+# says about it. At least one must fire for an affirm -- a registered name plus a client-mix shape
+# is one evidence class (the registry) wearing two hats, and ADR-0020 requires two independent
+# classes to affirm an entity. Measured recall cost on the calibration set: zero.
+SITE_EVIDENCE_RULES = {"site_fo_practice", "site_fo_selfdesc", "domain_fo", "silver_fo_desc"}
 
 # Decision thresholds -- part of the pre-registered version above, not tunables.
 AFFIRM_MIN = 60          # SFO/MFO: net score at or above this affirms
@@ -136,6 +142,19 @@ def evaluate(ev: dict) -> dict:
     # exactly what category 3 is for (ADR-0028).
     decision, category = "exclude", None
     inst = any(c["rule"] == "institutional_scale" for c in cons)
+    # ADR-0033: an affirm must include something the firm published about itself. Without it the
+    # best available decision is needs_evidence -- the candidate is not refused, it is held until
+    # its own site can be read (ADR-0032's resolver exists to make that possible).
+    published_self_evidence = any(h["rule"] in SITE_EVIDENCE_RULES for h in hits)
+    if not published_self_evidence:
+        score_note = {"rule": "no_published_self_evidence", "points": 0,
+                      "detail": "affirm withheld (ADR-0033): evidence is registry-derived only "
+                                "(name and/or client mix); nothing the firm publishes about itself "
+                                "was readable"}
+        if core_fo_evidence and score >= NEEDS_EVIDENCE_MIN:
+            hits.append(score_note)
+            return {"decision": "needs_evidence", "category": None, "score": score,
+                    "evidence": hits, "contradictions": cons}
     if not core_fo_evidence:
         # Census-measured: structural shape alone runs 10-20% precision. Never affirm on it.
         decision = "needs_evidence" if score >= NEEDS_EVIDENCE_MIN else "exclude"

@@ -117,11 +117,19 @@ def export(path: str = GOLD_CSV) -> dict:
     with db.get_conn() as c, c.cursor() as cur:
         # Product = qualifying family offices only. Actionability-first: published email (PUB, proven)
         # > vendor-deliverable inferred (A) > catch-all (B) > no email; contactless records sink.
+        order = ("order by case coalesce(primary_email_grade,'Z') "
+                 " when 'PUB' then 0 when 'A' then 1 when 'B' then 2 else 6 end, "
+                 "data_completion_score desc, family_office_name")
         cur.execute(f"select {','.join(cols)} from gold.records where release_state = 'qualifying' "
-                    "order by case coalesce(primary_email_grade,'Z') "
-                    " when 'PUB' then 0 when 'A' then 1 when 'B' then 2 else 6 end, "
-                    "data_completion_score desc, family_office_name")
+                    f"and entity_category = any(%s) {order}", (list(_FO_CATEGORIES),))
         fo_rows = cur.fetchall()
+        # ADR-0028 forbids blending: a family office and an evidenced family-office PRACTICE are
+        # both counted, never in the same number and never in the same file. The honest sentence is
+        # "N family offices (SFO+MFO) + M evidenced family-office practices", and that sentence is
+        # only sayable if the surfaces are separate.
+        cur.execute(f"select {','.join(cols)} from gold.records where release_state = 'qualifying' "
+                    f"and entity_category = 'embedded_fo_practice' {order}")
+        practice_rows = cur.fetchall()
         # Recent signals per firm (correction #6): most recent first, for the "why now" summary column
         # and the full-detail record_signals.csv sidecar.
         cur.execute("select crd, signal_type, signal_date, description, source_url "
@@ -134,6 +142,16 @@ def export(path: str = GOLD_CSV) -> dict:
                     "where release_state = 'unresolved' and entity_category in "
                     "('wealth_manager','ria_with_fo_practice') order by entity_category, family_office_name")
         reclass_rows = cur.fetchall()
+        # Confirmed family offices whose DECISION-MAKER evidence is still pending (ADR-0021). A
+        # distinct, buyer-meaningful state: the firm is affirmed, the person to call is not yet
+        # evidenced. Stage 2 created it -- entity affirmation and contact adjudication are separate
+        # human gates, so a climb produces records that clear the first and await the second. They
+        # belonged to no export until now, which is exactly what the reconcile partition check
+        # caught on scheduled run 20 (24+18+8 against a DB holding 53).
+        cur.execute(f"select {','.join(rcols)} from gold.records "
+                    "where release_state = 'unresolved' and entity_category = any(%s) "
+                    "order by entity_category, family_office_name", (list(_COUNTED_CATEGORIES),))
+        pending_rows = cur.fetchall()
         cur.execute("select crd, family_office_name, entity_category, category_basis, release_reasons "
                     "from gold.records where release_state = 'quarantined' order by family_office_name")
         quarantined = cur.fetchall()
@@ -154,6 +172,10 @@ def export(path: str = GOLD_CSV) -> dict:
             w.writerow(out + [summary])
     rpath = os.path.join(os.path.dirname(path), "reclassified_firms.csv")
     _write(rpath, [h for _, h in _RECLASS_COLUMNS], reclass_rows)
+    ppath = os.path.join(os.path.dirname(path), "pending_decision_maker.csv")
+    _write(ppath, [h for _, h in _RECLASS_COLUMNS], pending_rows)
+    fpath = os.path.join(os.path.dirname(path), "family_office_practices.csv")
+    _write(fpath, [h for _, h in _EXPORT_COLUMNS], practice_rows)
     # Full-detail signals sidecar: one row per dated, sourced signal.
     spath = os.path.join(os.path.dirname(path), "record_signals.csv")
     with open(spath, "w", encoding="utf-8", newline="") as fh:
@@ -168,9 +190,11 @@ def export(path: str = GOLD_CSV) -> dict:
         w.writerow(["CRD", "Firm Name", "Entity Category", "Category Basis", "Release Reasons"])
         for crd, name, cat, basis, reasons in quarantined:
             w.writerow([crd, name, cat, basis, "; ".join(reasons or [])])
-    return {"family_offices": len(fo_rows), "reclassified": len(reclass_rows),
+    return {"family_offices": len(fo_rows), "fo_practices": len(practice_rows),
+            "reclassified": len(reclass_rows), "pending_decision_maker": len(pending_rows),
             "quarantined": len(quarantined), "signals": sum(len(v) for v in sig_by_crd.values()),
-            "path": path, "reclassified_path": rpath, "quarantined_path": qpath, "signals_path": spath}
+            "path": path, "reclassified_path": rpath, "quarantined_path": qpath,
+            "pending_path": ppath, "practices_path": fpath, "signals_path": spath}
 
 # Seniority score for picking the primary/secondary contact among a firm's principals. Higher = more
 # senior / better first point of contact for a capital allocator.
@@ -328,8 +352,12 @@ def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
     return "unresolved", [person_pending], adj["category"], "affirmed"
 
 
-# Affirmed FO categories -- only these count toward the "family office" product and the 500 (ADR-0020).
+# Categories that may carry the words "family office" as an IDENTITY claim (ADR-0020).
 _FO_CATEGORIES = {"single_family_office", "multi_family_office"}
+# Everything ADR-0028 counts toward the 500: the two identity categories plus evidenced embedded
+# practices. Counted together, reported separately -- "N family offices + M evidenced family-office
+# practices" -- and never summed into one number on any surface.
+_COUNTED_CATEGORIES = _FO_CATEGORIES | {"embedded_fo_practice"}
 
 
 def _apply_contact(cur, crd: str, row: dict, cadj: dict, write: bool, rejected: set) -> None:

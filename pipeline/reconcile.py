@@ -16,9 +16,12 @@ import csv
 from pipeline import db
 
 PRODUCT_CSV = "data/gold/family_office_dataset.csv"
+PRACTICES_CSV = "data/gold/family_office_practices.csv"
+PENDING_CSV = "data/gold/pending_decision_maker.csv"
 RECLASS_CSV = "data/gold/reclassified_firms.csv"
 QUARANTINE_CSV = "data/gold/quarantined.csv"
 FO_CATEGORIES = {"single_family_office", "multi_family_office"}
+COUNTED_CATEGORIES = FO_CATEGORIES | {"embedded_fo_practice"}
 REJECTED_GRADES = {"D", "F"}
 
 
@@ -34,6 +37,8 @@ def run() -> dict:
         checks.append((name, bool(ok), detail))
 
     prod = _rows(PRODUCT_CSV)
+    practices = _rows(PRACTICES_CSV)
+    pending = _rows(PENDING_CSV)
     reclass = _rows(RECLASS_CSV)
     quar = _rows(QUARANTINE_CSV)
     non_fo_in_prod = [r for r in prod if r["Entity Category"] not in FO_CATEGORIES]
@@ -42,8 +47,15 @@ def run() -> dict:
         cur.execute("select release_state, count(*) from gold.records group by 1")
         db_state = dict(cur.fetchall())
         db_total = sum(db_state.values())
-        cur.execute("select count(*) from gold.records where release_state='qualifying'")
+        cur.execute("select count(*) from gold.records where release_state='qualifying' "
+                    "and entity_category = any(%s)", (list(FO_CATEGORIES),))
         db_qual = cur.fetchone()[0]
+        cur.execute("select count(*) from gold.records where release_state='qualifying' "
+                    "and entity_category = 'embedded_fo_practice'")
+        db_practices = cur.fetchone()[0]
+        cur.execute("select count(*) from gold.records where release_state='unresolved' "
+                    "and entity_category = any(%s)", (list(COUNTED_CATEGORIES),))
+        db_pending = cur.fetchone()[0]
         cur.execute("select count(*) from gold.records where release_state='unresolved' "
                     "and entity_category in ('wealth_manager','ria_with_fo_practice')")
         db_reclass = cur.fetchone()[0]
@@ -66,12 +78,24 @@ def run() -> dict:
     #    (the Stage 1 versions asserted the literal numbers 50/24/18, which breaks on the first
     #    record the Stage 2 climb adds -- and a release control that fails on growth teaches
     #    people to ignore it).
-    check("product CSV == DB qualifying", len(prod) == db_qual, f"CSV {len(prod)} vs DB {db_qual}")
+    check("product CSV == DB qualifying family offices", len(prod) == db_qual, f"CSV {len(prod)} vs DB {db_qual}")
+    check("practices CSV == DB qualifying embedded practices", len(practices) == db_practices,
+          f"CSV {len(practices)} vs DB {db_practices}")
+    check("pending CSV == DB affirmed-awaiting-decision-maker", len(pending) == db_pending,
+          f"CSV {len(pending)} vs DB {db_pending}")
     check("reclassified CSV == DB reclassified", len(reclass) == db_reclass, f"CSV {len(reclass)} vs DB {db_reclass}")
     check("quarantine CSV == DB quarantined", len(quar) == db_quar, f"CSV {len(quar)} vs DB {db_quar}")
-    check("three exports partition all held records",
-          len(prod) + len(reclass) + len(quar) == db_total,
-          f"{len(prod)}+{len(reclass)}+{len(quar)} vs DB total {db_total}")
+    # Stage 2 split this from three surfaces to five. Entity affirmation and decision-maker
+    # adjudication are separate human gates, so the climb produces records that clear the first and
+    # await the second; and ADR-0028 forbids counting an evidenced practice in the same number as a
+    # family office. Both facts are states a buyer can read, so both get their own file. The check
+    # itself is unchanged in kind: every held record appears in exactly one surface, totals derived
+    # from the database. It caught this gap on scheduled run 20 and failed the run, which is the
+    # behaviour that makes it worth keeping.
+    check("five exports partition all held records",
+          len(prod) + len(practices) + len(pending) + len(reclass) + len(quar) == db_total,
+          f"{len(prod)}+{len(practices)}+{len(pending)}+{len(reclass)}+{len(quar)} "
+          f"vs DB total {db_total}")
 
     # 2. the product is family offices ONLY, each with a proven person
     check("product is family offices only (no non-FO leaked in)", not non_fo_in_prod, f"{len(non_fo_in_prod)} leaked")

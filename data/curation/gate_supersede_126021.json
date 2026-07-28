@@ -1,0 +1,337 @@
+[
+ {
+  "entity_key": "crd:126021",
+  "crd": "126021",
+  "firm_name": "KELLEHER FINANCIAL ADVISORS, LLC",
+  "source": "sec_adv",
+  "website": "HTTP://WWW.STARBOARDADVISORSLLC.COM",
+  "city": "NEW YORK",
+  "state": "NY",
+  "gate": {
+   "gate_version": "gate-v3 (2026-07-28; v1 pre-registered, v2 added the site self-description rule after calibration on the 59 labeled entities, v3 requires published self-evidence for any affirm per ADR-0033; changes require a superseding ADR)",
+   "decision": "affirm",
+   "category": "embedded_fo_practice",
+   "score": 35,
+   "evidence": [
+    {
+     "rule": "site_fo_practice",
+     "detail": "site names an FO practice: 'Family Office Services'",
+     "points": 25
+    },
+    {
+     "rule": "site_fo_selfdesc",
+     "detail": "site text states 'family office' 24 times",
+     "points": 20
+    },
+    {
+     "rule": "adv_freetext_fo",
+     "detail": "ADV Item 5.G other-services text states family office",
+     "points": 15
+    }
+   ],
+   "contradictions": [
+    {
+     "rule": "retail_scale",
+     "detail": "108 non-HNW clients -- retail RIA shape",
+     "points": -25
+    }
+   ],
+   "decided_at": "2026-07-28 12:37:11.897488+00:00",
+   "run_id": 19
+  },
+  "site_fo_phrase_count": 24,
+  "extracted": {
+   "team": [
+    {
+     "name": "Barton W. Weisenfluh",
+     "title": "CEO & Founder",
+     "principal": true
+    },
+    {
+     "name": "Michael Ouellette",
+     "title": "President",
+     "principal": true
+    },
+    {
+     "name": "Neil Cataldi",
+     "title": "Managing Director",
+     "principal": true
+    },
+    {
+     "name": "Rita M. Newland",
+     "title": "Principal",
+     "principal": true
+    },
+    {
+     "name": "Pam Lessard",
+     "title": "Principal",
+     "principal": true
+    },
+    {
+     "name": "Hannah Andrews",
+     "title": "Principal",
+     "principal": true
+    },
+    {
+     "name": "Joan Benoit Samuelson",
+     "title": "Professional Athlete & Spokesperson",
+     "principal": false
+    },
+    {
+     "name": "Dana Kerr",
+     "title": "Associate Professor of Risk Management and Insurance – USM",
+     "principal": false
+    },
+    {
+     "name": "Christopher Ballou",
+     "title": "Co-Founder Patriot Group Global; Retired First Grade NYPD Detective, Counter-Terrorism Div.",
+     "principal": false
+    },
+    {
+     "name": "Bart Haag",
+     "title": "CPA, Principal – Albin, Randall, and Bennett",
+     "principal": false
+    },
+    {
+     "name": "Hugh O’Donnell",
+     "title": "Founder – True Equity",
+     "principal": false
+    },
+    {
+     "name": "Colleen Kelleher Sorrentino",
+     "title": "CFA, Managing Director – Kelleher Financial Advisors",
+     "principal": true
+    }
+   ],
+   "thesis": "Starboard Advisors provides customized and objective investment management, estate, trust, and wealth planning services for high-net-worth families, focusing on",
+   "sectors": [
+    "Investment Management",
+    "Estate Planning",
+    "Trust Services",
+    "Wealth Planning",
+    "Family Office Services",
+    "Charitable Services"
+   ],
+   "founded_year": 2017
+  },
+  "evidence_classes": [
+   "adv_item5",
+   "website"
+  ],
+  "evidence": [
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/126021/PDF/126021.pdf",
+    "observed_at": "2026-04-14",
+    "detail": {
+     "registry": "sec_form_adv",
+     "hnw_clients": 171,
+     "nonhnw_clients": 108,
+     "hnw_raum": 1116440370,
+     "raum_total": 1153378435,
+     "total_employees": 13,
+     "org_form": "Limited Liability Company",
+     "legal_name": "KELLEHER FINANCIAL ADVISORS, LLC",
+     "business_name": "KELLEHER FINANCIAL ADVISORS, LLC"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "Starboard Advisors - Financial Planning, Investment Management, and Family Office Services Skip to the content Experience Starboard About Our Process Team Services Our Se"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "rocess Team Services Our Services Financial Life Planning Investment Management Family Office Services Education & Family Governance Charitable Services Trust Services News & Insight"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ies with our best thinking from some of the brightest minds we know. Read More> Family Office Services Families with significant wealth will contemplate, design, build and maintain a"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "home",
+     "category_signal": "wealth_manager",
+     "span": "es Starboard Advisors is a Division of Kelleher Financial Advisors, LLC, an SEC registered Investment Advisor and an affiliate of Wall Street Access, Member NYSE, FINRA and Member SIPC. All"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/about/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "multi_family_office",
+     "span": "he same services and counsel they have benefited from to outside families. As a multi family office and registered investment advisor, KFA provides a dedicated platform serving fa"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/about/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "rocess Team Services Our Services Financial Life Planning Investment Management Family Office Services Education & Family Governance Charitable Services Trust Services News & Insight"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/about/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ces Financial Life Planning Investment Management Education & Family Governance Family Office Services Trust Services Charitable Services Connect with Starboard Join the Team Contact"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/about/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "nsel they have benefited from to outside families. As a multi family office and registered investment advisor, KFA provides a dedicated platform serving families as a single point of accoun"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/about/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "about",
+     "category_signal": "wealth_manager",
+     "span": "es Starboard Advisors is a Division of Kelleher Financial Advisors, LLC, an SEC registered Investment Advisor and an affiliate of Wall Street Access, Member NYSE, FINRA and Member SIPC. All"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/investment-management/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "rocess Team Services Our Services Financial Life Planning Investment Management Family Office Services Education & Family Governance Charitable Services Trust Services News & Insight"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/investment-management/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ces Financial Life Planning Investment Management Education & Family Governance Family Office Services Trust Services Charitable Services Connect with Starboard Join the Team Contact"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/investment-management/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "es Starboard Advisors is a Division of Kelleher Financial Advisors, LLC, an SEC registered Investment Advisor and an affiliate of Wall Street Access, Member NYSE, FINRA and Member SIPC. All"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/our-crew/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "rocess Team Services Our Services Financial Life Planning Investment Management Family Office Services Education & Family Governance Charitable Services Trust Services News & Insight"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/our-crew/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ces Financial Life Planning Investment Management Education & Family Governance Family Office Services Trust Services Charitable Services Connect with Starboard Join the Team Contact"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/our-crew/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "team",
+     "category_signal": "wealth_manager",
+     "span": "es Starboard Advisors is a Division of Kelleher Financial Advisors, LLC, an SEC registered Investment Advisor and an affiliate of Wall Street Access, Member NYSE, FINRA and Member SIPC. All"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/services/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "rocess Team Services Our Services Financial Life Planning Investment Management Family Office Services Education & Family Governance Charitable Services Trust Services News & Insight"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/services/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "nking” from what we believe are some of the brightest minds we know. Read More> Family Office Services Families with significant wealth will contemplate, design, build and maintain a"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/services/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "ria_with_fo_practice",
+     "span": "ces Financial Life Planning Investment Management Education & Family Governance Family Office Services Trust Services Charitable Services Connect with Starboard Join the Team Contact"
+    }
+   },
+   {
+    "class": "website",
+    "source_url": "https://starboardadvisor.com/services/",
+    "observed_at": "2026-07-28",
+    "detail": {
+     "page_type": "strategy",
+     "category_signal": "wealth_manager",
+     "span": "es Starboard Advisors is a Division of Kelleher Financial Advisors, LLC, an SEC registered Investment Advisor and an affiliate of Wall Street Access, Member NYSE, FINRA and Member SIPC. All"
+    }
+   }
+  ],
+  "draft_category": "embedded_fo_practice",
+  "draft_note": "gate affirm at 35 on rules ['adv_freetext_fo', 'site_fo_practice', 'site_fo_selfdesc'] | category 3 bar: a NAMED practice substantiated by the firm's own materials AND a second source -- a tagline is not a practice (ADR-0028) | gate contradiction retail_scale: 108 non-HNW clients -- retail RIA shape",
+  "category": "unresolved",
+  "status": "unresolved",
+  "duplicate_of": null,
+  "rationale": "SUPERSEDES the affirm recorded earlier on 2026-07-28. The entity is KELLEHER FINANCIAL ADVISORS, LLC of New York, NY; the website its ADV declares (starboardadvisorsllc.com, redirecting to starboardadvisor.com) presents as Starboard Advisors and reads as Maine-based. The 'Family Office Services' navigation that the affirm rested on is on that site. Its roster names people with explicit firm suffixes - 'Bart Haag, Albin Randall and Bennett', 'Hugh O'Donnell, True Equity', 'Colleen Kelleher Sorrentino, Kelleher Financial Advisors', 'Arthur L. Goetchius, Chief Executive Officer, Kelleher Financial Advisors' - which reads as an advisory board listing member firms, not as one company's staff page. Either Kelleher trades as Starboard (the ADV does declare the domain) or Starboard is a separate firm on whose board Kelleher people sit. On the second reading the affirming evidence belongs to a different company, which is the wrong-entity defect this dataset already carries once (arrowrootadvisors.com). Held unresolved pending identity resolution rather than counted on ambiguous evidence.",
+  "decided_by": "ahsan"
+ }
+]

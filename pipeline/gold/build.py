@@ -492,9 +492,16 @@ def build(write: bool = False) -> dict:
             # contacts and stay unresolved -- they are not family offices and are not counted.
             if (crd, "primary") in cadj:
                 _apply_contact(cur, crd, row, cadj, write, rejected_addrs)
-                if row["entity_status"] == "affirmed" and row["entity_category"] in _FO_CATEGORIES:
+                # _COUNTED_CATEGORIES, not _FO_CATEGORIES: ADR-0028 made the evidenced embedded
+                # practice a COUNTED category, but this gate still carried the pre-0028 assumption
+                # that only SFO/MFO can qualify. Compass cleared both human gates and stayed
+                # 'unresolved' anyway -- the third category was unreachable in code. Counted here,
+                # still reported on its own surface (family_office_practices.csv) and never summed
+                # into the family-office number.
+                if row["entity_status"] == "affirmed" and row["entity_category"] in _COUNTED_CATEGORIES:
                     row["release_state"] = "qualifying"
-                    row["release_reasons"] = [f"entity affirmed {row['entity_category']} (ADR-0020); "
+                    standard = "ADR-0020" if row["entity_category"] in _FO_CATEGORIES else "ADR-0028 category 3"
+                    row["release_reasons"] = [f"entity affirmed {row['entity_category']} ({standard}); "
                                               f"decision-maker proven (ADR-0021)"]
             row["data_completion_score"] = _completion(row)
             # Record-level KPIs (ADR-0013 migration): reachability (reach the DM?), confidence (how

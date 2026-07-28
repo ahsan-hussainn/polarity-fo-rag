@@ -20,7 +20,10 @@ RUN (a release control that does not control the run's status would be Stage 1's
 """
 from __future__ import annotations
 
+import contextvars
 import hashlib
+import math
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -29,10 +32,27 @@ from pipeline.ops import runlog as rl
 
 OBSERVE_WORKERS = 8       # bounded pool: one home-page fetch per distinct firm domain
 FETCH_TIMEOUT = 15
+RECLASSIFY_WORKERS = int(os.getenv("OPS_RECLASSIFY_WORKERS", "6"))
+DISCOVER_PER_CYCLE = int(os.getenv("OPS_DISCOVER_PER_CYCLE", "15"))
 
 
-MAX_RECLASSIFY_PER_CYCLE = 10  # LLM re-extraction budget per cycle; skips are logged, never silent
-DISCOVER_PER_CYCLE = int(__import__("os").getenv("OPS_DISCOVER_PER_CYCLE", "15"))
+def reclassify_budget(monitored: int) -> int:
+    """Per-cycle re-extraction budget, scaled to the size of the set being kept current.
+
+    This was a flat 10, which was the system's FIRST hard bottleneck and a near one: the measured
+    home-page change rate is ~11.4% per cycle, so a flat 10 starts refusing work at ~88 records
+    (0.114 x N > 10). Run 15 hit 9 changed against the cap of 10 with only 50 records held.
+
+    Worse than a delay, a flat cap does not converge. A skipped record keeps its old hash, so it
+    re-counts as changed on the next cycle: at 500 records ~57 change per cycle against a budget of
+    10, and the backlog grows without bound. The mandate's second half -- "keep all 500 current" --
+    is not satisfiable under a constant budget, whatever the constant is.
+
+    So the budget scales with the set (30%, floor 25), which covers the measured change rate ~2.6x
+    over. It stays a budget rather than becoming unbounded: an unattended loop that will spend
+    arbitrarily much on one cycle is its own hazard, and skips remain logged, never silent.
+    """
+    return max(25, math.ceil(0.30 * monitored))
 
 
 def _monitored_firms() -> list[dict]:
@@ -64,9 +84,10 @@ def _fetch_home(url: str) -> dict:
 def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
     stats = {"monitored": len(firms), "fetched": 0, "fetch_errors": 0,
              "baselined": 0, "changed": 0, "dark": 0, "adv_filing_moved": 0,
-             "material": 0, "cosmetic": 0, "reclassify_skipped": 0}
+             "material": 0, "cosmetic": 0, "unconfirmed": 0, "reclassify_skipped": 0,
+             "reclassify_budget": reclassify_budget(len(firms))}
     rid = rl.current_run()
-    reclassified = 0
+    changed: list[tuple] = []
 
     with_sites = [f for f in firms if f.get("website")]
     results: dict[str, dict] = {}
@@ -131,25 +152,81 @@ def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
                 rl.trust_event(crd, "website_change", prior_hash[0][:16], r["hash"][:16],
                                "home-page text changed (dry-run: materiality not classified)",
                                "flagged")
-            elif reclassified >= MAX_RECLASSIFY_PER_CYCLE:
-                stats["reclassify_skipped"] += 1
-                rl.event("observe", "materiality_skip", target=crd, status="skipped",
-                         detail={"reason": f"per-cycle re-extraction budget "
-                                           f"({MAX_RECLASSIFY_PER_CYCLE}) reached"})
-                rl.trust_event(crd, "website_change", prior_hash[0][:16], r["hash"][:16],
-                               "home-page text changed but this cycle's re-extraction budget is "
-                               "spent; flag stands, classification next cycle", "flagged")
             else:
-                reclassified += 1
-                from pipeline.ops import materiality
-                verdict = materiality.classify(f, write=write, prior_run=prior_hash)
-                if verdict["verdict"] == "material":
-                    stats["material"] += 1
-                elif verdict["verdict"] == "cosmetic":
-                    stats["cosmetic"] += 1
+                changed.append((f, prior_hash, r["hash"]))
         elif not prior_hash and r["hash"]:
             stats["baselined"] += 1
+
+    if write and changed:
+        _classify_changed(changed, stats, workers=RECLASSIFY_WORKERS,
+                          budget=reclassify_budget(len(firms)))
     return stats
+
+
+def _last_classified(crds: list[str]) -> dict[str, object]:
+    """When each firm was last materiality-classified, from the fact fingerprints classification
+    writes. Drives fairness: without it, a budget always spends itself on whichever records the
+    query happened to order first, and the same tail starves every cycle."""
+    if not crds:
+        return {}
+    with db.get_conn() as c, c.cursor() as cur:
+        cur.execute("select crd, max(observed_at) from ops.observations "
+                    "where kind = 'fact_fingerprint' and crd = any(%s) group by crd", (crds,))
+        return {r[0]: r[1] for r in cur.fetchall()}
+
+
+def _classify_changed(changed: list[tuple], stats: dict, *, workers: int, budget: int) -> None:
+    """Classify changed firms concurrently, oldest-unchecked first, within the cycle's budget.
+
+    Two things this must not get wrong:
+
+    - **Fairness.** Ordered by least-recently-classified (never-classified first), so a record
+      cannot be perpetually deferred by a busy cycle. Under the old serial code the order was
+      whatever `gold.records order by crd` produced, which starves the tail of the alphabet.
+    - **Run context.** `runlog` resolves the current run from a ContextVar, and ContextVars do NOT
+      propagate into ThreadPoolExecutor workers. Submitting classify() naively would leave every
+      trust_event and observation inside it silently no-opping -- the cycle would look healthy and
+      produce no staleness evidence at all, which is the one thing window-condition 3 rests on. So
+      each task runs inside a copy of the submitting context. The copy must be made PER TASK: a
+      Context cannot be entered by two threads at once, and sharing one raises "cannot enter
+      context: ... is already entered" on every task but the first. Measured, not theorised --
+      run 16 classified 1 of 3 changed records that way before this was fixed.
+    """
+    from pipeline.ops import materiality
+
+    last = _last_classified([f["crd"] for f, _, _ in changed])
+    EPOCH = __import__("datetime").datetime.min.replace(tzinfo=__import__("datetime").timezone.utc)
+    ordered = sorted(changed, key=lambda t: last.get(t[0]["crd"]) or EPOCH)
+    doing, deferred = ordered[:budget], ordered[budget:]
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futs = {pool.submit(contextvars.copy_context().run,
+                            materiality.classify, f, write=True, prior_run=prior): f["crd"]
+                for f, prior, _ in doing}
+        for fut in as_completed(futs):
+            try:
+                verdict = fut.result()
+            except Exception as e:  # classify() already swallows per-firm errors; belt-and-braces
+                rl.event("observe", "materiality_error", target=futs[fut], status="error",
+                         detail={"error": repr(e)})
+                continue
+            v = verdict.get("verdict")
+            if v == "material":
+                stats["material"] += 1
+            elif v == "cosmetic":
+                stats["cosmetic"] += 1
+            elif v == "unconfirmed":
+                stats["unconfirmed"] = stats.get("unconfirmed", 0) + 1
+
+    for f, prior_hash, new_hash in deferred:
+        stats["reclassify_skipped"] += 1
+        rl.event("observe", "materiality_skip", target=f["crd"], status="skipped",
+                 detail={"reason": f"per-cycle re-extraction budget ({budget}) reached",
+                         "last_classified": str(last.get(f["crd"]) or "never")})
+        rl.trust_event(f["crd"], "website_change", prior_hash[0][:16], new_hash[:16],
+                       f"home-page text changed but this cycle's re-extraction budget ({budget}) "
+                       "is spent; this record is first in line next cycle (oldest-unchecked "
+                       "ordering); flag stands", "flagged")
 
 
 def _rebuild_phase(write: bool) -> dict:

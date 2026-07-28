@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 
 from pipeline import db
 from pipeline.ops import runlog as rl
@@ -190,11 +191,15 @@ def classify(firm: dict, *, write: bool, prior_run) -> dict:
         text, urls, _, home = sl._combine(page_dicts)
 
         extractor = ex.get_extractor(None)
+        t_ex = time.monotonic()
         result = extractor.extract(text, source_url=home)
+        # Timed because this call is the system's next scaling bottleneck and architecture note 5
+        # has to answer "what breaks first, at what volume" from measurement, not from a guess.
+        extract_ms = int((time.monotonic() - t_ex) * 1000)
         usage = result.usage or {}
         tin, tout = usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0)
         rl.event("observe", "materiality_extract", call_class="model", target=crd,
-                 duration_ms=None, tokens_in=tin, tokens_out=tout,
+                 duration_ms=extract_ms, tokens_in=tin, tokens_out=tout,
                  usd=rl.usd_for("gpt-4o-mini", tin, tout),
                  detail={"pages": len(texted), "provider": result.provider})
 

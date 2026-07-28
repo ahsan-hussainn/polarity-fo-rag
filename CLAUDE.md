@@ -113,3 +113,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0029](./adr/0029-automated-inclusion-gate.md) | Automated inclusion gate: deterministic triage, human release, measured precision | Accepted |
 | [0030](./adr/0030-fit-rank-retrieval-extension.md) | fit_rank: mandate-fit ranked retrieval with evidence-based confidence | Accepted |
 | [0031](./adr/0031-goal-agent-architecture.md) | Goal agent: model plans, code releases | Accepted |
+| [0032](./adr/0032-domain-resolution-for-stranded-candidates.md) | Domain resolution: proving a firm's website when the registry didn't carry one | Accepted |

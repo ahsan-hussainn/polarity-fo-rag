@@ -34,6 +34,7 @@ OBSERVE_WORKERS = 8       # bounded pool: one home-page fetch per distinct firm 
 FETCH_TIMEOUT = 15
 RECLASSIFY_WORKERS = int(os.getenv("OPS_RECLASSIFY_WORKERS", "6"))
 DISCOVER_PER_CYCLE = int(os.getenv("OPS_DISCOVER_PER_CYCLE", "15"))
+RESOLVE_PER_CYCLE = int(os.getenv("OPS_RESOLVE_PER_CYCLE", "40"))
 
 
 def reclassify_budget(monitored: int) -> int:
@@ -280,6 +281,12 @@ def run_cycle(*, write: bool = True, trigger: str = "local",
     try:
         firms = _monitored_firms()
         out["observe"] = _observe_phase(firms, workers, write=write)
+        # Resolve before discovering: a candidate whose domain is recovered this cycle is
+        # re-queued, so the discovery tranche below can pick it up with the site evidence the
+        # registry never carried, instead of gating it blind and excluding it on thin evidence.
+        from pipeline.ops import resolve
+        out["resolve"] = resolve.run(limit=RESOLVE_PER_CYCLE, write=write)
+
         from pipeline.ops import discovery
         out["discover"] = discovery.process_tranche(limit=DISCOVER_PER_CYCLE, write=write)
         out["rebuild"] = _rebuild_phase(write)

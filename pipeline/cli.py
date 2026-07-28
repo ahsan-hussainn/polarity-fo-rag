@@ -320,6 +320,14 @@ def cmd_gate(args):
     print(json.dumps(gate.run_gate(args.keys, write=args.write), indent=2))
 
 
+def cmd_resolve_domains(args):
+    """Stage 2: recover firm domains the ADV website field stranded (social URL or absent)."""
+    from pipeline.ops import resolve
+
+    out = resolve.run(limit=args.limit, write=args.write, workers=args.workers)
+    print(json.dumps(out, indent=2))
+
+
 def cmd_gate_review(args):
     """ADR-0029: assemble the human-review sheet for gate decisions (a draft is not a decision)."""
     from pipeline.gold import review
@@ -521,6 +529,13 @@ def main():
                     help="calibration: score all human-labeled entities, report agreement")
     ga.add_argument("--write", action="store_true", help="persist decisions (default: dry-run)")
     ga.set_defaults(func=cmd_gate)
+
+    rd = sub.add_parser("resolve-domains",
+                        help="Stage 2: prove firm domains for candidates the registry stranded")
+    rd.add_argument("--limit", type=int, default=None)
+    rd.add_argument("--workers", type=int, default=6)
+    rd.add_argument("--write", action="store_true", help="persist + re-queue (default: dry-run)")
+    rd.set_defaults(func=cmd_resolve_domains)
 
     gr = sub.add_parser("gate-review",
                         help="Stage 2 (ADR-0029): export gate decisions to a human-review sheet")

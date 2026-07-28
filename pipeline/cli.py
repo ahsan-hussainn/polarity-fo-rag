@@ -320,6 +320,16 @@ def cmd_gate(args):
     print(json.dumps(gate.run_gate(args.keys, write=args.write), indent=2))
 
 
+def cmd_contact_review(args):
+    """ADR-0021/0022: assemble decision-maker evidence for entity-affirmed firms awaiting a contact."""
+    from pipeline.gold import contact_review
+
+    out = contact_review.sheet(limit=args.limit)
+    if not args.no_html:
+        out["html"] = contact_review.html_sheet()
+    print(json.dumps(out, indent=2))
+
+
 def cmd_resolve_domains(args):
     """Stage 2: recover firm domains the ADV website field stranded (social URL or absent)."""
     from pipeline.ops import resolve
@@ -531,6 +541,12 @@ def main():
                     help="calibration: score all human-labeled entities, report agreement")
     ga.add_argument("--write", action="store_true", help="persist decisions (default: dry-run)")
     ga.set_defaults(func=cmd_gate)
+
+    cr = sub.add_parser("contact-review",
+                        help="ADR-0021/0022: assemble decision-maker evidence for human ratification")
+    cr.add_argument("--limit", type=int, default=None)
+    cr.add_argument("--no-html", action="store_true", help="skip the reviewer page")
+    cr.set_defaults(func=cmd_contact_review)
 
     rd = sub.add_parser("resolve-domains",
                         help="Stage 2: prove firm domains for candidates the registry stranded")

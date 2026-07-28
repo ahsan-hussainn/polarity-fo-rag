@@ -1,0 +1,687 @@
+[
+ {
+  "crd": "125186",
+  "family_office_name": "COMPASS FINANCIAL GROUP, INC.",
+  "entity_category": "embedded_fo_practice",
+  "website": "https://compassfinancialgroup.com",
+  "domain": "compassfinancialgroup.com",
+  "adv_employees": "6",
+  "candidates": [
+   {
+    "name": "Jay Shein",
+    "title": "null",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Shein CFA\u00ae, CFP\u00ae Managing Partner\u200b Chief Investment Officer\u200b Jay L.",
+      "page_type": "team",
+      "url": "https://www.compassfinancialgroup.com/our-team",
+      "observed_at": "2026-07-28",
+      "authority_verb": true,
+      "roster_listing": false
+     },
+     {
+      "span": "The paper was titled \u201cCan Alternative Investments Add Value to Investment Portfolios?\u201dForbes ranking of Best-In-State Wealth AdvisorsIn April 2024, Blair Shein was named to the Forbes 2024 ranking of Best-In-State Wealth Advisors.ESG Investing PaperBlair and Jay Shein were published by CCH in the March 2023 edition of Estate Planning Review - The Journal.",
+      "page_type": "home",
+      "url": "https://www.compassfinancialgroup.com/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "GARRETT AND EVELYNHAMM1961 JAY AND VALSHEIN1989 BLAIR AND LESLIESHEIN2024 Compass Financial Group is a third-generation advisory firm dedicated to guiding families and individuals through the complexities of wealth with clarity, integrity, and personalized attention.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Building on that legacy, Jay Shein expanded the focus into comprehensive financial planning and wealth management, helping clients align their resources with long-term goals.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "News and Publications Alternative Investments PaperJay Shein was published by CCH in the September 2024 edition of Estate Planning Review - The Journal.",
+      "page_type": "home",
+      "url": "https://www.compassfinancialgroup.com/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": true,
+    "note": "1 quoted span(s) contain allocation-authority language -- candidate for `stated`, but read the span and confirm the sentence is about THEM and not about the firm | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Blair Shein",
+    "title": "null",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Things You Should Know About Social Security and Your Retirement | Compass Financial Group Skip to main content menu Home About Us Our History Our Team Our Process Our Philosophy Our Services Articles Publications Contact Things You Should Know About Social Security and Your Retirement Blair Shein | Aug 16, 2019 Categories Retirement With more than 95% of American workers currently covered by Soci",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/blog-01/things-you-should-know-about-social-security-and-your-retirement",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "The paper was titled \u201cCan Alternative Investments Add Value to Investment Portfolios?\u201dForbes ranking of Best-In-State Wealth AdvisorsIn April 2024, Blair Shein was named to the Forbes 2024 ranking of Best-In-State Wealth Advisors.ESG Investing PaperBlair and Jay Shein were published by CCH in the March 2023 edition of Estate Planning Review - The Journal.",
+      "page_type": "home",
+      "url": "https://www.compassfinancialgroup.com/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Contact Us Articles Financial Literacy for Children Blair Shein | Aug 16, 2019 Categories Education Family Finance In a recent survey by JumpStart Coalition for Financial Literacy, only 26 percent of those between the ages of 13-21 said that they had been taught how to manage money.",
+      "page_type": "home",
+      "url": "https://www.compassfinancialgroup.com/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Things You Should Know About Social Security and Your Retirement Blair Shein | Aug 16, 2019 Categories Retirement With more than 95% of American workers currently covered by Social Security, there are some things about this massive retirement program that you should probably know.",
+      "page_type": "home",
+      "url": "https://www.compassfinancialgroup.com/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "How to Protect Your Personal Data Online Blair Shein | Aug 16, 2019 Categories Privacy Technology Data breaches, once a fairly rare occurrence, have become more frequent as hackers become more skilled in their ability to extract personal data from popular social media sites.",
+      "page_type": "home",
+      "url": "https://www.compassfinancialgroup.com/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "GARRETT AND EVELYNHAMM1961 JAY AND VALSHEIN1989 BLAIR AND LESLIESHEIN2024 Compass Financial Group is a third-generation advisory firm dedicated to guiding families and individuals through the complexities of wealth with clarity, integrity, and personalized attention.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "6 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Garrett Hamm",
+    "title": "null",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "GARRETT AND EVELYNHAMM1961 JAY AND VALSHEIN1989 BLAIR AND LESLIESHEIN2024 Compass Financial Group is a third-generation advisory firm dedicated to guiding families and individuals through the complexities of wealth with clarity, integrity, and personalized attention.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "The firm's roots trace back to Garrett and Evelyn Hamm, who established a trusted insurance practice in 1961, laying the foundation for thoughtful clients service and risk management.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Evelyn Hamm",
+    "title": "null",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "GARRETT AND EVELYNHAMM1961 JAY AND VALSHEIN1989 BLAIR AND LESLIESHEIN2024 Compass Financial Group is a third-generation advisory firm dedicated to guiding families and individuals through the complexities of wealth with clarity, integrity, and personalized attention.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "The firm's roots trace back to Garrett and Evelyn Hamm, who established a trusted insurance practice in 1961, laying the foundation for thoughtful clients service and risk management.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Leslie Shein",
+    "title": "null",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "Shein CFP\u00ae, CIMA\u00ae, CIS\u2120 Founder Emeritus\u200b Consultant Stacey Beverley\u200b FPQP\u00ae Client Relationship Manager\u200b Compliance Associate Jordan Gaudineer\u200b, MBA Investment Analyst\u200b Leslie Shein\u200b, MEd Director of Operations and Finance Val Shein\u200b Senior Administrative Consultant\u200b Certified Financial Planner Board of Standards Inc.",
+      "page_type": "team",
+      "url": "https://www.compassfinancialgroup.com/our-team",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "GARRETT AND EVELYNHAMM1961 JAY AND VALSHEIN1989 BLAIR AND LESLIESHEIN2024 Compass Financial Group is a third-generation advisory firm dedicated to guiding families and individuals through the complexities of wealth with clarity, integrity, and personalized attention.",
+      "page_type": "about",
+      "url": "https://www.compassfinancialgroup.com/our-history",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   }
+  ],
+  "expected_role": "the person who leads the family-office practice, not the firm's CEO",
+  "contact_role": "primary",
+  "name": null,
+  "title": null,
+  "selection_basis": "",
+  "authority_basis": null,
+  "affiliation_asof": null,
+  "published_email": null,
+  "evidence": [],
+  "decided_by": null
+ },
+ {
+  "crd": "120053",
+  "family_office_name": "CORNERSTONE FAMILY OFFICE, LLC",
+  "entity_category": "multi_family_office",
+  "website": "https://cornerstonefamilyoffice.com",
+  "domain": "cornerstonefamilyoffice.com",
+  "adv_employees": "11",
+  "candidates": [
+   {
+    "name": "Catherine G. Veres",
+    "title": "Founding Principal and President",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Veres, CPA/PFS, CFP\u00aeFounding Principal and Presidentcveres@crnstn.com\u00d7Catherine G.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Carrie A. Rosko",
+    "title": "Principal and Senior Vice President",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Both skills are essential to providing excellent client service and appropriate recommendations that are delivered in a timely manner.The \u201ccornerstone\u201d of our firm is our talented staff, including my fellow principal, Carrie Rosko, who has been with Cornerstone since the beginning.",
+      "page_type": "about",
+      "url": "https://cornerstonefamilyoffice.com/about-cornerstone/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Rosko, CPA/PFS, MTax, AEP\u00aePrincipal and Senior Vice PresidentUpon graduating from Youngstown State University with a BSBA in accounting, Carrie began her career at a large regional accounting firm attaining the level of manager.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Rosko, CPA/PFS, MTax, AEP\u00aePrincipal and Senior Vice Presidentcrosko@crnstn.com\u00d7Carrie A.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "3 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Mindy J. Pritchard",
+    "title": "Director",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "Pritchard, CPA, CFP,\u00ae MSADirectorAfter graduating from Ohio University, Mindy began her career in the audit practice of a multinational firm while obtaining a Master of Science in Accountancy at the University of Notre Dame.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Pritchard, CPA, CFP,\u00ae MSADirectormpritchard@crnstn.com\u00d7Mindy J.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Carrie Beth Lang",
+    "title": "Director",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "She is a member of the American Institute of CPAs, the Financial Planning Association, the Estate Planning Council of Cleveland and the CFA Institute.Contact MindyCarrie Beth Lang, CFP, EADirectorclang@crnstn.com\u00d7Carrie Beth Lang, CPA, MAccDirectorCarrie Beth returned to Cornerstone Family Office in September 2023 after spending a few years gaining additional experience at another Family Office Co",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Abigail Veres Colvin",
+    "title": "Senior Associate",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "She is a CERTIFIED FINANCIAL PLANNER\u2122 and an Enrolled Agent.Contact Carrie BethAbigail Veres Colvin, CPA, MAccSenior Associateacolvin@crnstn.com\u00d7Abigail Veres Colvin, CPA, MAccSenior AssociateAbigail joined Cornerstone Family Office in 2021 after working in the Private Client tax practice at a multinational firm.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Aletheia K. Uechi",
+    "title": "Senior Associate",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "UechiSenior AssociateAletheia returned to Cornerstone Family Office in September 2023.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Uechi, CPA, MAccSenior Associateauechi@crnstn.com\u00d7Aletheia K.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Noah L. Veres",
+    "title": "Senior Associate",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "Veres, MAcc, CPA, AttorneySenior AssociateNoah returned to Cornerstone in 2026 after working as an attorney specializing in Business and Tax Law at an Akron law firm.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Veres, MAcc, CPA, AttorneySenior Associatenveres@crnstn.com\u00d7Noah L.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Jenny L. Nally",
+    "title": "Associate",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "Nally, FPQP\u2122AssociateJenny graduated from Lakeland Community College with an Associate\u2019s Degree in Applied Business.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "Nally, FPQP\u2122Associatejlnally@crnstn.com\u00d7Jenny L.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Traci C. Kruchan",
+    "title": "Office Manager",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "KruchanOffice ManagerTraci graduated from Bowling Green State University with a BS in Business Administration.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     },
+     {
+      "span": "KruchanOffice Managertkruchan@crnstn.com\u00d7Traci C.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "2 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Susan M. Guip",
+    "title": "Administrative Assistant",
+    "email": null,
+    "grade": null,
+    "is_principal": false,
+    "mentions": [
+     {
+      "span": "GuipAdministrative Assistantsguip@crnstn.com\u00d7Susan M.",
+      "page_type": "team",
+      "url": "https://cornerstonefamilyoffice.com/our-team/",
+      "observed_at": "2026-07-27",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-27",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | TITLE IS NON-INVESTMENT: this looks like a client-facing or operational role, which is not allocation authority however senior it sounds | ADR-0022 expects for multi_family_office: CIO / head of investments (or the founding principal if small) | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   }
+  ],
+  "expected_role": "CIO / head of investments (or the founding principal if small)",
+  "contact_role": "primary",
+  "name": null,
+  "title": null,
+  "selection_basis": "",
+  "authority_basis": null,
+  "affiliation_asof": null,
+  "published_email": null,
+  "evidence": [],
+  "decided_by": null
+ },
+ {
+  "crd": "126021",
+  "family_office_name": "KELLEHER FINANCIAL ADVISORS, LLC",
+  "entity_category": "embedded_fo_practice",
+  "website": "https://starboardadvisor.com",
+  "domain": "starboardadvisor.com",
+  "adv_employees": "13",
+  "candidates": [
+   {
+    "name": "Michael Ouellette",
+    "title": "President",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Weisenfluh CEO & Founder Michael Ouellette President Neil Cataldi Managing Director Rita M.",
+      "page_type": "team",
+      "url": "https://starboardadvisor.com/our-crew/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | firm-level leader at an embedded practice: ADR-0022 wants whoever leads the FO practice, not the firm's chief executive, unless they are the same person | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Neil Cataldi",
+    "title": "Managing Director",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Weisenfluh CEO & Founder Michael Ouellette President Neil Cataldi Managing Director Rita M.",
+      "page_type": "team",
+      "url": "https://starboardadvisor.com/our-crew/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Pam Lessard",
+    "title": "Principal",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Newland Principal Pam Lessard Principal Hannah Andrews Principal Advisory Board & Investment Committee Joan Benoit Samuelson Professional Athlete & Spokesperson Dana Kerr Associate Professor of Risk Management and Insurance \u2013 USM Christopher Ballou Co-Founder Patriot Group Global; Retired First Grade NYPD Detective, Counter-Terrorism Div.",
+      "page_type": "team",
+      "url": "https://starboardadvisor.com/our-crew/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": true
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name, and 1 of them are roster listings where the name simply appears in a staff list -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Hannah Andrews",
+    "title": "Principal",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Newland Principal Pam Lessard Principal Hannah Andrews Principal Advisory Board & Investment Committee Joan Benoit Samuelson Professional Athlete & Spokesperson Dana Kerr Associate Professor of Risk Management and Insurance \u2013 USM Christopher Ballou Co-Founder Patriot Group Global; Retired First Grade NYPD Detective, Counter-Terrorism Div.",
+      "page_type": "team",
+      "url": "https://starboardadvisor.com/our-crew/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": true
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name, and 1 of them are roster listings where the name simply appears in a staff list -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Colleen Kelleher Sorrentino",
+    "title": "CFA, Managing Director \u2013 Kelleher Financial Advisors",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Bart Haag CPA, Principal \u2013 Albin, Randall, and Bennett Hugh O\u2019Donnell Founder \u2013 True Equity Colleen Kelleher Sorrentino CFA, Managing Director \u2013 Kelleher Financial Advisors Sean M.",
+      "page_type": "team",
+      "url": "https://starboardadvisor.com/our-crew/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": true
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name, and 1 of them are roster listings where the name simply appears in a staff list -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Sean M. Kelleher",
+    "title": "President Kelleher Financial Advisors",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Bart Haag CPA, Principal \u2013 Albin, Randall, and Bennett Hugh O\u2019Donnell Founder \u2013 True Equity Colleen Kelleher Sorrentino CFA, Managing Director \u2013 Kelleher Financial Advisors Sean M.",
+      "page_type": "team",
+      "url": "https://starboardadvisor.com/our-crew/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": true
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name, and 1 of them are roster listings where the name simply appears in a staff list -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | firm-level leader at an embedded practice: ADR-0022 wants whoever leads the FO practice, not the firm's chief executive, unless they are the same person | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Tom Burnett",
+    "title": "Vice Chairman and Director of Research \u2013 Kelleher Financial Advisors",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [
+     {
+      "span": "Kelleher President Kelleher Financial Advisors Tom Burnett Vice Chairman and Director of Research \u2013 Kelleher Financial Advisors Arthur L.",
+      "page_type": "team",
+      "url": "https://starboardadvisor.com/our-crew/",
+      "observed_at": "2026-07-28",
+      "authority_verb": false,
+      "roster_listing": false
+     }
+    ],
+    "affiliation_asof": "2026-07-28",
+    "has_stated_authority": false,
+    "note": "1 mention(s) but NONE state allocation authority near this person's name -- this would be `title_inferred`, which ADR-0022 ranks below `stated` | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Barton W. Weisenfluh",
+    "title": "CEO & Founder",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [],
+    "affiliation_asof": null,
+    "has_stated_authority": false,
+    "note": "NO passage on the firm's captured pages names this person -- the title came from extraction alone, so there is no affiliation evidence and no authority evidence | firm-level leader at an embedded practice: ADR-0022 wants whoever leads the FO practice, not the firm's chief executive, unless they are the same person | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Rita M. Newland",
+    "title": "Principal",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [],
+    "affiliation_asof": null,
+    "has_stated_authority": false,
+    "note": "NO passage on the firm's captured pages names this person -- the title came from extraction alone, so there is no affiliation evidence and no authority evidence | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   },
+   {
+    "name": "Arthur L. Goetchius",
+    "title": "Chief Executive Officer \u2013 Kelleher Financial Advisors",
+    "email": null,
+    "grade": null,
+    "is_principal": true,
+    "mentions": [],
+    "affiliation_asof": null,
+    "has_stated_authority": false,
+    "note": "NO passage on the firm's captured pages names this person -- the title came from extraction alone, so there is no affiliation evidence and no authority evidence | firm-level leader at an embedded practice: ADR-0022 wants whoever leads the FO practice, not the firm's chief executive, unless they are the same person | ADR-0022 expects for embedded_fo_practice: the person who leads the family-office practice, not the firm's CEO | no published address for this person; reachability is a tie-breaker only, never a reason to select (ADR-0022)"
+   }
+  ],
+  "expected_role": "the person who leads the family-office practice, not the firm's CEO",
+  "contact_role": "primary",
+  "name": null,
+  "title": null,
+  "selection_basis": "",
+  "authority_basis": null,
+  "affiliation_asof": null,
+  "published_email": null,
+  "evidence": [],
+  "decided_by": null
+ }
+]

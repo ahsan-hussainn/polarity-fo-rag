@@ -24,6 +24,11 @@ on:
     # workflows; extra daily lines give it more delivery chances tonight and get pruned (with a
     # commit saying so) once the 6h heartbeat proves reliable.
     - cron: "53 14 * * *"
+    # 2026-07-28: the 6h heartbeat HAS now proven reliable (5 consecutive scheduled runs, no
+    # drops since run 3), so the promise above was to prune these two lines. They are kept
+    # instead, for a different and stated reason: the discovery queue holds 311 candidates
+    # against ~16 remaining 6h slots, and the extra daily slots are throughput the climb needs.
+    # Recorded here rather than silently retained -- the original justification has expired.
   workflow_dispatch: {}
 
 concurrency:
@@ -36,7 +41,11 @@ permissions:
 jobs:
   cycle:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    # Raised from 45 with the tranche size (below). Measured: run 14 took 21 min at 15
+    # candidates/cycle, and the LLM extraction calls dominate (~90s each, ~12 per run). At 40
+    # candidates a cycle should land near 50-70 min; 180 leaves real headroom while staying far
+    # under the 6h cadence, so a slow cycle still cannot overlap the next one.
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
 
@@ -57,6 +66,10 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           MILLIONVERIFIER_API_KEY: ${{ secrets.MILLIONVERIFIER_API_KEY }}
+          # Sized from measurement, not preference: 311 queued candidates against ~16 remaining
+          # 6h slots means 15/cycle never drains the queue inside the window. 40 drains it in
+          # ~8 cycles and leaves Thu/Fri for review. Cost is negligible (~$0.0009 per extraction).
+          OPS_DISCOVER_PER_CYCLE: "40"
         shell: bash
         run: |
           set -o pipefail

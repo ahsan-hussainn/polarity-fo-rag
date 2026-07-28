@@ -183,6 +183,200 @@ def sheet(path: str = SHEET, *, decisions: tuple[str, ...] = ("affirm",),
                                  for c in sorted({r["draft_category"] for r in rows})}}
 
 
+def html_sheet(sheet_path: str = SHEET, out_path: str = "data/curation/gate_review.html") -> dict:
+    """Render the review sheet as a self-contained page a human can actually work through.
+
+    The JSON is the ratifiable artifact; this is the surface for producing it. Reviewing 20 rows of
+    nested JSON in an editor is how a reviewer starts skimming, and a skimmed review of a gate whose
+    measured precision is 62% is worse than no review, because it launders the gate's errors through
+    a human signature. So the page leads with the adversarial note (what to disbelieve about THIS
+    row), shows the evidence that decides it, and refuses to let a decision be recorded without a
+    rationale in the reviewer's own words.
+    """
+    with open(sheet_path, encoding="utf-8") as fh:
+        rows = json.load(fh)
+    # Affirms first: they are the rows that would enter the product, so they get the fresh attention.
+    rows.sort(key=lambda r: (r["gate"]["decision"] != "affirm", -r["gate"]["score"]))
+    payload = json.dumps(rows, ensure_ascii=False).replace("</", "<\\/")
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", encoding="utf-8") as fh:
+        fh.write(_HTML.replace("__DATA__", payload).replace("__CATS__",
+                 json.dumps(list(REVIEW_CATEGORIES))))
+    return {"rows": len(rows), "path": out_path,
+            "affirms": sum(1 for r in rows if r["gate"]["decision"] == "affirm")}
+
+
+_HTML = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gate review - PolarityIQ Stage 2</title>
+<style>
+:root{--bg:#0f1115;--card:#171a21;--line:#272b35;--fg:#e6e8ee;--dim:#9aa3b2;--acc:#6ea8fe;
+--ok:#3fb950;--warn:#d29922;--bad:#f85149}
+@media(prefers-color-scheme:light){:root{--bg:#f6f7f9;--card:#fff;--line:#e2e5ea;--fg:#1b1f27;
+--dim:#5b6472;--acc:#1a63d8}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 ui-sans-serif,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:9;background:var(--bg);border-bottom:1px solid var(--line);
+padding:14px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+h1{font-size:16px;margin:0;font-weight:650}
+.sp{flex:1}
+.prog{color:var(--dim);font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);
+color:var(--fg);border-radius:7px;padding:7px 12px}
+button:hover{border-color:var(--acc)}
+button.primary{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+main{max-width:940px;margin:0 auto;padding:22px 20px 120px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:18px;margin:16px 0}
+.card.done{opacity:.55}
+.card.done .body{display:none}
+.hd{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.nm{font-size:17px;font-weight:650}
+.tag{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.tag.affirm{color:var(--ok);border-color:var(--ok)}
+.tag.needs_evidence{color:var(--warn);border-color:var(--warn)}
+.note{margin:12px 0;padding:11px 13px;border-left:3px solid var(--warn);background:rgba(210,153,34,.09);
+border-radius:0 7px 7px 0;font-size:14px}
+.note b{color:var(--warn)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px 0}
+.f{border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+.f .k{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+.f .v{font-weight:600;font-variant-numeric:tabular-nums}
+details{margin:10px 0;border:1px solid var(--line);border-radius:8px;padding:9px 11px}
+summary{cursor:pointer;color:var(--dim);font-size:14px}
+blockquote{margin:9px 0;padding-left:11px;border-left:2px solid var(--line);color:var(--dim);font-size:14px}
+a{color:var(--acc)}
+.dec{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+select,textarea{font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);
+border-radius:7px;padding:8px}
+textarea{width:100%;min-height:62px;resize:vertical}
+.q{font-size:13px;padding:6px 10px}
+.warn{color:var(--bad);font-size:13px;margin-top:7px}
+.verdict{font-weight:650}
+footer{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);
+padding:12px 20px;display:flex;gap:14px;align-items:center;justify-content:center}
+code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:13px}
+</style></head><body>
+<header><h1>Gate review</h1><span class="prog" id="prog"></span><span class="sp"></span>
+<button id="dl" class="primary" disabled>Download decisions</button></header>
+<main id="main"></main>
+<footer><span class="prog" id="prog2"></span>
+<span style="color:var(--dim);font-size:13px">save as <code>data/curation/gate_adjudications.json</code>
+then run <code>python -m pipeline.cli gate-ratify --write</code></span></footer>
+<script>
+const ROWS=__DATA__, CATS=__CATS__;
+const REVIEWER="ahsan";
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const main=document.getElementById("main");
+
+function advBlock(r){
+  const a=(r.evidence||[]).find(e=>e.class==="adv_item5"); if(!a) return "";
+  const d=a.detail||{};
+  const f=(k,v)=>`<div class="f"><div class="k">${k}</div><div class="v">${v==null?"&mdash;":v}</div></div>`;
+  const m=n=>n==null?null:"$"+(Number(n)/1e6).toFixed(1)+"M";
+  return `<div class="grid">
+    ${f("HNW clients",d.hnw_clients)}${f("non-HNW clients",d.nonhnw_clients)}
+    ${f("RAUM total",m(d.raum_total))}${f("HNW RAUM",m(d.hnw_raum))}
+    ${f("employees",d.total_employees)}${f("registry",esc(d.registry||""))}</div>`;
+}
+function spans(r){
+  const w=(r.evidence||[]).filter(e=>e.class==="website");
+  if(!w.length) return `<div class="note"><b>No website self-description captured.</b> This row has
+    ${r.evidence_classes.length} evidence class(es); ADR-0020 needs 2 to affirm, so an affirm here
+    is auto-demoted to unresolved.</div>`;
+  return `<details><summary>${w.length} website evidence span(s)</summary>`+
+    w.map(e=>`<blockquote>&ldquo;${esc(e.detail.span)}&rdquo;<br><a href="${esc(e.source_url)}"
+      target="_blank" rel="noopener">${esc(e.source_url)}</a> &middot; ${esc(e.detail.page_type)}
+      &middot; signal: <code>${esc(e.detail.category_signal)}</code></blockquote>`).join("")+`</details>`;
+}
+function team(r){
+  const t=(r.extracted&&r.extracted.team)||[];
+  if(!t.length) return "";
+  return `<details><summary>${t.length} people extracted</summary>`+
+    t.map(p=>`<div>${esc(p.name)} &mdash; ${esc(p.title||"")}${p.principal?" <span class='tag'>principal</span>":""}</div>`).join("")+
+    (r.extracted.thesis?`<blockquote>${esc(r.extracted.thesis)}</blockquote>`:"")+`</details>`;
+}
+function rules(g){
+  return (g.evidence||[]).map(h=>`<code>${esc(h.rule)} +${h.points}</code>`).join(" ")+
+    (g.contradictions||[]).map(c=>` <code style="color:var(--bad)">${esc(c.rule)} ${c.points}</code>`).join("");
+}
+
+ROWS.forEach((r,i)=>{
+  const g=r.gate, thin=r.evidence_classes.length<2;
+  const el=document.createElement("div"); el.className="card"; el.id="c"+i;
+  el.innerHTML=`
+   <div class="hd"><span class="nm">${esc(r.firm_name)}</span>
+     <span class="tag ${g.decision}">gate: ${g.decision} &middot; ${g.score}</span>
+     ${g.category?`<span class="tag">${esc(g.category)}</span>`:""}
+     <span class="tag">CRD ${esc(r.crd)}</span>
+     <span class="tag">${esc(r.city||"")} ${esc(r.state||"")}</span></div>
+   <div class="body">
+     <div class="note"><b>Check this:</b> ${esc(r.draft_note)}</div>
+     <div style="font-size:13px;color:var(--dim)">${rules(g)}</div>
+     ${r.website?`<div style="margin-top:8px"><a href="${esc(r.website)}" target="_blank" rel="noopener">${esc(r.website)}</a>
+       &middot; "family office" appears <b>${r.site_fo_phrase_count}</b>&times; on site</div>`:
+       `<div style="margin-top:8px;color:var(--dim)">no website</div>`}
+     ${advBlock(r)} ${spans(r)} ${team(r)}
+     <div class="dec">
+       <div class="row">
+         <button class="q" data-i="${i}" data-s="affirmed" data-c="${g.category||"multi_family_office"}">Affirm as ${esc(g.category||"MFO")}</button>
+         <button class="q" data-i="${i}" data-s="affirmed" data-c="embedded_fo_practice">Affirm as embedded practice</button>
+         <button class="q" data-i="${i}" data-s="rejected" data-c="wealth_manager">Reject &mdash; wealth manager</button>
+         <button class="q" data-i="${i}" data-s="unresolved" data-c="unresolved">Unresolved</button>
+       </div>
+       <div class="row">
+         <select id="st${i}"><option value="">status&hellip;</option>
+           <option>affirmed</option><option>unresolved</option><option>rejected</option></select>
+         <select id="ct${i}"><option value="">category&hellip;</option>
+           ${CATS.map(c=>`<option>${c}</option>`).join("")}</select>
+       </div>
+       <textarea id="rt${i}" placeholder="Why? In your own words - this is the release decision and it is quoted in the record."></textarea>
+       ${thin?`<div class="warn">Only ${r.evidence_classes.length} evidence class here - an
+         &ldquo;affirmed&rdquo; will be loaded as unresolved (ADR-0020).</div>`:""}
+       <div class="row" style="margin-top:10px">
+         <button class="primary" data-save="${i}">Record decision</button>
+         <span id="v${i}" class="verdict"></span></div>
+     </div></div>`;
+  main.appendChild(el);
+});
+
+function refresh(){
+  const n=ROWS.filter(r=>r.decided_by).length;
+  const t=`${n} / ${ROWS.length} decided`;
+  prog.textContent=t; prog2.textContent=t;
+  dl.disabled=n===0;
+}
+document.addEventListener("click",e=>{
+  const q=e.target.closest("button.q");
+  if(q){const i=q.dataset.i;
+    document.getElementById("st"+i).value=q.dataset.s;
+    document.getElementById("ct"+i).value=q.dataset.c;
+    const rt=document.getElementById("rt"+i); rt.focus(); return;}
+  const s=e.target.closest("button[data-save]");
+  if(!s) return;
+  const i=s.dataset.save, st=document.getElementById("st"+i).value,
+        ct=document.getElementById("ct"+i).value, rt=document.getElementById("rt"+i).value.trim();
+  const v=document.getElementById("v"+i);
+  if(!st||!ct){v.textContent="pick a status and a category";v.style.color="var(--bad)";return;}
+  if(!rt){v.textContent="a rationale is required";v.style.color="var(--bad)";return;}
+  ROWS[i].status=st; ROWS[i].category=ct; ROWS[i].rationale=rt; ROWS[i].decided_by=REVIEWER;
+  document.getElementById("c"+i).classList.add("done");
+  v.textContent="recorded"; v.style.color="var(--ok)";
+  refresh();
+});
+dl.addEventListener("click",()=>{
+  const out=ROWS.filter(r=>r.decided_by);
+  const b=new Blob([JSON.stringify(out,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(b); a.download="gate_adjudications.json"; a.click();
+});
+refresh();
+</script></body></html>
+"""
+
+
 def ratify(path: str = DECISIONS, *, write: bool = False, promote: bool = True) -> dict:
     """Load ratified gate reviews into gold.entity_adjudications, then promote the affirmed firms
     into the product through the standard build path.

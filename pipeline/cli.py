@@ -333,6 +333,8 @@ def cmd_gate_review(args):
     from pipeline.gold import review
 
     out = review.sheet(args.out, decisions=tuple(args.decisions.split(",")), limit=args.limit)
+    if not args.no_html:
+        out["html"] = review.html_sheet(args.out)
     print(json.dumps(out, indent=2))
 
 
@@ -543,6 +545,7 @@ def main():
     gr.add_argument("--decisions", default="affirm",
                     help="comma-separated gate decisions to review (affirm,needs_evidence,exclude)")
     gr.add_argument("--limit", type=int, default=None)
+    gr.add_argument("--no-html", action="store_true", help="skip the reviewer page")
     gr.set_defaults(func=cmd_gate_review)
 
     gy = sub.add_parser("gate-ratify",

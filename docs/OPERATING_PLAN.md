@@ -11,15 +11,29 @@ for: order of work is by product consequence, and deviations get recorded here, 
 
 1. **Deployed + scheduling by end of day 2** (brief ceiling ≈ Wed 2026-07-29 12:00). Internal
    target: **first cron-triggered run tonight (Mon)**; Tue noon is the fallback.
-2. **Day-2 checkpoint email** to optimize@falconscaling.com — target Tue night, internal hard stop
-   Wed 10:00: link to deployed retrieval, link to running agent, scheduler screenshot, three
-   one-line predictions (first breakage; cost to refresh 1 and 500; Goal-2 confidence + abstention).
-   Predictions are read off the ops ledger, and committed in-repo before sending.
+2. **Day-2 checkpoint email** to optimize@falconscaling.com — **hard deadline Wed 2026-07-29 12:00
+   (+05)**. The window's days run 12:00→12:00, so "end of day two" is Wednesday noon, not Tuesday
+   midnight; this was re-derived and confirmed on day 2 (see
+   `docs/findings/stage2-brief-reconciliation.md`). **Ahsan's operating decision 2026-07-28: send
+   Tuesday night if the system is genuinely complete, rather than running to the deadline — but the
+   spare hours exist to mature the product, not to be burned.** Contents: link to deployed
+   retrieval, link to running agent, scheduler screenshot, three one-line predictions (first
+   breakage; cost to refresh 1 and 500; Goal-2 confidence + abstention). Predictions are read off
+   the ops ledger, and committed in-repo before sending. The brief: "a submission with no day-2
+   checkpoint behind it is incomplete."
 3. **Window-completion conditions** (submit when all three show in logs, not before):
    - [ ] ≥2 scheduled runs, untriggered by us, ≥48h first→last, on a platform keeping run history
-         (GitHub Actions), + 2 screenshots (run list; one run detail).
-   - [ ] ≥1 real dependency failure met while running (induced allowed → must be labeled induced).
-   - [ ] Cross-run evidence-based staleness/trust event (clock expiry explicitly does not count).
+         (GitHub Actions), + 2 screenshots (run list; one run detail). First scheduled run
+         2026-07-27 15:18Z → 48h completes **2026-07-29 15:18Z (Wed 20:18 PKT)**.
+   - [x] ≥1 real dependency failure met while running (induced allowed → must be labeled induced).
+         **MET, naturally, 2026-07-27:** 9 `fetch_candidate_site` errors on scheduled runs (sites
+         blocking the scraper) + 5 firms' home pages moving HTTP 200 → 202 between runs 4 and 5.
+         No induced failure needed. **The day-1 `DATABASE_URL` corruption does NOT count and must
+         never be cited for this** — the brief excludes "deleting or disabling your own
+         configuration."
+   - [x] Cross-run evidence-based staleness/trust event (clock expiry explicitly does not count).
+         **MET, 2026-07-27 run 5:** `website_dark` compares run 5 against run 4 and captures the
+         HTTP status change as the reason; `decision_maker_gone` fired twice on roster evidence.
 
 ## Decisions locked (details in ADRs as they land)
 

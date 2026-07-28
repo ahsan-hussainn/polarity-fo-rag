@@ -6,13 +6,16 @@ Read this first each session. Keep it current.
 
 ## Current phase: Stage 2 operating window (Mon 2026-07-27 12:00 → Sat 2026-08-01 12:00 +05)
 
-Brief: `D:\Polarity IQ Final Round\Stage 2\Differentiator Stage 2 _v9_2026.docx`. Mandate: 24 → 500
+Brief: **`docs/brief/` (in-repo, .docx + greppable .txt) — it outranks this file, the operating
+plan, and every ADR; where they disagree the brief is right.** Mandate: 24 → 500
 qualifying records, kept current by scheduled unattended cycles; an agent using retrieval as a tool;
 one new retrieval capability; everything read from what the system did while running. Plan, hard
 gates, window-completion checklist, and locked decisions: **`docs/OPERATING_PLAN.md`** (deploy +
 scheduling + day-2 checkpoint email by Wed 12:00 — internal target Mon/Tue night). Time log:
 `docs/SESSION_LOG.md`. Pre-window correction record: `docs/BRIDGE_MANDATE_DISCLOSURE.md`; standards
-ADR-0019/0020/0021 still govern release. Language rule everywhere: narrowest accurate status word —
+ADR-0019/0020/0021 still govern release. **Brief reconciliation (day 2, 3 drifts fixed + 2 window
+conditions found already met): `docs/findings/stage2-brief-reconciliation.md` — read it before
+planning work.** Language rule everywhere: narrowest accurate status word —
 "vendor reported deliverable," never "verified"; counts regenerated from the artifact, never
 hand-carried.
 

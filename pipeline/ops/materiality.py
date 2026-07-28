@@ -21,6 +21,7 @@ rather than silent (no silent caps)."""
 from __future__ import annotations
 
 import json
+import re
 
 from pipeline import db
 from pipeline.ops import runlog as rl
@@ -41,36 +42,122 @@ def _current_silver(crd: str) -> dict | None:
             "team": {p[0].strip().lower(): (p[1], p[2]) for p in people}}
 
 
-def _diff_facts(old: dict, ext) -> tuple[list[str], list[str]]:
+_PUNCT = re.compile(r"[^\w\s]+")
+_WS = re.compile(r"\s+")
+_TITLE_SYNONYMS = {"sr": "senior", "jr": "junior", "svp": "senior vice president",
+                   "vp": "vice president", "evp": "executive vice president",
+                   "cio": "chief investment officer", "ceo": "chief executive officer",
+                   "coo": "chief operating officer", "cfo": "chief financial officer",
+                   "mgr": "manager", "dir": "director"}
+# _norm strips '&' as punctuation, so its spelled-out twin has to go too or 'A & B' and
+# 'A and B' normalize apart -- measured on 'Co-Founder & CEO' vs 'Co Founder and CEO'.
+_TITLE_DROP = {"and", "the", "of"}
+
+
+def _norm(s: str | None) -> str:
+    """Case/punctuation/whitespace-insensitive form. Kills the cheapest class of extraction
+    variance without pretending two different statements are the same statement."""
+    return _WS.sub(" ", _PUNCT.sub(" ", (s or "").lower())).strip()
+
+
+def _norm_title(t: str | None) -> str:
+    return " ".join(_TITLE_SYNONYMS.get(w, w) for w in _norm(t).split()
+                    if w not in _TITLE_DROP)
+
+
+def _norm_sectors(sectors) -> tuple[str, ...]:
+    """Sector labels are LLM free text in list clothing: the same page yields 'Estate, Trusts &
+    Philanthropy' one run and 'Estate Planning; Philanthropy' the next. Compare the normalized
+    token set so ordering and label punctuation stop counting as facts moving."""
+    tokens: set[str] = set()
+    for s in sectors or []:
+        for part in re.split(r"[,;/&]| and ", s or ""):
+            n = _norm(part)
+            if n:
+                tokens.add(n)
+    return tuple(sorted(tokens))
+
+
+def _facts(sectors, founded_year, team: dict) -> dict:
+    """The comparable fact surface, normalized. `team` maps name -> (title, is_principal)."""
+    return {"sectors": _norm_sectors(sectors),
+            "founded_year": founded_year,
+            "roster": tuple(sorted(_norm(n) for n in team)),
+            "titles": {_norm(n): _norm_title(t) for n, (t, _) in team.items()}}
+
+
+def _diff_facts(old: dict, ext) -> tuple[dict[str, str], list[str]]:
     """Deltas between silver's beliefs and a fresh extraction, split into FACT-shaped changes
-    (material: sectors, founded year, roster, titles) and WORDING changes (thesis/description
-    prose). The split is a measured decision, not taste: overnight scheduled cycles (runs 4-6)
-    showed the same six dynamic-page firms re-flagging 'material' every cycle on thesis/description
-    rewording alone -- LLM extraction paraphrases prose differently per run, so prose inequality is
-    variance, not evidence. Fact-shaped fields are stable under re-extraction; only they refresh
-    silver."""
-    material: list[str] = []
+    (sectors, founded year, roster, titles) and WORDING changes (thesis/description prose).
+
+    The prose split was a measured decision (runs 4-6: the same six dynamic-page firms re-flagged
+    'material' every cycle on rewording alone). Runs 2-14 then falsified this module's next
+    assumption -- that fact-shaped fields are stable under re-extraction. They are not: four firms
+    re-flagged on nearly every cycle because sector labels and job titles are themselves LLM free
+    text ('Equity, Fixed Income, Hedge Funds' vs 'Equity, Fixed Income, External Managers'). So
+    fact fields are compared NORMALIZED here, and `classify` additionally requires a delta to
+    reproduce on the next cycle before it moves silver.
+
+    Returns (deltas keyed by field, wording notes) -- keyed so each field is confirmed separately.
+    """
     wording: list[str] = []
-    if (old["thesis"] or "") != (ext.thesis or ""):
+    if _norm(old["thesis"]) != _norm(ext.thesis):
         wording.append("thesis wording shifted")
-    if (old["description"] or "") != (ext.description or ""):
+    if _norm(old["description"]) != _norm(ext.description):
         wording.append("description wording shifted")
-    if old["founded_year"] != ext.founded_year:
-        material.append(f"founded_year {old['founded_year']} -> {ext.founded_year}")
-    new_sectors = sorted(ext.sectors or [])
-    if old["sectors"] != new_sectors:
-        material.append(f"sectors {old['sectors']} -> {new_sectors}")
+
     new_team = {m.name.strip().lower(): (m.title, m.is_principal) for m in ext.team}
-    gone = sorted(set(old["team"]) - set(new_team))
-    added = sorted(set(new_team) - set(old["team"]))
+    old_f = _facts(old["sectors"], old["founded_year"], old["team"])
+    new_f = _facts(ext.sectors, ext.founded_year, new_team)
+
+    deltas: dict[str, str] = {}
+    if old_f["founded_year"] != new_f["founded_year"]:
+        deltas["founded_year"] = f"founded_year {old_f['founded_year']} -> {new_f['founded_year']}"
+    if old_f["sectors"] != new_f["sectors"]:
+        deltas["sectors"] = f"sectors {list(old_f['sectors'])} -> {list(new_f['sectors'])}"
+    gone = sorted(set(old_f["roster"]) - set(new_f["roster"]))
+    added = sorted(set(new_f["roster"]) - set(old_f["roster"]))
     if gone:
-        material.append(f"people no longer listed: {', '.join(gone[:5])}")
+        deltas["roster_gone"] = f"people no longer listed: {', '.join(gone[:5])}"
     if added:
-        material.append(f"people newly listed: {', '.join(added[:5])}")
-    for name in set(old["team"]) & set(new_team):
-        if (old["team"][name][0] or "") != (new_team[name][0] or ""):
-            material.append(f"title changed for {name}: {old['team'][name][0]!r} -> {new_team[name][0]!r}")
-    return material, wording
+        deltas["roster_added"] = f"people newly listed: {', '.join(added[:5])}"
+    for name in sorted(set(old_f["titles"]) & set(new_f["titles"])):
+        if old_f["titles"][name] != new_f["titles"][name]:
+            deltas[f"title:{name}"] = (f"title changed for {name}: "
+                                       f"{old_f['titles'][name]!r} -> {new_f['titles'][name]!r}")
+    return deltas, wording
+
+
+def _confirm(crd: str, deltas: dict[str, str], new_facts: dict, *, write: bool
+             ) -> tuple[dict[str, str], dict[str, str]]:
+    """Split deltas into CONFIRMED (this exact new value was also extracted last cycle) and
+    UNCONFIRMED (first sighting).
+
+    A site change is a claim about the world; extraction variance is a claim about the model. The
+    two are separable by one property -- a real change reproduces, variance does not. So a delta
+    moves silver only on its second consecutive identical sighting. Cost: a genuine change lands
+    one cycle (~6h) later than it could. Benefit: the trust ledger stops reporting model noise as
+    world change, which is the only reason its staleness events are worth reading.
+    """
+    prior = rl.latest_observation(crd, "fact_fingerprint", exclude_run=rl.current_run())
+    prev = json.loads(prior[0]) if prior and prior[0] else {}
+    if write:
+        rl.observe(crd, "fact_fingerprint", json.dumps(new_facts, default=str, sort_keys=True))
+
+    confirmed, unconfirmed = {}, {}
+    for field, text in deltas.items():
+        key = field.split(":", 1)[0]
+        now = new_facts.get("titles", {}).get(field.split(":", 1)[1]) if key == "title" \
+            else new_facts.get({"roster_gone": "roster", "roster_added": "roster"}.get(key, key))
+        before = prev.get("titles", {}).get(field.split(":", 1)[1]) if key == "title" \
+            else prev.get({"roster_gone": "roster", "roster_added": "roster"}.get(key, key))
+        (confirmed if prev and before is not None and _same(before, now) else unconfirmed)[field] = text
+    return confirmed, unconfirmed
+
+
+def _same(a, b) -> bool:
+    """JSON round-trips tuples to lists; compare on shape-insensitive form."""
+    return json.dumps(a, sort_keys=True, default=str) == json.dumps(b, sort_keys=True, default=str)
 
 
 def classify(firm: dict, *, write: bool, prior_run) -> dict:
@@ -111,8 +198,14 @@ def classify(firm: dict, *, write: bool, prior_run) -> dict:
                  usd=rl.usd_for("gpt-4o-mini", tin, tout),
                  detail={"pages": len(texted), "provider": result.provider})
 
-        material, wording = _diff_facts(old, result.extraction)
+        ext = result.extraction
+        deltas, wording = _diff_facts(old, ext)
+        new_team = {m.name.strip().lower(): (m.title, m.is_principal) for m in ext.team}
+        new_facts = _facts(ext.sectors, ext.founded_year, new_team)
+        confirmed, unconfirmed = _confirm(crd, deltas, new_facts, write=write)
+        material = list(confirmed.values())
         out["deltas"] = material
+        out["unconfirmed"] = list(unconfirmed.values())
 
         # The raw capture is history either way (append-only; identical pages dedupe to 0 rows).
         if write:
@@ -120,29 +213,39 @@ def classify(firm: dict, *, write: bool, prior_run) -> dict:
 
         since = f"since run {prior_run[2]} ({prior_run[1]:%Y-%m-%d %H:%M}Z)" if prior_run else ""
         if not material:
-            out["verdict"] = "cosmetic"
-            detail = (f"prose wording shifted ({', '.join(wording)}) -- extraction variance on "
-                      "dynamic page content, not a fact change" if wording
-                      else "extracted facts identical")
+            out["verdict"] = "unconfirmed" if unconfirmed else "cosmetic"
+            if unconfirmed:
+                detail = (f"fact delta seen ONCE ({'; '.join(list(unconfirmed.values())[:4])}) -- "
+                          "not yet reproduced, so it is not yet distinguishable from extraction "
+                          "variance; silver not rewritten, re-checked next cycle")
+            elif wording:
+                detail = (f"prose wording shifted ({', '.join(wording)}) -- extraction variance on "
+                          "dynamic page content, not a fact change")
+            else:
+                detail = "extracted facts identical"
             rl.trust_event(crd, "website_change", prior_run[0][:16] if prior_run else None, None,
-                           f"home-page text changed {since}; {detail}. Fact fields (sectors, "
-                           "founded year, roster, titles) all unchanged -- classified cosmetic; "
-                           "silver not rewritten", "noted")
+                           f"home-page text changed {since}; {detail}", "noted")
             return out
 
         out["verdict"] = "material"
         if write:
             ids = _bronze_ids_for(crd, urls)
             sl._persist({"crd": crd, "firm_name": name}, result, urls, ids, home)
+        pending = (f" ({len(unconfirmed)} further delta(s) seen once and awaiting reproduction)"
+                   if unconfirmed else "")
         rl.trust_event(crd, "website_change", prior_run[0][:16] if prior_run else None, None,
-                       f"site facts changed {since}: {'; '.join(material[:6])} -- silver refreshed "
-                       "through the standard path (verification state preserved); gold rebuilds "
-                       "this cycle", "refreshed")
+                       f"site facts changed {since}: {'; '.join(material[:6])} -- each reproduced "
+                       f"on two consecutive extractions{pending}; silver refreshed through the "
+                       "standard path (verification state preserved); gold rebuilds this cycle",
+                       "refreshed")
 
         # A ratified decision-maker disappearing is release-relevant: flag it for human
-        # re-adjudication (ADR-0021 keeps that judgment human); never auto-demote here.
+        # re-adjudication (ADR-0021 keeps that judgment human); never auto-demote here. Gated on
+        # the roster delta being CONFIRMED: telling a reviewer their proven contact vanished, on
+        # evidence that turns out to be one flaky extraction, spends the scarcest thing here.
         primary = (firm.get("primary_contact_name") or "").strip().lower()
-        if primary and primary not in {m.name.strip().lower() for m in result.extraction.team}:
+        if primary and "roster_gone" in confirmed \
+                and primary not in {m.name.strip().lower() for m in result.extraction.team}:
             rl.trust_event(crd, "decision_maker_gone", firm.get("primary_contact_name"), None,
                            f"ratified primary contact {firm.get('primary_contact_name')!r} is not "
                            "on the re-extracted roster -- needs human re-adjudication before the "

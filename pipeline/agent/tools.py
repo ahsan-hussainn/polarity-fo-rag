@@ -89,6 +89,83 @@ def t_quarantine_summary(args: dict) -> tuple[dict, list[dict]]:
             "count": len(items), "firms": _jsonable(items)}, []
 
 
+def t_record_history(args: dict) -> tuple[dict, list[dict]]:
+    """What the operating layer has observed about one firm across cycles (ADR-0038).
+
+    The only tool that reads ops.*, and the reason Goal 3 is answerable at all: every other tool
+    describes the CURRENT state, so a question about what changed, when, and what should no longer
+    be trusted had no code path. Returns evidence and timestamps only -- no contact data -- so it
+    cannot become a side channel around release policy.
+    """
+    name = str(args.get("name") or "").strip()
+    crd = str(args.get("crd") or "").strip()
+    with db.get_pool().connection() as c, c.cursor() as cur:
+        # No firm named: report the whole set's change picture. Without this the agent had no way
+        # to DISCOVER which records changed -- record_history could only confirm a firm you already
+        # suspected -- so it answered "what should I re-check?" from quarantine_summary instead,
+        # conflating never-released candidates with released records whose evidence moved.
+        if not crd and not name:
+            cur.execute(
+                "select crd, family_office_name, entity_category, trust_reason, last_checked_at "
+                "  from gold.records where release_state = 'qualifying' and trust_state = 'flagged'"
+                " order by last_checked_at desc nulls last")
+            flagged = [{"crd": a, "firm": b, "category": c_, "why": d,
+                        "last_checked": str(e) if e else None}
+                       for a, b, c_, d, e in cur.fetchall()]
+            cur.execute("select count(*) from gold.records where release_state = 'qualifying'")
+            total = cur.fetchone()[0]
+            return {"scope": "all qualifying records",
+                    "qualifying_total": total, "flagged_count": len(flagged),
+                    "flagged_records": flagged,
+                    "note": ("RELEASED records whose evidence moved since the system recorded them "
+                             "-- these are in the product and need re-checking. This is NOT the "
+                             "quarantined/unresolved set, which was never released at all. Call "
+                             "again with a firm name for that firm's full cross-cycle history.")}, []
+        if not crd:
+            cur.execute("select crd, family_office_name from gold.records "
+                        "where family_office_name ilike %s order by family_office_name limit 1",
+                        (f"%{name}%",))
+            row = cur.fetchone()
+            if row is None:
+                return {"found": False,
+                        "note": f"no held record matches {name!r}; the system cannot report "
+                                f"history for a firm it does not hold"}, []
+            crd, firm = row
+        else:
+            cur.execute("select family_office_name from gold.records where crd = %s", (crd,))
+            r = cur.fetchone()
+            firm = r[0] if r else None
+            if firm is None:
+                return {"found": False, "note": f"no held record with CRD {crd}"}, []
+
+        cur.execute("select trust_state, trust_reason, last_checked_at, data_asof, release_basis "
+                    "from gold.records where crd = %s", (crd,))
+        st = cur.fetchone()
+        cur.execute(
+            "select te.check_type, te.prior, te.current, te.evidence, te.action, te.created_at, "
+            "       te.run_id from ops.trust_events te join ops.runs r using (run_id) "
+            " where te.crd = %s and coalesce(r.config->>'write','false') = 'true' "
+            " order by te.created_at desc limit 20", (crd,))
+        events = [{"check": a, "was": b, "now": d, "evidence": e, "action": f,
+                   "observed_at": str(g), "run_id": h}
+                  for a, b, d, e, f, g, h in cur.fetchall()]
+        cur.execute(
+            "select kind, count(*), min(observed_at), max(observed_at) from ops.observations "
+            " where crd = %s group by kind order by kind", (crd,))
+        coverage = [{"observed": a, "times": b, "first": str(c_), "latest": str(d)}
+                    for a, b, c_, d in cur.fetchall()]
+
+    return {"found": True, "crd": crd, "firm": firm,
+            "current_trust_state": st[0] if st else None,
+            "current_trust_reason": st[1] if st else None,
+            "last_checked_at": str(st[2]) if st and st[2] else None,
+            "source_document_date": str(st[3]) if st and st[3] else None,
+            "release_basis": st[4] if st else None,
+            "trust_events": events, "observation_coverage": coverage,
+            "note": ("cross-cycle history from the operating ledger: what the system observed, "
+                     "when, and why trust changed. Evidence only -- no contact data.")}, []
+
+
 TOOLS = {
     "structured_search": {
         "fn": t_structured_search, "pickable": True,
@@ -123,6 +200,19 @@ TOOLS = {
         "description": "Full record for a named firm (name or domain match).",
         "parameters": {"type": "object", "properties": {"name": {"type": "string"}},
                        "required": ["name"]}},
+    "record_history": {
+        "fn": t_record_history, "pickable": False,
+        "description": "Cross-cycle history from the operating ledger -- the ONLY tool that sees "
+                       "anything but the current state. Call with NO arguments to list every "
+                       "RELEASED record whose evidence has moved and now needs re-checking (use "
+                       "this for 'what changed / what should I not trust / what went stale' -- "
+                       "NOT quarantine_summary, which is the never-released set). Call with a "
+                       "firm name for that firm's full run-by-run history. Evidence and "
+                       "timestamps only, never contact data.",
+        "parameters": {"type": "object", "properties": {
+            "name": {"type": "string", "description": "firm name (partial match)"},
+            "crd": {"type": "string", "description": "CRD if known; takes precedence over name"}},
+            "required": []}},
     "quarantine_summary": {
         "fn": t_quarantine_summary, "pickable": False,
         "description": "Status + evidence-based reason for every firm the system holds but does "

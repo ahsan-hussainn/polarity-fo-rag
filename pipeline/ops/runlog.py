@@ -107,6 +107,28 @@ def observe(crd: str, kind: str, value: str | None, *, url: str | None = None,
             (rid, crd, kind, value, url, json.dumps(detail or {}, default=str)))
 
 
+def save_messages(messages: list[dict], *, phase: str = "session", start_seq: int = 0) -> int:
+    """Persist an agent session's message trace verbatim (ADR-0038). Returns rows written.
+
+    Verbatim matters: this is the artifact a reviewer reads to see what the system actually did,
+    so tool results are stored as returned rather than summarised, and the repair turn is stored
+    under its own phase so a retry is visible AS a retry.
+    """
+    rid = _run_id.get()
+    if rid is None or not messages:
+        return 0
+    rows = []
+    for i, m in enumerate(messages):
+        tc = m.get("tool_calls")
+        rows.append((rid, start_seq + i, m.get("role") or "?", m.get("content"),
+                     json.dumps(tc, default=str) if tc else None, phase))
+    with db.get_pool().connection() as c, c.cursor() as cur:
+        cur.executemany(
+            "insert into ops.agent_messages (run_id, seq, role, content, tool_calls, phase)"
+            " values (%s,%s,%s,%s,%s::jsonb,%s) on conflict (run_id, seq) do nothing", rows)
+    return len(rows)
+
+
 def latest_observation(crd: str, kind: str, *, exclude_run: int | None = None):
     """Most recent observation for (crd, kind) from an EARLIER run -- the comparison baseline.
 

@@ -12,8 +12,9 @@ supports where one exists. Gate failure -> one named-failure repair -> refuse wi
 (the ADR-0023 pattern, applied to the agent).
 
 Every session is a run: ops.runs (kind='goal'), every model call and tool execution in
-ops.run_events with tokens/USD/duration, the full message trace preserved -- the raw, unedited
-log the brief demands is a database export, not a narrative.
+ops.run_events with tokens/USD/duration, and the full message trace -- including tool RESULTS and
+any repair turn -- in ops.agent_messages (ADR-0038). The raw, unedited log the brief demands is a
+database export, not a narrative.
 """
 from __future__ import annotations
 
@@ -40,6 +41,13 @@ offices in THIS dataset by calling tools -- never from prior knowledge. Rules yo
   abstained with the reason, or as a weak pick with the caveat stated.
 - Firms from quarantine_summary are context only: report their status honestly when coverage
   matters; never recommend them.
+- TWO DIFFERENT THINGS, never conflate them. (a) RELEASE STATE: quarantined / unresolved firms were
+  never released -- they are not "family offices we no longer trust", they are candidates that
+  failed the inclusion standard, and many are not family offices at all. (b) TRUST STATE: a
+  RELEASED record whose evidence has since moved carries trust_state='flagged' with a
+  trust_reason. A question about what changed, went stale, or should be re-checked is about (b).
+  Answering it with (a) is wrong and overstates decay. Use record_history for per-firm change
+  history; it is the only tool that sees across cycles.
 - Contact-channel honesty: PUB/A-grade email is a usable route; B is catch-all (uncertain
   delivery); no graded email means phone/LinkedIn routing. Say which applies.
 - When the evidence cannot support a useful answer, say so plainly -- a short honest answer beats
@@ -53,8 +61,8 @@ Domain judgment that keeps answers commercial rather than mechanical:
   and lead the verdict with the evidence picture: how many records carry stated evidence for this
   mandate, how many are plausible-but-unevidenced, and what that means for the user.
 Work in steps: decompose the goal, call the tools you need (fit_rank for investor-fit goals,
-structured_search for exact counts/filters, get_record to deepen), compare, then deliver your
-final answer ONLY by calling submit_answer."""
+structured_search for exact counts/filters, get_record to deepen, record_history for what changed
+across cycles), compare, then deliver your final answer ONLY by calling submit_answer."""
 
 
 class Pick(BaseModel):
@@ -226,10 +234,24 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                 messages.append({"role": "user", "content":
                                  "Your answer FAILED the release check: " + "; ".join(failures)
                                  + ". Resubmit via submit_answer within these limits."})
+                # The repair turn is a real model call and was invisible: unledgered, so its
+                # tokens, cost and latency were missing and ops.runs.usd_est understated every
+                # repaired session. It is also exactly the "retry" the brief asks to see.
+                t_rep = time.monotonic()
                 resp = client().chat.completions.create(
                     model=AGENT_MODEL, temperature=0, messages=messages, tools=[_SUBMIT])
                 u = resp.usage
-                usd += rl.usd_for(AGENT_MODEL, u.prompt_tokens, u.completion_tokens)
+                repair_usd = rl.usd_for(AGENT_MODEL, u.prompt_tokens, u.completion_tokens)
+                usd += repair_usd
+                rl.event("goal", "agent_repair_call", call_class="model", status="ok",
+                         duration_ms=int((time.monotonic() - t_rep) * 1000),
+                         tokens_in=u.prompt_tokens, tokens_out=u.completion_tokens,
+                         usd=repair_usd, detail={"failures": failures})
+                messages.append({"role": "assistant",
+                                 "content": resp.choices[0].message.content,
+                                 "tool_calls": [tc.model_dump()
+                                                for tc in (resp.choices[0].message.tool_calls or [])]
+                                               or None})
                 tc = (resp.choices[0].message.tool_calls or [None])[0]
                 repaired = None
                 if tc is not None and tc.function.name == "submit_answer":
@@ -254,14 +276,25 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                                         "refused": True}
         outcome = "answered" if verification["passed"] and not verification.get("refused") \
             else "refused_verification"
+        # ADR-0038: persist the trace BEFORE closing the run, so a session that produced an answer
+        # always has its log, and so the log exists even for refusals (the most interesting case).
+        traced = rl.save_messages(messages, phase="session")
         rl.log_query(source="agent", query=goal, outcome=outcome, verification=verification,
                      latency_ms=int((time.monotonic() - t0) * 1000))
         rl.finish_run("ok", summary={"goal": goal[:300], "outcome": outcome,
                                      "picks": len(answer.picks), "usd": round(usd, 5),
-                                     "steps": step, "grounded_records": len(grounding)})
+                                     "steps": step, "grounded_records": len(grounding),
+                                     "messages_traced": traced})
         return {"answer": answer.model_dump(), "verification": verification, "run_id": run_id,
-                "steps": step, "usd": round(usd, 5),
-                "trace_note": f"raw run log: ops.run_events where run_id={run_id}"}
+                "steps": step, "usd": round(usd, 5), "messages_traced": traced,
+                "trace_note": (f"raw run log: ops.agent_messages (full message trace, incl. tool "
+                               f"results and any repair turn) + ops.run_events (per-call timing, "
+                               f"tokens, cost) where run_id={run_id}")}
     except Exception as e:
+        # A crashed session is the one whose trace is most worth having.
+        try:
+            rl.save_messages(messages, phase="session")
+        except Exception:
+            pass
         rl.finish_run("failed", error=repr(e))
         raise

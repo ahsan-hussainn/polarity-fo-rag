@@ -33,8 +33,8 @@ def _slim(rec: dict) -> dict:
             "primary_contact_title", "primary_contact_email", "primary_email_grade",
             "secondary_contact_name", "secondary_contact_email", "secondary_email_grade",
             "person_status", "primary_authority_basis", "reachability_tier", "confidence_score",
-            "data_asof", "release_basis", "signals", "fit_score", "components", "fit_confidence",
-            "evidence", "caveats", "aum_note")
+            "data_asof", "release_basis", "trust_state", "trust_reason", "signals", "fit_score",
+            "components", "fit_confidence", "evidence", "caveats", "aum_note")
     return _jsonable({k: rec[k] for k in keep if k in rec and rec[k] not in (None, [], "")})
 
 

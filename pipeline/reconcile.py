@@ -99,6 +99,18 @@ def run() -> dict:
         cur.execute("select release_basis, count(*) from gold.records "
                     "where release_state='qualifying' group by 1")
         by_basis = dict(cur.fetchall())
+        # ADR-0037: a shipped record must carry an evidence-based trust state, and a flagged one
+        # must say why -- a flag with no reason is the kind of unexplained warning a buyer learns
+        # to ignore.
+        cur.execute("select count(*) from gold.records where release_state='qualifying' "
+                    "and trust_state is null")
+        qual_no_trust = cur.fetchone()[0]
+        cur.execute("select count(*) from gold.records where trust_state='flagged' "
+                    "and coalesce(trust_reason,'')=''")
+        flagged_no_reason = cur.fetchone()[0]
+        cur.execute("select trust_state, count(*) from gold.records "
+                    "where release_state='qualifying' group by 1")
+        by_trust = dict(cur.fetchall())
         cur.execute("select count(*) from gold.records where release_state='qualifying' and data_asof is null")
         qual_no_freshness = cur.fetchone()[0]
 
@@ -139,6 +151,10 @@ def run() -> dict:
           f"{gate_released_no_basis} missing release_basis_detail")
     check("every qualifying record states a release basis", qual_no_basis == 0,
           f"{qual_no_basis} with null release_basis")
+    check("every qualifying record carries an evidence-based trust state", qual_no_trust == 0,
+          f"{qual_no_trust} with null trust_state")
+    check("every flagged record states the evidence behind the flag", flagged_no_reason == 0,
+          f"{flagged_no_reason} flagged without a reason")
     # A record released with no freshness basis cannot participate in staleness tracking at all --
     # CRD 120053 shipped exactly that way (state-channel capture invisible to _adv_facts) and
     # nothing caught it. Now something does.
@@ -183,6 +199,7 @@ def run() -> dict:
                            "pending_decision_maker": len(pending), "reclassified": len(reclass),
                            "quarantined": len(quar), "db_states": db_state,
                            "qualifying_by_release_basis": by_basis,
+                           "qualifying_by_trust_state": by_trust,
                            "audited_addresses": len(audited)},
         "failures": [{"check": n, "detail": d} for n, ok, d in checks if not ok],
         "detail": [{"check": n, "ok": ok, "note": d} for n, ok, d in checks],

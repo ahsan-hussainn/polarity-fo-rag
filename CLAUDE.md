@@ -118,3 +118,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0034](./adr/0034-auto-release-band.md) | Auto-release band: releasing gate affirms the client mix corroborates | Accepted |
 | [0035](./adr/0035-thirteenf-discovery-channel.md) | 13F as the second source class: reaching the family offices ADV cannot see | Accepted |
 | [0036](./adr/0036-registry-recheck-detector.md) | Registry re-check detector + pooled ledger connections | Accepted |
+| [0037](./adr/0037-record-level-trust-state.md) | Evidence-based freshness on the record a buyer receives | Accepted |

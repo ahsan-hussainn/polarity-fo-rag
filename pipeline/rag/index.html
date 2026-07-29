@@ -106,6 +106,10 @@
   .metar { font-family:var(--mono); font-size:12px; color:var(--dim); margin-top:5px;
     display:flex; flex-wrap:wrap; gap:4px 12px; }
   .metar .k { color:var(--faint); }
+  /* A record whose evidence moved since we recorded it. Warning-toned, not error-toned: the
+     record is still usable, it just should not be trusted blind. */
+  .tflag { margin-top:9px; font-size:12.5px; line-height:1.45; color:var(--gD);
+    border-left:2px solid var(--gD); padding:2px 0 2px 10px; }
   .contact { margin-top:11px; font-size:14px; }
   .contact .who { color:var(--ink); }
   .contact .role { color:var(--dim); }
@@ -300,6 +304,8 @@ function card(s, i){
     <div>
       <div class="firm">${esc(s.firm)}${tag}</div>
       ${meta.length?`<div class="metar">${meta.join("")}</div>`:""}
+      ${s.trust_state === "flagged" && s.trust_reason
+          ? `<div class="tflag">⚑ Needs re-checking — ${esc(s.trust_reason)}</div>` : ""}
       <div class="contact">${contact}</div>
       <div class="reach ${r.cls}"><span class="mk">${r.mk}</span><span class="lb">${r.lb}</span>${r.val?`<span class="val">${r.val}</span>`:""}</div>
       ${via}

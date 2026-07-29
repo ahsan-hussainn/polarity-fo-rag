@@ -148,6 +148,10 @@ def _render_one(i: int, h: dict) -> str:
     if h.get("release_basis") == "gate_released":
         lines.append("   Release basis: established by the automated inclusion gate; NO "
                      "decision-maker has been proven for this firm")
+    # ADR-0037: an unresolved trust event is the single most decision-relevant thing about a
+    # record, so it renders before the profile prose rather than after it.
+    if h.get("trust_state") == "flagged" and h.get("trust_reason"):
+        lines.append(f"   TRUST FLAG (evidence changed since we recorded this): {h['trust_reason']}")
     if h.get("primary_selection_basis"):
         lines.append(f"   Why this contact: {h['primary_selection_basis']}")
     if h.get("description"):
@@ -207,6 +211,7 @@ def _sources(hits: list[dict]) -> list[dict]:
             "best_channel": ch["channel"], "best_channel_target": ch.get("target"),
             "entity_category": h.get("entity_category"),
             "release_basis": h.get("release_basis"),
+            "trust_state": h.get("trust_state"), "trust_reason": h.get("trust_reason"),
             "is_family_office": h.get("entity_category") in ("single_family_office", "multi_family_office"),
             "selection_basis": h.get("primary_selection_basis"),
             "authority_basis": h.get("primary_authority_basis"),

@@ -85,7 +85,10 @@ _EXPORT_COLUMNS = [
     # decision-grade KPIs (ADR-0013 migration)
     ("reachability_tier", "Reachability"), ("reachability_score", "Reachability Score"),
     ("confidence_score", "Confidence Score"),
-    ("data_asof", "Firm Data As-Of (ADV filing)"), ("is_stale", "Stale?"),
+    ("data_asof", "Firm Data As-Of (ADV filing)"), ("is_stale", "Source Doc Older Than 15mo"),
+    # ADR-0037: what the system actually observed, not calendar arithmetic.
+    ("last_checked_at", "Last Checked By System"), ("trust_state", "Trust State"),
+    ("trust_reason", "Trust Reason"),
     ("data_completion_score", "Data Completion Score"), ("principal_count", "Principal Count"),
     ("people_count", "People Count"),
 ]
@@ -485,6 +488,28 @@ def build(write: bool = False) -> dict:
             " order by replace(entity_key,'crd:',''), decided_at desc")
         gate_affirms = {r[0]: {"category": r[2], "score": r[3], "evidence": r[4]}
                         for r in cur.fetchall()}
+        # ADR-0037: the operating layer's evidence, joined onto the record it is about. Latest
+        # event per (crd, check_type): a later 'noted'/'refreshed' supersedes an earlier 'flagged',
+        # so a firm that was flagged and then re-verified reads as current rather than carrying a
+        # flag forever.
+        # Only evidence gathered by a REAL operating cycle drives a customer-facing flag. Dry runs
+        # stay in the ledger -- the submitted logs are uncurated -- but a dry run does not classify
+        # materiality, so its events are incomplete by construction and one of them was already
+        # surfacing "(dry-run: materiality not classified)" as a buyer-visible warning. Writes from
+        # dry runs are now suppressed at source (ADR-0036); this filter covers the rows written
+        # before that, without deleting anything from an append-only ledger.
+        cur.execute(
+            "select distinct on (te.crd, te.check_type) te.crd, te.check_type, te.action, "
+            "       te.evidence, te.created_at "
+            "  from ops.trust_events te join ops.runs r using (run_id) "
+            " where coalesce(r.config->>'write', 'false') = 'true' "
+            " order by te.crd, te.check_type, te.created_at desc")
+        trust_latest: dict[str, list[dict]] = {}
+        for tcrd, ctype, action, evidence, at in cur.fetchall():
+            trust_latest.setdefault(tcrd, []).append(
+                {"check": ctype, "action": action, "evidence": evidence, "at": at})
+        cur.execute("select crd, max(observed_at) from ops.observations group by crd")
+        last_seen = {r[0]: r[1] for r in cur.fetchall()}
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
                     "extracted_by, corporate_linkedin, source_urls, "
                     "(select count(*) from silver.people p where p.firm_crd=f.crd) "
@@ -598,6 +623,17 @@ def build(write: bool = False) -> dict:
             # past the annual-filing window). Computed for qualifying FOs; N/A elsewhere.
             row["reachability_tier"], row["reachability_score"] = _reachability(row)
             row["confidence_score"] = _confidence(row)
+            # ADR-0037: freshness the system actually measured, as opposed to calendar arithmetic.
+            # `is_stale` below stays (it is a genuine signal about the source document's age) but
+            # it is no longer the only thing a buyer can read, and it is no longer the thing that
+            # carries the word "stale" alone.
+            row["last_checked_at"] = last_seen.get(crd)
+            flagged = [t for t in trust_latest.get(crd, []) if t["action"] == "flagged"]
+            row["trust_state"] = "flagged" if flagged else "current"
+            row["trust_reason"] = (
+                "; ".join(f"{t['check']}: {t['evidence']}" for t in
+                          sorted(flagged, key=lambda t: t["at"], reverse=True)[:2])
+                if flagged else None)
             filed = adv.get("latest_filing_date")
             row["data_asof"] = filed
             row["is_stale"] = None

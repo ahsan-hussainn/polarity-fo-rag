@@ -321,7 +321,7 @@
  {
   "crd": "220519",
   "firm_name": "SUMMIT TRAIL ADVISORS, LLC",
-  "category": "ria_with_fo_practice",
+  "category": "embedded_fo_practice",
   "status": "affirmed",
   "duplicate_of": null,
   "evidence": [
@@ -330,8 +330,17 @@
     "source_url": "https://summittrail.com",
     "observed_at": null,
     "detail": {
-     "span": "'As your outsourced family office, we coordinate your entire financial team' - positions FO as a service for clients who 'outgrew traditional wealth management'",
-     "category_signal": "ria_with_fo_practice"
+     "span": "'As your outsourced family office, we coordinate your entire financial team', with the offering itemised among named services ('Family office services', 'Family governance', 'Consolidated reporting and oversight') and published thinking on it ('Making Sense of the Modern Family Office')",
+     "category_signal": "embedded_fo_practice"
+    }
+   },
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/220519/PDF/220519.pdf",
+    "observed_at": null,
+    "detail": {
+     "span": "Item 5.G other-services free text: 'OUTSOURCED CHIEF INVESTMENT OFFICER SERVICES/ FAMILY OFFICE SERVICES' - independent regulatory corroboration",
+     "category_signal": "embedded_fo_practice"
     }
    },
    {
@@ -339,13 +348,13 @@
     "source_url": "https://www.businesswire.com/news/home/20250918158593/en/",
     "observed_at": null,
     "detail": {
-     "span": "'Fast Growing Wealth Management Boutique' recognized by Barron's as a Top 100 RIA firm",
-     "category_signal": "ria_with_fo_practice"
+     "span": "'Fast Growing Wealth Management Boutique' recognized by Barron's as a Top 100 RIA firm; 94 emp, $20B+ AUM, 588 HNW / 51 non-HNW",
+     "category_signal": "scale_caveat"
     }
    }
   ],
-  "rationale": "Large RIA (94 emp, ~639 clients, $20B+ AUM, Barron's Top 100 RIA) offering an 'outsourced family office' service line. FO is a service, not identity.",
-  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+  "rationale": "Clears ADR-0028 category 3. The site positions the offering explicitly - 'As your outsourced family office, we coordinate your entire financial team' - and itemises it among named services, with published thinking on the subject. Independently corroborated by ADV Item 5.G: 'OUTSOURCED CHIEF INVESTMENT OFFICER SERVICES/ FAMILY OFFICE SERVICES'. Strongly HNW book (588 HNW against 51 non-HNW, $19.9B RAUM). Recorded for the gate's calibration rather than as a release change: gate-v3 scored this 30 (needs_evidence) while a human reading of the same site clears it - a recall miss on this population.",
+  "decided_by": "Claude (agent-assisted re-adjudication under ADR-0028 category 3, 2026-07-29, at Ahsan's direction) - PENDING Ahsan's final-review confirmation"
  },
  {
   "crd": "323249",
@@ -576,7 +585,7 @@
     }
    }
   ],
-  "rationale": "Large Boston RIA (~1,100 clients, $8B AUM, Focus Partners) offering 'family office services' as one line; 236 non-HNW confirms broader than a true FO.",
+  "rationale": "Large Boston RIA (~1,100 clients, $8B AUM, Focus Partners) offering 'family office services' as one line; 236 non-HNW confirms broader than a true FO. || ADR-0028 category-3 re-adjudication 2026-07-29: CANNOT be adjudicated on the evidence held, and that is itself the finding - the website captured for this CRD is Focus Financial Partners' (its acquirer); the token 'CRESTWOOD' does not appear anywhere in the fetched site text. Category 3 requires the FIRM'S OWN materials and we hold the parent's. ADV Item 5.G does say 'FAMILY OFFICE CONSULTING', but one source cannot carry an affirm. This is the wrong-entity-website defect ADR-0015 exists to catch; the domain needs re-resolving before any category judgement is possible. Unchanged, and flagged.",
   "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
  },
  {
@@ -634,7 +643,7 @@
     }
    }
   ],
-  "rationale": "Century-old investment-counsel RIA (Stifel subsidiary, ~$26B AUM, ~4,800 clients) listing 'Family Office Services' as one offering among many. FO is a service line.",
+  "rationale": "Century-old investment-counsel RIA (Stifel subsidiary, ~$26B AUM, ~4,800 clients) listing 'Family Office Services' as one offering among many. FO is a service line. || ADR-0028 category-3 re-adjudication 2026-07-29: DOES NOT CLEAR - the site evidence is a NAVIGATION LABEL, not a described practice. 'Family Office Services' appears only as one item in a repeated services menu ('Investment Counsel | Family Office Services | Women & Wealth | Responsible Investing | Foundations & Endowments'), with no description anywhere of what the service comprises. ADR-0028 requires 'dedicated FO services substantiated by the firm's own materials' and says explicitly that a tagline is not a practice; a menu entry is the tagline case. ADV Item 5.G does corroborate ('CERTAIN FAMILY OFFICE SERVICES'), but the first source has to establish a practice before a second can corroborate one. Scale reinforces it: ~4,800 clients, 2,213 non-HNW. Unchanged.",
   "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
  },
  {
@@ -814,7 +823,7 @@
  {
   "crd": "329496",
   "firm_name": "INNOVATIVE FAMILY OFFICE LLC",
-  "category": "ria_with_fo_practice",
+  "category": "embedded_fo_practice",
   "status": "affirmed",
   "duplicate_of": null,
   "evidence": [
@@ -823,8 +832,17 @@
     "source_url": "https://innovativefo.com/about",
     "observed_at": null,
     "detail": {
-     "span": "'a private wealth management advisory firm that serves high-net-worth and ultra-high-net-worth investors'; 'Our family office division, headed by a registered investment advisor'",
-     "category_signal": "ria_with_fo_practice"
+     "span": "'Our family office division, headed by a registered investment advisor, extends beyond traditional advisory services... a comprehensive suite of services typical to a family office arrangement, including legal, tax planning and estate planning services'; separate 'Family Office Services We Offer' section",
+     "category_signal": "embedded_fo_practice"
+    }
+   },
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/329496/PDF/329496.pdf",
+    "observed_at": null,
+    "detail": {
+     "span": "Item 5.G other-services free text: 'FAMILY OFFICE SERVICES' - independent regulatory corroboration of the practice the site describes",
+     "category_signal": "embedded_fo_practice"
     }
    },
    {
@@ -832,13 +850,13 @@
     "source_url": "https://adviserinfo.sec.gov/firm/summary/329496",
     "observed_at": null,
     "detail": {
-     "span": "13 HNW / 263 non-HNW, 8 emp - predominantly non-HNW retail",
-     "category_signal": "ria_with_fo_practice"
+     "span": "13 HNW / 263 non-HNW, 8 emp, $66M RAUM - majority-retail book, recorded because it cuts AGAINST the record and a buyer should weigh it",
+     "category_signal": "scale_caveat"
     }
    }
   ],
-  "rationale": "'A private wealth management advisory firm' with a distinct 'family office division'; majority-retail book (263 non-HNW vs 13 HNW). FO is a service line.",
-  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+  "rationale": "Clears ADR-0028 category 3. The firm's own site names a distinct unit - 'our family office division, headed by a registered investment advisor' - and describes dedicated services beyond advisory (legal, tax and estate planning 'typical to a family office arrangement'), with a separate 'Family Office Services We Offer' section. Independently corroborated by ADV Item 5.G: 'FAMILY OFFICE SERVICES'. Two independent evidence classes, a named division, described services - not a tagline. Noted and not hidden: the book is majority-retail (263 non-HNW against 13 HNW, $66M RAUM, ~$240k per client), which is small for this category; the record carries those figures. The 2026-07-20 adjudication reached 'ria_with_fo_practice' on the same facts, correctly, under a Stage 1 binary that had no counted category for an evidenced practice - which is exactly the re-entry ADR-0028 anticipated.",
+  "decided_by": "Claude (agent-assisted re-adjudication under ADR-0028 category 3, 2026-07-29, at Ahsan's direction) - PENDING Ahsan's final-review confirmation"
  },
  {
   "crd": "125101",
@@ -982,7 +1000,7 @@
     }
    }
   ],
-  "rationale": "US RIA arm of the 'Pioneer Wealth Management' group; core is 'Holistic Financial Planning, Wealth Management' serving individual/family AND institutional clients. FO one service line.",
+  "rationale": "US RIA arm of the 'Pioneer Wealth Management' group; core is 'Holistic Financial Planning, Wealth Management' serving individual/family AND institutional clients. FO one service line. || ADR-0028 category-3 re-adjudication 2026-07-29: DOES NOT CLEAR - only ONE evidence class. The site does carry a named 'Family Office' service line in its own navigation, but ADV Item 5.G reads 'MINIMUM ACCOUNT CHARGE' and corroborates nothing, so the website is the sole source; ADR-0020's two-independent-classes requirement is not met by reading one website twice. The client mix also cuts against the claim: HNW RAUM share 0.23, i.e. 77% of assets from non-HNW clients. Unchanged.",
   "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
  },
  {
@@ -1075,7 +1093,7 @@
  {
   "crd": "324899",
   "firm_name": "SAPIENT CAPITAL LLC",
-  "category": "ria_with_fo_practice",
+  "category": "embedded_fo_practice",
   "status": "affirmed",
   "duplicate_of": null,
   "evidence": [
@@ -1084,8 +1102,17 @@
     "source_url": "https://sapientcapital.com/",
     "observed_at": null,
     "detail": {
-     "span": "'an independent advisory firm' providing 'comprehensive wealth management solutions' plus 'family office solutions' - FO a listed service, not the identity",
-     "category_signal": "ria_with_fo_practice"
+     "span": "'comprehensive family office services' listed alongside investment management and wealth planning, AND a named partner heading the practice: 'Elizabeth Chand - Partner, Family Office Solutions'. A staffed, named service line.",
+     "category_signal": "embedded_fo_practice"
+    }
+   },
+   {
+    "class": "adv_item5",
+    "source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/324899/PDF/324899.pdf",
+    "observed_at": null,
+    "detail": {
+     "span": "Item 5.G other-services free text: 'FAMILY OFFICE SERVICES' - independent regulatory corroboration",
+     "category_signal": "embedded_fo_practice"
     }
    },
    {
@@ -1093,13 +1120,13 @@
     "source_url": "https://adviserinfo.sec.gov/firm/summary/324899",
     "observed_at": null,
     "detail": {
-     "span": "$13.7B AUM, 59 emp, 691 HNW / 289 non-HNW; serves 'ultra-high-net-worth families, individuals, foundations, and institutions'",
-     "category_signal": "ria_with_fo_practice"
+     "span": "$13.7B AUM, 59 emp, 691 HNW / 289 non-HNW; serves 'ultra-high-net-worth families, individuals, foundations, and institutions' - a broad RIA, which is why this is a PRACTICE record and never a family office",
+     "category_signal": "scale_caveat"
     }
    }
   ],
-  "rationale": "'Independent advisory firm' with 'family office solutions' as one service line; large ~980-client $13B+ book spanning individuals, foundations, institutions. Broad RIA.",
-  "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
+  "rationale": "Clears ADR-0028 category 3, and most strongly of the seven. The site names the service line ('comprehensive family office services', 'family office solutions') AND staffs it with a named partner - Elizabeth Chand, 'Partner, Family Office Solutions' - which is the 'dedicated team' the category-3 bar names as a qualifying source. Independently corroborated by ADV Item 5.G: 'FAMILY OFFICE SERVICES'. A staffed, named practice inside a broad RIA is precisely the shape category 3 was written for. The 2026-07-20 adjudication called it 'a broad RIA', which remains true and is exactly why this counts as a family-office PRACTICE and never as a family office.",
+  "decided_by": "Claude (agent-assisted re-adjudication under ADR-0028 category 3, 2026-07-29, at Ahsan's direction) - PENDING Ahsan's final-review confirmation"
  },
  {
   "crd": "131618",
@@ -1446,7 +1473,7 @@
     }
    }
   ],
-  "rationale": "Brands 'outsourced family office' but SEC shows a Greenwood Village RIA managing ~$296M for 147 individual clients on AUM fees - a client-serving advisory business running an FO service practice, not one family's capital.",
+  "rationale": "Brands 'outsourced family office' but SEC shows a Greenwood Village RIA managing ~$296M for 147 individual clients on AUM fees - a client-serving advisory business running an FO service practice, not one family's capital. || ADR-0028 category-3 re-adjudication 2026-07-29: DOES NOT CLEAR, for a structural reason rather than a thin one - there is no DISTINCT practice to evidence. All 58 'family office' mentions on the site are the firm's own brand name, navigation, or client testimony; zero named service-line phrasings. Category 3 is for an FO practice embedded in a broader business, and this firm IS branded as the family office, so the honest question is MFO-versus-wealth-manager under ADR-0020, which the 2026-07-20 adjudication already answered. ADV Item 5.G ('CONSULTING') offers no second source. Unchanged.",
   "decided_by": "Muhammad Ahsan Hussain (ratified 2026-07-20)"
  }
 ]

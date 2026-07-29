@@ -92,20 +92,30 @@ def run(*, db_only: bool = False) -> dict:
         # ADR-0034 split the qualifying set by release basis, so the person invariants split too.
         # They do not weaken: each basis must be internally consistent, and a record may not claim
         # one basis while carrying the other's evidence.
+        # ADR-0041 re-keyed these from release BASIS to the CLAIM being made, which is what they
+        # were always really about. A record may be released on entity evidence alone by either
+        # path (human-affirmed without a contact pass, or gate-released), so "human_ratified
+        # implies a proven person" stopped being true. What must remain true is narrower and
+        # stronger: claiming a proven decision-maker requires a ratified one, and shipping contact
+        # data requires a ratified one. Both are basis-independent.
         cur.execute("select count(*) from gold.records r "
-                    "where release_state='qualifying' and release_basis='human_ratified' "
+                    "where release_state='qualifying' and person_status='proven' "
                     "and not exists (select 1 from gold.contact_adjudications ca "
                     "                where ca.crd=r.crd and ca.contact_role='primary')")
         qual_without_contact = cur.fetchone()[0]
+        cur.execute("select count(*) from gold.records r "
+                    "where release_state='qualifying' "
+                    "and (primary_contact_name is not null or primary_contact_email is not null) "
+                    "and not exists (select 1 from gold.contact_adjudications ca "
+                    "                where ca.crd=r.crd and ca.contact_role='primary')")
+        qual_unratified_contact_shipped = cur.fetchone()[0]
         cur.execute("select count(*) from gold.records where release_state='qualifying' "
-                    "and release_basis='human_ratified' and person_status is distinct from 'proven'")
+                    "and person_status not in ('proven','not_established')")
         qual_unproven_person = cur.fetchone()[0]
-        # A gate-released record must NOT present a decision-maker: the band established the
-        # entity, nothing established the person. Contact data on such a row would be an
-        # unratified name shipped as proven -- the Bridge Mandate's corrected failure.
+        # A record released on entity evidence alone must NOT present a decision-maker, whichever
+        # path released it: the entity was established, the person was not.
         cur.execute("select count(*) from gold.records where release_state='qualifying' "
-                    "and release_basis='gate_released' and (person_status is distinct from "
-                    "'not_established' or primary_contact_name is not null "
+                    "and person_status='not_established' and (primary_contact_name is not null "
                     "or primary_contact_email is not null)")
         gate_released_with_person = cur.fetchone()[0]
         # Every gate-released record must carry the evidence that released it, on the record.
@@ -171,12 +181,15 @@ def run(*, db_only: bool = False) -> dict:
     # 2. the product is family offices ONLY, each with a proven person
     surface_check("product is family offices only (no non-FO leaked in)", not non_fo_in_prod, f"{len(non_fo_in_prod)} leaked")
     surface_check("qualifying == affirmed FOs", db_qual == db_fo == len(prod), f"db_qual {db_qual}, db_fo {db_fo}, csv {len(prod)}")
-    check("every human-ratified FO has a ratified primary contact", qual_without_contact == 0,
-          f"{qual_without_contact}")
-    check("every human-ratified FO has person_status=proven", qual_unproven_person == 0,
-          f"{qual_unproven_person}")
-    check("no gate-released record presents a decision-maker", gate_released_with_person == 0,
-          f"{gate_released_with_person} gate-released rows carry a person")
+    check("claiming a proven decision-maker requires a ratified one", qual_without_contact == 0,
+          f"{qual_without_contact} claim proven without an adjudication")
+    check("no unratified contact data ships on any record", qual_unratified_contact_shipped == 0,
+          f"{qual_unratified_contact_shipped} rows carry an unadjudicated contact")
+    check("every qualifying record states a person_status the vocabulary allows",
+          qual_unproven_person == 0, f"{qual_unproven_person} outside proven/not_established")
+    check("a record released on entity evidence alone presents no decision-maker",
+          gate_released_with_person == 0,
+          f"{gate_released_with_person} entity-only rows carry a person")
     check("every gate-released record carries its release evidence", gate_released_no_basis == 0,
           f"{gate_released_no_basis} missing release_basis_detail")
     check("every qualifying record states a release basis", qual_no_basis == 0,

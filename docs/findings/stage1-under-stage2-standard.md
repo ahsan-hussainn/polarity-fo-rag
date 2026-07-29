@@ -66,11 +66,40 @@ adjudication:
 | 286243 | Crestwood Advisors | exclude | — | 20 |
 | 133370 | 1919 Investment Counsel, LLC | exclude | — | 5 |
 
-They remain `unresolved` and are **not** auto-promoted, deliberately: the human adjudication that
-put them there outranks the gate, and ADR-0028 requires adjudication for re-entry. Three of the four
-gate affirms score at or above the concordance bar, so a re-adjudication is plausible upside of up
-to +4 qualifying records — but it is a judgment call about whether each firm runs an *evidenced*
-family-office practice, and evidence assembly is the machine's job while that call is not.
+## Resolved — the re-adjudication was performed (2026-07-29)
 
-The bottom three are worth noting for the opposite reason: the gate and the human agree these are
-not family offices, which is the standard working.
+All seven were re-adjudicated against the category-3 bar, reading each firm's own site text and ADV
+Item 5.G rather than the gate's score. **Three clear, four do not.**
+
+Crucially, the original rationales all said the same thing — *"FO is a service line," "one offering
+among many," "FO is a service, not identity."* That was the right call under the Stage 1 binary,
+where a service line meant not-counted. **ADR-0028 created a counted category for exactly that
+shape**, so "it is a service line" stopped being the disqualifier and became the starting condition.
+The real test is whether the line is *distinct and evidenced* — a named division or service with
+described services, in the firm's own materials, plus an independent second source — or a tagline.
+
+| CRD | firm | outcome | why |
+|---|---|---|---|
+| 324899 | Sapient Capital | **affirmed cat-3** | site names the service line *and* staffs it — "Elizabeth Chand, Partner, Family Office Solutions" — plus ADV 5.G "FAMILY OFFICE SERVICES". Strongest of the seven |
+| 220519 | Summit Trail Advisors | **affirmed cat-3** | "As your outsourced family office…", itemised among named services, plus ADV 5.G "OUTSOURCED CIO SERVICES/ FAMILY OFFICE SERVICES". 588 HNW vs 51 non-HNW |
+| 329496 | Innovative Family Office | **affirmed cat-3** | "our family office division, headed by a registered investment advisor" with described services, plus ADV 5.G. Majority-retail book recorded on the record as a caveat, not hidden |
+| 307521 | Alpha Capital Family Office | held | no *distinct* practice exists to evidence — all 58 mentions are the firm's own brand name; zero named service-line phrasings. The firm IS branded as the family office, so the question is MFO-vs-wealth-manager, already answered |
+| 142856 | Pioneer Family Office | held | one evidence class only: a named service line on the site, but ADV 5.G reads "MINIMUM ACCOUNT CHARGE". HNW share 0.23 |
+| 133370 | 1919 Investment Counsel | held | the site evidence is a **navigation label** repeated across pages with no description of the service — ADR-0028's "a tagline is not a practice" case. ADV corroborates, but a second source cannot corroborate a practice the first never established |
+| 286243 | Crestwood Advisors | **held, and flagged** | the website captured for this CRD is Focus Financial Partners' (its acquirer) — the token "CRESTWOOD" appears nowhere in the fetched site text. Cannot adjudicate a firm on its parent's materials; the domain needs re-resolving. This is the wrong-entity defect ADR-0015 exists to catch |
+
+Two findings fell out of the work:
+
+**A defect in the release rule (fixed, ADR-0041).** Affirming the three did not move the count. The
+build required human-adjudicated records to carry a *ratified decision-maker* to qualify, while
+gate-released records qualified on entity evidence alone — so a machine-affirmed entity was released
+and a human-affirmed one held out. That contradicted ADR-0028's day-1 standard (entity-strict,
+field-permissive). Fixed; qualifying went 32 → 35 (30 family offices + 5 evidenced practices).
+
+**A gate recall miss worth recording.** Gate-v3 scored Summit Trail 30 (`needs_evidence`) while a
+human reading of the same site clears it comfortably. Recorded as calibration data, not as a release
+change — the gate never overrides a human adjudication in either direction.
+
+**Who decided.** These three were adjudicated in-session by the assistant at Ahsan's direction, and
+`decided_by` says exactly that, including *pending Ahsan's final-review confirmation*. The mandate's
+final-review pass covers them; the record does not claim a human ratification that has not happened.

@@ -366,6 +366,25 @@ def band_precision() -> dict:
     return _BAND_PRECISION
 
 
+def _suppress_unratified_contact(row: dict) -> None:
+    """Strip every contact cell from a record released on ENTITY evidence alone.
+
+    Silver holds extracted people for most firms, and `_contacts` populates the row from it before
+    release is decided. For a record whose decision-maker was never adjudicated, shipping those
+    cells would present an extracted name as the proven contact -- the precise
+    claim-stronger-than-evidence failure the Bridge Mandate corrected. Both entity-only paths
+    (human-affirmed without a contact pass, ADR-0041; gate-released, ADR-0034) route through here so
+    the rule cannot drift apart between them.
+    """
+    for role in ("primary", "secondary"):
+        for f in ("contact_name", "contact_title", "contact_email", "email_grade",
+                  "email_code", "email_explanation"):
+            row[f"{role}_{f}"] = None
+    row["primary_contact_location"] = None
+    row["primary_authority_basis"] = None
+    row["primary_selection_basis"] = None
+
+
 def _adv_raw(cur, crd: str) -> dict:
     """The raw registry capture, for rules that read regulatory client-mix fields the processed
     _adv_facts view does not carry (ADR-0034's band needs hnw_raum / nonhnw_clients)."""
@@ -583,6 +602,29 @@ def build(write: bool = False) -> dict:
                     standard = "ADR-0020" if row["entity_category"] in _FO_CATEGORIES else "ADR-0028 category 3"
                     row["release_reasons"] = [f"entity affirmed {row['entity_category']} ({standard}); "
                                               f"decision-maker proven (ADR-0021)"]
+                    row["release_basis_detail"] = (
+                        "entity adjudicated by a human, and a decision-maker ratified with an "
+                        "authority basis (ADR-0021)")
+            elif (adj is not None and adj.get("status") == "affirmed"
+                    and adj.get("category") in _COUNTED_CATEGORIES and not adj.get("duplicate_of")):
+                # ADR-0041: a human-affirmed entity in a counted category qualifies on ENTITY
+                # evidence alone. ADR-0028 pre-registered that standard on day 1 -- entity-strict,
+                # field-permissive, "a counted record does NOT need a proven contact or graded
+                # email" -- but the code kept the Stage 1 rule where qualifying meant entity AND
+                # person. The result was backwards once ADR-0034 landed: a MACHINE-affirmed entity
+                # was released on entity evidence alone while a HUMAN-affirmed one was held out.
+                # Same evidence standard, weaker treatment for the stronger judgement.
+                row["release_state"] = "qualifying"
+                row["release_basis"] = "human_ratified"
+                standard = "ADR-0020" if adj["category"] in _FO_CATEGORIES else "ADR-0028 category 3"
+                row["release_reasons"] = [
+                    f"entity affirmed {adj['category']} by human adjudication ({standard}); "
+                    f"decision-maker NOT established"]
+                row["release_basis_detail"] = (
+                    "entity adjudicated by a human against " + standard +
+                    "; no decision-maker has been ratified for this firm, so none is shipped")
+                row["person_status"] = "not_established"
+                _suppress_unratified_contact(row)
             elif crd in gate_affirms and adjudications.get(crd) is None:
                 # ADR-0034: no human has adjudicated this entity, but the deterministic gate
                 # affirmed it AND the affirm cleared the measured auto-release band. It counts on
@@ -613,14 +655,7 @@ def build(write: bool = False) -> dict:
                         f"entity affirmed {ga['category']} by the deterministic gate and cleared "
                         f"the auto-release band (ADR-0034); decision-maker NOT established"]
                     row["person_status"] = "not_established"
-                    # No contact ships on a gate-released record, even if extraction found names.
-                    for role in ("primary", "secondary"):
-                        for f in ("contact_name", "contact_title", "contact_email", "email_grade",
-                                  "email_code", "email_explanation"):
-                            row[f"{role}_{f}"] = None
-                    row["primary_contact_location"] = None
-                    row["primary_authority_basis"] = None
-                    row["primary_selection_basis"] = None
+                    _suppress_unratified_contact(row)
                 else:
                     row["release_reasons"] = [
                         f"gate affirmed {ga['category']} but the affirm did not clear the "

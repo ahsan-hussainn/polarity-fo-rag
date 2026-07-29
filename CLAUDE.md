@@ -134,3 +134,4 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0038](./adr/0038-agent-trace-and-history.md) | Agent raw session trace + record_history (cross-cycle tool) | Accepted |
 | [0039](./adr/0039-free-text-release-gate.md) | The release gate covers free text, not just picks | Accepted |
 | [0040](./adr/0040-operating-robustness.md) | Operating robustness: politeness, backoff, retry, pre-publication gate | Accepted |
+| [0041](./adr/0041-entity-evidence-qualifies-either-path.md) | A human-affirmed entity qualifies on entity evidence, same as a machine-affirmed one | Accepted |

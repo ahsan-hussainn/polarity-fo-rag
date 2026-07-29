@@ -193,7 +193,18 @@ TOOLS = {
             "mandate": {"type": "string", "description": "the investor mandate in plain words"},
             "sector_terms": {"type": "array", "items": {"type": "string"},
                              "description": "sector/strategy keywords to evidence against"},
-            "min_aum_usd": {"type": "integer"}, "max_aum_usd": {"type": "integer"},
+            "min_aum_usd": {
+                "type": "integer",
+                "description": "ONLY when the goal constrains the size of the FAMILY OFFICE itself "
+                               "('family offices over $1B'). Never derive this from a fund's market "
+                               "segment: 'lower-middle-market' or 'small-cap' describes the FUND's "
+                               "deals, not its investors. A $5B family office writing an LP cheque "
+                               "into a lower-middle-market fund is a fit, not a mismatch. Omit if "
+                               "unsure -- a wrong band makes good matches look unsuitable."},
+            "max_aum_usd": {
+                "type": "integer",
+                "description": "Same rule as min_aum_usd: the TARGET FIRM's size only, never the "
+                               "fund's deal size. Omit if unsure."},
             "k": {"type": "integer", "default": 10}}, "required": ["mandate"]}},
     "get_record": {
         "fn": t_get_record, "pickable": True,

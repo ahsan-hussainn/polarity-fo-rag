@@ -140,8 +140,15 @@ def fit_rank(mandate: str, *, sector_terms: list[str] | None = None,
             if aum is None:
                 caveats.append("AUM not stated in the record; size fit unknown")
             elif (min_aum and aum < min_aum) or (max_aum and aum > max_aum):
-                aum_note = "outside the stated size band"
-                caveats.append(f"AUM ${aum/1e6:,.0f}M is outside the requested band")
+                # Neutral wording on purpose. A size band is a filter the CALLER supplied, not
+                # evidence about the firm, and phrasing it as a deficiency ("outside the requested
+                # band") led a Goal-2 run to report every large family office as unsuitable for a
+                # lower-middle-market fund -- reading a band the caller should not have set as a
+                # fact about fit. The band still ranks; it no longer editorialises.
+                aum_note = "outside the size band supplied with the query"
+                caveats.append(f"AUM ${aum/1e6:,.0f}M sits outside the size band supplied with "
+                               f"this query; this is a filter preference, not evidence about "
+                               f"whether the firm would invest")
             else:
                 evidence.append(f"AUM ${aum/1e6:,.0f}M within the requested band")
 

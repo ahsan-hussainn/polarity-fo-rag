@@ -1,10 +1,15 @@
 # Methodology summary — how the system finds, enriches, and adjudicates the dataset
 
-The full reasoning trail is in `adr/` (indexed in `CLAUDE.md`) and `docs/findings/`. Every number below is
-reconciled against the final artifact (`data/gold/family_office_dataset.csv`, 2026-07-20), not
-estimated. This reflects the corrected state after the Bridge Mandate pre-window pass
-(`docs/findings/bridge-audit-reconciliation.md`); it supersedes the original Stage 1 figures, which
-described the file before entity/decision-maker adjudication.
+The full reasoning trail is in `adr/` (indexed in `CLAUDE.md`) and `docs/findings/`. **Every count
+below is stamped to the pre-window sign-off (2026-07-22)** — the corrected state after the Bridge
+Mandate pass (`docs/findings/bridge-audit-reconciliation.md`), superseding the original Stage 1
+figures. Since the Stage 2 operating window opened (2026-07-27), the dataset grows and regenerates
+every scheduled cycle, so a number written in this file would silently go stale; **current counts
+come from `python -m pipeline.cli reconcile`** (which asserts the export surfaces agree with the
+database) and from the live `/stats` endpoint, never from prose. Stage 2's qualifying set also
+carries a third labelled category (`embedded_fo_practice`, ADR-0028) that did not exist at
+sign-off, and Stage 2 records may carry `title_inferred` authority where the sign-off set was all
+`stated` — each record declares its own basis.
 
 ## 1. Discovery — public regulatory data, over-discover then filter (ADR-0004, 0007)
 
@@ -32,34 +37,39 @@ Three affirmative standards, each ratified by a human release control and each a
 
 - **Entity (ADR-0020).** Every firm must affirmatively prove its category from ≥2 independent
   evidence classes (SEC ADV Item 5 client mix + the firm's own self-description + third-party
-  corroboration). Result over the 50: **24 affirmed multi-family offices**; 18 reclassified as
+  corroboration). Result over the Stage 1 seed 50, at sign-off: **24 affirmed multi-family
+  offices**; 18 reclassified as
   wealth managers (11) or RIAs-with-an-FO-practice (7), kept but not counted as family offices; 2
   not a family office and 6 unresolved, both quarantined. No single-family offices — true SFOs are
   exempt from SEC registration. Details: `docs/findings/entity-adjudication.md`.
-- **Decision-maker (ADR-0021/0022).** Each of the 24 FOs leads with an affirmatively-proven
+- **Decision-maker (ADR-0021/0022).** Each qualifying record leads with an affirmatively-proven
   allocation-authority contact anchored on SEC ADV Schedule A (named owners/officers) plus dated
-  web/LinkedIn; all 24 primaries are `stated` authority, each with a shipped "why this contact"
+  web/LinkedIn; at sign-off all 24 primaries were `stated` authority (Stage 2 records may be
+  `title_inferred`, declared on the record), each with a shipped "why this contact"
   basis. Details: `docs/findings/decision-maker-evidence.md`.
 - **Email (ADR-0005/0010/0019).** An address is the firm-published individual address where one
-  exists (5 of 24 FOs, grade **PUB** — proven to be the person's), otherwise an inferred pattern
+  exists (at sign-off, 5 of 24 FOs, grade **PUB** — proven to be the person's), otherwise an inferred pattern
   vendor-verified two-axis: **A** vendor-reported deliverable (inferred; *not* proven to be this
   person's mailbox) / **B** catch-all, plausible. Vendor-**rejected** addresses (D invalid / F no mail
   server) are removed from operational fields into `gold.contact_audit` (28 addresses) and never
   shipped; **unknown (C)** inferred addresses — uniform `first.last@` guesses the vendor could not
   confirm — are **withheld** (WS6 human-review decision) rather than shipped as look-alike signal.
-  FO primary email basis: **5 PUB, 3 A, 1 B, 15 none** (route to the SEC-filed phone / LinkedIn).
+  FO primary email basis at sign-off: **5 PUB, 3 A, 1 B, 15 none** (route to the SEC-filed
+  phone / LinkedIn).
 
 ## 4. The deliverable
 
-`data/gold/family_office_dataset.csv` — **24 affirmed family offices** (the product), sorted best
-email basis first. Two auditable sidecars hold the rest of the 50: `reclassified_firms.csv` (18 real
-firms whose FO label was marketing — wealth managers / RIAs, firm-level only, not counted as FOs) and
-`quarantined.csv` (8 not-a-family-office + unresolved). Every one of the 50 lands in exactly one file.
-Per-cell basis: firm facts cite the SEC ADV filing; profile cells cite
-the firm's website; each contact carries its authority basis, selection reason, and email grade +
-code + plain-English explanation. **9 of 24 FOs carry a routable primary email** (5 firm-published +
-4 vendor-checked); the other 15 route to the SEC-filed phone / LinkedIn (unconfirmed inferred
-addresses are withheld, not shipped as guesses).
+`data/gold/family_office_dataset.csv` — the affirmed family offices (the product), sorted best
+email basis first, **regenerated by the operating loop every scheduled cycle** since the Stage 2
+window opened. Labelled sidecar surfaces partition every other held record (reclassified firms,
+quarantined/unresolved entities, and the Stage 2 review states); `python -m pipeline.cli
+reconcile` asserts on every cycle that the surfaces partition all held records exactly, and fails
+the run if they do not (it did exactly that on scheduled run 20). At sign-off this was 24 affirmed
+FOs of 50 held, with **9 of 24 carrying a routable primary email** (5 firm-published + 4
+vendor-checked) and the other 15 routing to the SEC-filed phone / LinkedIn (unconfirmed inferred
+addresses are withheld, not shipped as guesses). Per-cell basis: firm facts cite the SEC ADV
+filing; profile cells cite the firm's website; each contact carries its authority basis, selection
+reason, and email grade + code + plain-English explanation.
 
 ## Honest limitations (what a buyer should know)
 

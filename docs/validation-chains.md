@@ -4,7 +4,9 @@ Three records chosen to span the confidence spectrum after the Bridge Mandate co
 firm-published contact email (proven), an inferred contact email (honest partial), and a proven
 decision-maker with **no** shippable email (honest blank) — because the standard is only credible if
 the weak cases are shown too. Every step is reproducible from the named CLI commands and sources.
-Reconciled against `data/gold/family_office_dataset.csv`, 2026-07-20.
+Reconciled against `data/gold/family_office_dataset.csv` at the pre-window sign-off (2026-07-22);
+re-checked 2026-07-29 against the current regenerated CSV — all three chains still hold (Custos
+PUB, Wellspring grade A, JFG blank with the vendor rejection quarantined).
 
 ---
 
@@ -25,7 +27,7 @@ Reconciled against `data/gold/family_office_dataset.csv`, 2026-07-20.
 | **Discovery** | SEC Form ADV feed, CRD **143112**; name match | [ADV filing](https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf) |
 | **Entity (ADR-0020)** | Affirmed **multi-family office**: self-identifies "a true multi-family office" **and** BusinessWire rebrand press (Wellspring Financial Advisors → Wellspring Family Office, 2025), predominantly-HNW ADV book (118/21) | wellspringfo.com + businesswire.com |
 | **Decision-maker (ADR-0021/0022)** | Primary **Richard (Rich) Turgeon, CFA, CAIA — CIO, Senior Managing Director**. Authority `stated`: named CIO **and** ADV Schedule A officer/owner (10–25%). **Correction to Stage 1**, which led with founder Michael Novak by title rule; Novak is the secondary (Founder/CEO, 25–50% owner) | wellspringfo.com/team + [ADV Schedule A](https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf) |
-| **Email** | Firm publishes no individual address (only `info@`). The inferred pattern for Turgeon was vendor-verified and graded honestly — **not** presented as verified, and **not** the guessed founder address Stage 1 shipped (`mnovak@…`, which was neither published nor his role) | inferred + MillionVerifier API; `gold.contact_adjudications` |
+| **Email** | Firm publishes no individual address (only `info@`). The inferred pattern for Turgeon was vendor-reported deliverable and graded honestly — **not** presented as verified, and **not** the guessed founder address Stage 1 shipped (`mnovak@…`, which was neither published nor his role) | inferred + MillionVerifier API; `gold.contact_adjudications` |
 | **Confidence** | **High on entity + person, partial on email.** The pitch contact is proven; the address is an inferred pattern labeled exactly as such. Reach via the firm line / LinkedIn where the email is unconfirmed. |
 
 ## Record 3 — JFG Family Office (proven person, no shippable email — the honest blank)

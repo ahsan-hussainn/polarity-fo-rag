@@ -4,8 +4,11 @@ The mandate requires the counts, records, exports, retrieval corpus, and custome
 tell one story, and the final review to run against a consistent artifact. This asserts that
 programmatically: it recomputes the load-bearing numbers from each surface (the product CSV, the
 quarantine CSV, the database, the contact audit, the deployed retrieval path) and checks they match
-each other and the numbers claimed in the docs. It is the substrate the human review runs on, and
-evidence that the surfaces agree. Any mismatch is a FAIL, printed, not smoothed over.
+each other. It does NOT check prose documents -- the literal-count assertions were removed for
+scale-invariance when the set began changing every cycle, so docs must scope their numbers to a
+stamped date (the METHODOLOGY.md pattern) rather than rely on this module to catch drift. It is
+the substrate the human review runs on, and evidence that the surfaces agree. Any mismatch is a
+FAIL, printed, not smoothed over.
 
 Run: `python -m pipeline.cli reconcile`  (exit 0 = all surfaces agree).
 """

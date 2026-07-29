@@ -175,7 +175,7 @@
   </div>
 
   <footer>
-    <div>Grounded over the adjudicated gold dataset (24 affirmed family offices) · the badge rates only the primary contact's <b style="border:0;color:var(--dim)">email basis</b>, nothing else</div>
+    <div>Grounded over the adjudicated gold dataset (<span id="qcount">qualifying records only</span>, every one category-labelled) · the badge rates only the primary contact's <b style="border:0;color:var(--dim)">email basis</b>, nothing else</div>
     <div class="leg" style="margin-top:6px">
       <span class="s-A"><b>PUB</b>firm-published</span><span class="s-A"><b>A</b>vendor-deliverable (inferred)</span>
       <span class="s-B"><b>B</b>catch-all</span><span class="s-C"><b>C</b>unconfirmed</span>
@@ -381,6 +381,12 @@ async function ask(){
 }
 $("#go").onclick = ask;
 $("#q").addEventListener("keydown", e => { if (e.key === "Enter") ask(); });
+
+// The coverage count is read live from /stats, never hand-carried in this file: the qualifying
+// set changes every operating cycle, and a hardcoded number here would silently go stale.
+fetch("/stats").then(r => r.json())
+  .then(d => { if (d.qualifying) $("#qcount").textContent = `${d.qualifying} qualifying records`; })
+  .catch(() => {});
 </script>
 </body>
 </html>

@@ -31,6 +31,14 @@ class Goal(BaseModel):
     goal: str
 
 
+class FitQuery(BaseModel):
+    mandate: str
+    sector_terms: list[str] | None = None
+    min_aum_usd: int | None = None
+    max_aum_usd: int | None = None
+    k: int = 10
+
+
 @app.get("/", response_class=HTMLResponse)
 def home() -> str:
     return _HTML
@@ -53,6 +61,38 @@ def query(q: Query):
         logging.getLogger("uvicorn.error").exception("query failed")
         return JSONResponse({"error": "The service hit an internal error answering that query."},
                             status_code=500)
+
+
+@app.post("/fit")
+def fit(q: FitQuery):
+    """The Stage 2 retrieval extension (ADR-0030), served directly: rank every qualifying record
+    for an investor mandate, with per-record component scores, evidence, caveats, and an
+    evidence-based confidence tier. Same capability the agent calls as a tool; this route is the
+    manual-retrieval path the goal artifacts compare against."""
+    if not q.mandate.strip():
+        return JSONResponse({"error": "empty mandate"}, status_code=400)
+    try:
+        from pipeline.rag.fit import fit_rank
+
+        return fit_rank(q.mandate, sector_terms=q.sector_terms or [],
+                        min_aum=q.min_aum_usd, max_aum=q.max_aum_usd,
+                        k=min(max(q.k, 1), 24))
+    except Exception:
+        logging.getLogger("uvicorn.error").exception("fit failed")
+        return JSONResponse({"error": "The service hit an internal error ranking that mandate."},
+                            status_code=500)
+
+
+@app.get("/stats")
+def stats():
+    """Live release-state counts, regenerated from the dataset on every call. The UI reads its
+    coverage number from here so no surface ever hand-carries a count that can drift."""
+    from pipeline import db
+
+    with db.get_pool().connection() as c, c.cursor() as cur:
+        cur.execute("select release_state, count(*) from gold.records group by release_state")
+        counts = {row[0]: row[1] for row in cur.fetchall()}
+    return {"qualifying": counts.get("qualifying", 0), "by_release_state": counts}
 
 
 @app.get("/agent", response_class=HTMLResponse)

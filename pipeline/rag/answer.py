@@ -143,6 +143,11 @@ def _render_one(i: int, h: dict) -> str:
     cat = _CATEGORY_LABEL.get(h.get("entity_category"))
     if cat:
         lines.append(f"   Entity type: {cat}")
+    # ADR-0034: how the record earned release. A gate-released record has a proven ENTITY and no
+    # proven decision-maker; the composer must not narrate it as a fully-proven record.
+    if h.get("release_basis") == "gate_released":
+        lines.append("   Release basis: established by the automated inclusion gate; NO "
+                     "decision-maker has been proven for this firm")
     if h.get("primary_selection_basis"):
         lines.append(f"   Why this contact: {h['primary_selection_basis']}")
     if h.get("description"):
@@ -201,6 +206,7 @@ def _sources(hits: list[dict]) -> list[dict]:
             "website": h.get("website"), "adv_filing_url": h.get("adv_filing_url"),
             "best_channel": ch["channel"], "best_channel_target": ch.get("target"),
             "entity_category": h.get("entity_category"),
+            "release_basis": h.get("release_basis"),
             "is_family_office": h.get("entity_category") in ("single_family_office", "multi_family_office"),
             "selection_basis": h.get("primary_selection_basis"),
             "authority_basis": h.get("primary_authority_basis"),

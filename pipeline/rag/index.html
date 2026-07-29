@@ -271,9 +271,13 @@ function card(s, i){
   const meta = [];
   if (s.location) meta.push(`<span>${esc(s.location)}</span>`);
   if (s.aum) meta.push(`<span><span class="k">AUM</span> ${esc(s.aum)}</span>`);
+  // ADR-0034: a gate-released record has a proven entity and no proven decision-maker. Say which,
+  // rather than letting an empty contact line read as a data gap.
   const contact = s.contact
     ? `<span class="who">${esc(s.contact)}</span>${s.title?` <span class="role">· ${esc(s.title)}</span>`:""}`
-    : `<span class="role">no named contact on record</span>`;
+    : (s.release_basis === "gate_released"
+        ? `<span class="role">firm verified by the automated gate — decision-maker not yet established</span>`
+        : `<span class="role">no named contact on record</span>`);
   const r = reach(s);
   let via = "";
   if (s.secondary_contact && s.secondary_email && !(s.best_channel==="email" && s.best_channel_target===s.secondary_email))

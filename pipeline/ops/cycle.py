@@ -35,6 +35,9 @@ FETCH_TIMEOUT = 15
 RECLASSIFY_WORKERS = int(os.getenv("OPS_RECLASSIFY_WORKERS", "6"))
 DISCOVER_PER_CYCLE = int(os.getenv("OPS_DISCOVER_PER_CYCLE", "15"))
 RESOLVE_PER_CYCLE = int(os.getenv("OPS_RESOLVE_PER_CYCLE", "40"))
+# Promotion re-extracts each promoted firm into silver (one model call each), so it is budgeted
+# like discovery rather than left unbounded (ADR-0034).
+PROMOTE_PER_CYCLE = int(os.getenv("OPS_PROMOTE_PER_CYCLE", "25"))
 
 
 def reclassify_budget(monitored: int) -> int:
@@ -289,6 +292,10 @@ def run_cycle(*, write: bool = True, trigger: str = "local",
 
         from pipeline.ops import discovery
         out["discover"] = discovery.process_tranche(limit=DISCOVER_PER_CYCLE, write=write)
+        # Promote AFTER discovery so affirms gated this cycle can release on this same cycle, and
+        # BEFORE rebuild so the promoted silver rows are picked up by the build below (ADR-0034).
+        from pipeline.ops import promote
+        out["promote"] = promote.run(limit=PROMOTE_PER_CYCLE, write=write)
         out["rebuild"] = _rebuild_phase(write)
         out["status"] = "ok"
     except Exception as e:

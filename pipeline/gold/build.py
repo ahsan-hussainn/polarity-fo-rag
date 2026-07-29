@@ -15,6 +15,7 @@ import re
 from datetime import date
 
 from pipeline import db
+from pipeline.gold import gate, release_band
 
 GOLD_CSV = "data/gold/family_office_dataset.csv"
 
@@ -78,6 +79,9 @@ _EXPORT_COLUMNS = [
     ("profile_source_url", "Profile Source (Firm Website)"),
     ("entity_category", "Entity Category"), ("category_basis", "Category Basis"),
     ("person_status", "Person Status"), ("release_state", "Release State"),
+    # ADR-0034: a buyer must be able to tell a human-ratified record from a gate-released one on
+    # the artifact itself, not only in the docs.
+    ("release_basis", "Release Basis"), ("release_basis_detail", "Release Basis Detail"),
     # decision-grade KPIs (ADR-0013 migration)
     ("reachability_tier", "Reachability"), ("reachability_score", "Reachability Score"),
     ("confidence_score", "Confidence Score"),
@@ -336,6 +340,31 @@ def _contacts(cur, crd: str) -> list[dict]:
     return people
 
 
+_BAND_PRECISION: dict | None = None
+
+
+def band_precision() -> dict:
+    """ADR-0034's measured precision, computed once per process from the artifact and cached.
+
+    Cached rather than recomputed per record because it re-runs the gate over the whole calibration
+    set; regenerated rather than written down because a hand-carried precision figure is exactly
+    the drift the counts-from-the-artifact rule exists to stop."""
+    global _BAND_PRECISION
+    if _BAND_PRECISION is None:
+        _BAND_PRECISION = release_band.measure()
+    return _BAND_PRECISION
+
+
+def _adv_raw(cur, crd: str) -> dict:
+    """The raw registry capture, for rules that read regulatory client-mix fields the processed
+    _adv_facts view does not carry (ADR-0034's band needs hnw_raum / nonhnw_clients)."""
+    cur.execute("select raw from bronze.captures "
+                "where source in ('sec_form_adv', 'state_form_adv') and entity_key = %s "
+                "order by case source when 'sec_form_adv' then 0 else 1 end, id desc limit 1", (crd,))
+    r = cur.fetchone()
+    return r[0] if r and r[0] else {}
+
+
 def _release(adj: dict | None) -> tuple[str, list[str], str | None, str | None]:
     """ADR-0019 release decision from the ADR-0020 entity adjudication. Note two distinct senses of
     'unresolved': an *entity* whose type could not be affirmed is QUARANTINED (policy: not released,
@@ -430,7 +459,8 @@ def build(write: bool = False) -> dict:
     """Assemble gold.records from silver + ADV bronze. Upserts one row per firm when write=True.
     Firms in EXCLUDED (ADR-0015) are skipped, recorded in gold.excluded_firms, and removed from
     gold.records if a previous build wrote them."""
-    out = {"written": write, "firms": 0, "with_primary": 0, "excluded": len(EXCLUDED), "rows": []}
+    out = {"written": write, "firms": 0, "with_primary": 0, "excluded": len(EXCLUDED),
+           "by_release": {}, "rows": []}
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute("select crd, category, status, duplicate_of, rationale from gold.entity_adjudications")
         adjudications = {r[0]: {"category": r[1], "status": r[2], "duplicate_of": r[3],
@@ -446,6 +476,15 @@ def build(write: bool = False) -> dict:
         # Addresses the verifier has EVER rejected (from prior builds' audit) -- never re-shipped.
         cur.execute("select lower(email) from gold.contact_audit")
         rejected_addrs = {r[0] for r in cur.fetchall()}
+        # ADR-0034: gate affirms that cleared the auto-release band. Only consulted where no human
+        # adjudication exists -- the precedence rule (human outranks the gate) is unchanged.
+        cur.execute(
+            "select distinct on (replace(entity_key,'crd:','')) replace(entity_key,'crd:','') as crd,"
+            "       decision, category, score, evidence "
+            "  from gold.entity_gate where decision = 'affirm' "
+            " order by replace(entity_key,'crd:',''), decided_at desc")
+        gate_affirms = {r[0]: {"category": r[2], "score": r[3], "evidence": r[4]}
+                        for r in cur.fetchall()}
         cur.execute("select crd, firm_name, domain, thesis, description, sectors, founded_year, "
                     "extracted_by, corporate_linkedin, source_urls, "
                     "(select count(*) from silver.people p where p.firm_crd=f.crd) "
@@ -495,7 +534,10 @@ def build(write: bool = False) -> dict:
             # ADR-0021/0022: overlay the proven decision-maker; an affirmed FO with a ratified person
             # pass earns 'qualifying' (counts toward the 500). Reclassified non-FOs keep their old
             # contacts and stay unresolved -- they are not family offices and are not counted.
+            row["release_basis"] = None
+            row["release_basis_detail"] = None
             if (crd, "primary") in cadj:
+                row["release_basis"] = "human_ratified"
                 _apply_contact(cur, crd, row, cadj, write, rejected_addrs)
                 # _COUNTED_CATEGORIES, not _FO_CATEGORIES: ADR-0028 made the evidenced embedded
                 # practice a COUNTED category, but this gate still carried the pre-0028 assumption
@@ -508,6 +550,48 @@ def build(write: bool = False) -> dict:
                     standard = "ADR-0020" if row["entity_category"] in _FO_CATEGORIES else "ADR-0028 category 3"
                     row["release_reasons"] = [f"entity affirmed {row['entity_category']} ({standard}); "
                                               f"decision-maker proven (ADR-0021)"]
+            elif crd in gate_affirms and adjudications.get(crd) is None:
+                # ADR-0034: no human has adjudicated this entity, but the deterministic gate
+                # affirmed it AND the affirm cleared the measured auto-release band. It counts on
+                # ENTITY evidence alone (ADR-0028 is entity-strict, field-permissive) and says so.
+                #
+                # It does NOT get a decision-maker. The band establishes what the firm is; nothing
+                # in it establishes who allocates, and an extracted-but-unratified name presented
+                # as the proven decision-maker is the precise claim-stronger-than-evidence failure
+                # the Bridge Mandate corrected. person_status says 'not_established' out loud.
+                ga = gate_affirms[crd]
+                band = release_band.evaluate(
+                    {"adv": _adv_raw(cur, crd)},
+                    {"decision": "affirm", "score": ga["score"],
+                     "category": ga["category"], "evidence": ga["evidence"] or []})
+                if band["released"] and ga["category"] in _COUNTED_CATEGORIES:
+                    row["release_state"] = "qualifying"
+                    row["entity_category"] = ga["category"]
+                    row["entity_status"] = "affirmed"
+                    row["release_basis"] = "gate_released"
+                    row["release_basis_detail"] = band["basis"]
+                    row["category_basis"] = (
+                        f"entity established by the automated inclusion gate "
+                        f"({gate.GATE_VERSION.split(' (')[0]}), released under "
+                        f"{release_band.BAND_VERSION.split(' (')[0]}: {band['basis']}. No human has "
+                        f"ratified this entity; the band's category label measured "
+                        f"{band_precision()['strict_fo_precision']} correct on the calibration set.")
+                    row["release_reasons"] = [
+                        f"entity affirmed {ga['category']} by the deterministic gate and cleared "
+                        f"the auto-release band (ADR-0034); decision-maker NOT established"]
+                    row["person_status"] = "not_established"
+                    # No contact ships on a gate-released record, even if extraction found names.
+                    for role in ("primary", "secondary"):
+                        for f in ("contact_name", "contact_title", "contact_email", "email_grade",
+                                  "email_code", "email_explanation"):
+                            row[f"{role}_{f}"] = None
+                    row["primary_contact_location"] = None
+                    row["primary_authority_basis"] = None
+                    row["primary_selection_basis"] = None
+                else:
+                    row["release_reasons"] = [
+                        f"gate affirmed {ga['category']} but the affirm did not clear the "
+                        f"auto-release band: {band['basis']}; awaiting human adjudication"]
             row["data_completion_score"] = _completion(row)
             # Record-level KPIs (ADR-0013 migration): reachability (reach the DM?), confidence (how
             # well-proven?), and freshness (SEC ADV filing date + a staleness flag when > 15 months,
@@ -525,8 +609,13 @@ def build(write: bool = False) -> dict:
             out["firms"] += 1
             if p:
                 out["with_primary"] += 1
+            # Per-basis counts land in the cycle ledger, so every run records how many records each
+            # release basis produced -- the honest way to show the unattended path is doing work.
+            k = f"{row['release_state']}:{row.get('release_basis') or 'none'}"
+            out["by_release"][k] = out["by_release"].get(k, 0) + 1
             out["rows"].append({"firm": name, "primary": p.get("name"), "title": p.get("title"),
-                                "grade": p.get("grade"), "score": row["data_completion_score"]})
+                                "grade": p.get("grade"), "score": row["data_completion_score"],
+                                "release": k})
             if write:
                 cols = list(row)
                 cur.execute(

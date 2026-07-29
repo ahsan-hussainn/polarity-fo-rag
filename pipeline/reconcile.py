@@ -75,6 +75,8 @@ def run() -> dict:
         qual_without_contact = cur.fetchone()[0]
         cur.execute("select count(*) from gold.records where release_state='qualifying' and person_status is distinct from 'proven'")
         qual_unproven_person = cur.fetchone()[0]
+        cur.execute("select count(*) from gold.records where release_state='qualifying' and data_asof is null")
+        qual_no_freshness = cur.fetchone()[0]
 
     # 1. the three exports partition every record the system holds; product == qualifying FOs.
     #    Totals are DERIVED from the database, never hardcoded, so these hold at any dataset size
@@ -105,6 +107,11 @@ def run() -> dict:
     check("qualifying == affirmed FOs", db_qual == db_fo == len(prod), f"db_qual {db_qual}, db_fo {db_fo}, csv {len(prod)}")
     check("every product FO has a ratified primary contact", qual_without_contact == 0, f"{qual_without_contact}")
     check("every product FO has person_status=proven", qual_unproven_person == 0, f"{qual_unproven_person}")
+    # A record released with no freshness basis cannot participate in staleness tracking at all --
+    # CRD 120053 shipped exactly that way (state-channel capture invisible to _adv_facts) and
+    # nothing caught it. Now something does.
+    check("every qualifying record carries its freshness basis (data_asof)", qual_no_freshness == 0,
+          f"{qual_no_freshness} missing")
 
     # 3. suppression: no vendor-rejected/quarantined address in the product CSV
     leaked = [r[f] for r in prod for f in ("Primary Email", "Secondary Email")

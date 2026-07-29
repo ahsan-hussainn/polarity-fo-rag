@@ -267,12 +267,17 @@ def _confidence(row: dict) -> int | None:
 
 
 def _adv_facts(cur, crd: str) -> dict:
-    """Everything gold takes from the firm's SEC ADV capture: location, street, phone, AUM, and the
-    filing URL that is the verifiable basis for all of them (data we already hold -- free parity)."""
+    """Everything gold takes from the firm's ADV capture: location, street, phone, AUM, and the
+    filing URL that is the verifiable basis for all of them (data we already hold -- free parity).
+    Both registry channels carry the same raw shape; the SEC-feed capture wins where a firm has
+    both. (Measured miss: CRD 120053 entered via the state channel only and shipped qualifying
+    with NO ADV facts -- empty data_asof/is_stale/AUM -- because this query saw only sec_form_adv.)"""
     cur.execute("select raw->>'city', raw->>'state', raw->>'country', raw->>'street1', "
                 "raw->>'street2', raw->>'phone', raw->>'raum_total', source_url, "
                 "raw->>'latest_filing_date' "
-                "from bronze.captures where source='sec_form_adv' and entity_key=%s limit 1", (crd,))
+                "from bronze.captures where source in ('sec_form_adv', 'state_form_adv') "
+                "and entity_key=%s "
+                "order by case source when 'sec_form_adv' then 0 else 1 end limit 1", (crd,))
     r = cur.fetchone()
     if not r:
         return {}

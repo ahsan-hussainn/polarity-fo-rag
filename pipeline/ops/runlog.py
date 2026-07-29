@@ -53,7 +53,33 @@ def _git_sha() -> str | None:
         return None
 
 
+def reap_abandoned(older_than_hours: int = 4) -> int:
+    """Close out runs that died without calling finish_run, and say so.
+
+    A process killed mid-cycle (a runner timeout, a cancelled job, a crash) leaves ops.runs.status
+    stuck at 'running' forever with its cost columns at zero, while its real spend sits in
+    run_events. Any total read from ops.runs then silently undercounts. This marks such runs
+    'abandoned' and rolls up the usage they did record -- bookkeeping, not history rewriting: the
+    events are untouched and the status change is itself visible in the export.
+    """
+    with db.get_pool().connection() as c, c.cursor() as cur:
+        cur.execute(
+            "update ops.runs set status = 'abandoned', finished_at = now(),"
+            " error = coalesce(error, 'run ended without finish_run (process died); closed out by "
+            "the next run''s reaper'),"
+            " tokens_in  = coalesce((select sum(tokens_in)  from ops.run_events e where e.run_id = ops.runs.run_id), 0),"
+            " tokens_out = coalesce((select sum(tokens_out) from ops.run_events e where e.run_id = ops.runs.run_id), 0),"
+            " usd_est    = coalesce((select sum(usd_est)    from ops.run_events e where e.run_id = ops.runs.run_id), 0)"
+            " where status = 'running' and started_at < now() - make_interval(hours => %s)",
+            (older_than_hours,))
+        return cur.rowcount or 0
+
+
 def start_run(kind: str, trigger: str, config: dict | None = None) -> int:
+    try:
+        reap_abandoned()
+    except Exception:
+        pass  # bookkeeping must never stop a run from starting
     with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "insert into ops.runs (kind, trigger, git_sha, config) "

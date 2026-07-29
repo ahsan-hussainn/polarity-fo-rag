@@ -307,6 +307,13 @@ def cmd_queue_seed(args):
     print(json.dumps(out, indent=2))
 
 
+def cmd_ops_export(args):
+    """Deliverable: the complete, uncurated operating logs for the window."""
+    from pipeline.ops import export
+
+    print(json.dumps(export.run(args.out), indent=2))
+
+
 def cmd_discover_13f(args):
     """ADR-0035: discover family offices through Section 13(f), the lens Form ADV cannot provide."""
     from pipeline.bronze import thirteenf
@@ -551,6 +558,11 @@ def main():
     qs.add_argument("--limit", type=int, default=None)
     qs.add_argument("--write", action="store_true", help="persist (default: dry-run)")
     qs.set_defaults(func=cmd_queue_seed)
+
+    oe = sub.add_parser("ops-export",
+                        help="Deliverable: dump the whole operating ledger (uncurated) to JSONL")
+    oe.add_argument("--out", default="data/ops_export", help="output directory")
+    oe.set_defaults(func=cmd_ops_export)
 
     df = sub.add_parser("discover-13f",
                         help="Stage 2 (ADR-0035): discover FO candidates from SEC 13F filers")

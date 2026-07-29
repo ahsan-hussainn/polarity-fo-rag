@@ -30,3 +30,8 @@ data/scratch/
 Thumbs.db
 .idea/
 .vscode/
+
+# The operating-ledger export is a GENERATED deliverable (python -m pipeline.cli ops-export).
+# It is regenerated fresh at submission and committed then, rather than churning ~1.5MB of JSONL
+# into history on every run. The ledger itself lives in Postgres; this is a dump of it.
+data/ops_export/

@@ -7,9 +7,13 @@ lives in Supabase (already deployed); this service is stateless compute. Run loc
 """
 from __future__ import annotations
 
+import collections
 import json
 import logging
+import os
 import pathlib
+import threading
+import time
 
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
@@ -113,6 +117,30 @@ def agent_tools():
     return {"tools": openai_tools()}
 
 
+# The agent endpoint is unauthenticated and must stay live for seven days after submission while
+# reviewers run their own goals against it. One goal session is up to ten gpt-4o-mini turns plus a
+# possible repair, so an unbounded endpoint is an open tab on someone else's API budget. These caps
+# are deliberately generous enough that a reviewer never notices them and tight enough that a loop
+# or a scraper cannot drain the account.
+_AGENT_MAX_CONCURRENT = int(os.getenv("AGENT_MAX_CONCURRENT", "2"))
+_AGENT_MAX_PER_HOUR = int(os.getenv("AGENT_MAX_PER_HOUR", "60"))
+_agent_slots = threading.Semaphore(_AGENT_MAX_CONCURRENT)
+_agent_calls: collections.deque = collections.deque()
+_agent_lock = threading.Lock()
+
+
+def _agent_budget_ok() -> bool:
+    """Rolling one-hour cap. Rejected calls are cheap and say so honestly rather than queueing."""
+    now = time.monotonic()
+    with _agent_lock:
+        while _agent_calls and now - _agent_calls[0] > 3600:
+            _agent_calls.popleft()
+        if len(_agent_calls) >= _AGENT_MAX_PER_HOUR:
+            return False
+        _agent_calls.append(now)
+        return True
+
+
 @app.post("/agent/goal")
 def agent_goal(g: Goal):
     """Run one goal session (ADR-0031). Synchronous: a session is a few tool-calling model turns
@@ -120,6 +148,16 @@ def agent_goal(g: Goal):
     run_id whose ops.run_events rows are the raw, unedited session log."""
     if not g.goal.strip():
         return JSONResponse({"error": "empty goal"}, status_code=400)
+    if not _agent_budget_ok():
+        return JSONResponse(
+            {"error": "The agent is at its hourly limit on this demo deployment. It runs real "
+                      "model calls per goal, so throughput is capped. Please try again shortly."},
+            status_code=429)
+    if not _agent_slots.acquire(blocking=False):
+        return JSONResponse(
+            {"error": "The agent is working on another goal right now. Each run takes 15-60 "
+                      "seconds; please try again in a moment."},
+            status_code=429)
     try:
         from pipeline.agent.loop import run_goal
 
@@ -128,6 +166,8 @@ def agent_goal(g: Goal):
         logging.getLogger("uvicorn.error").exception("agent goal failed")
         return JSONResponse({"error": "The agent hit an internal error on that goal."},
                             status_code=500)
+    finally:
+        _agent_slots.release()
 
 
 @app.post("/query/stream")

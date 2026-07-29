@@ -83,13 +83,28 @@ class GoalAnswer(BaseModel):
     limitations: list[str] = []
 
 
+# Verbs that turn "reporting on a firm" into "recommending it". Deliberately narrow: the goal is
+# to catch a push to act, not to forbid naming a quarantined firm, which honest coverage requires.
+_RECOMMENDS = __import__("re").compile(
+    r"\b(recommend|suggest|approach|contact|reach out|pitch|target|consider|pursue|shortlist|"
+    r"best fit|good fit|strong fit|worth (?:a look|approaching|contacting))\b", __import__("re").I)
+
 _SUBMIT = {"type": "function", "function": {
     "name": "submit_answer",
     "description": "Deliver the final structured answer. This is the ONLY way to finish.",
     "parameters": GoalAnswer.model_json_schema()}}
 
 
-def _check_output(ans: GoalAnswer, grounding: dict[str, dict], pickable: set[str]) -> list[str]:
+def _free_text(ans: GoalAnswer) -> str:
+    """Everything a user reads that is NOT a pick. Gated too (ADR-0039): the verdict is the first
+    thing read and was entirely ungated, so an unreleasable firm could be recommended in prose
+    while the picks list stayed clean."""
+    return " ".join([ans.verdict or "", ans.coverage_note or ""]
+                    + list(ans.abstained) + list(ans.next_steps) + list(ans.limitations))
+
+
+def _check_output(ans: GoalAnswer, grounding: dict[str, dict], pickable: set[str],
+                  context_only: dict[str, str] | None = None) -> list[str]:
     """Deterministic release gate over the structured answer. Returns failures (empty = pass)."""
     failures = []
     by_name = {}
@@ -97,6 +112,33 @@ def _check_output(ans: GoalAnswer, grounding: dict[str, dict], pickable: set[str
         nm = (r.get("family_office_name") or "").strip().lower()
         if nm:
             by_name.setdefault(nm, r)
+
+    # 1. Free-text recommendation check. A context-only firm (quarantined / non-released, surfaced
+    #    by quarantine_summary or record_history) may be REPORTED ON -- "we hold 9 quarantined
+    #    firms" is honest coverage -- but must never be pushed as an action. Recommendation verbs
+    #    are what separate the two, and only the system prompt was policing that.
+    blob = _free_text(ans).lower()
+    for crd, firm in (context_only or {}).items():
+        nm = (firm or "").strip().lower()
+        if len(nm) < 6 or nm not in blob:
+            continue
+        window_start = max(0, blob.find(nm) - 120)
+        around = blob[window_start:blob.find(nm) + len(nm) + 120]
+        if _RECOMMENDS.search(around):
+            failures.append(
+                f"free text recommends '{firm}', which the system holds but does not release "
+                f"(context only); it may be reported on, never recommended")
+
+    # 2. Emails in free text must belong to a grounded record, same rule the picks obey.
+    allowed = {e.lower() for r in grounding.values()
+               for e in (r.get("primary_contact_email"), r.get("secondary_contact_email")) if e}
+    import re as _re2
+    # rstrip('.'): the pattern's trailing [\w.]+ swallows sentence-ending punctuation, so a
+    # perfectly valid "reach them at a@firm.com." would otherwise fail its own grounding check.
+    for em in {m.group(0).lower().rstrip(".")
+               for m in _re2.finditer(r"[\w.+-]+@[\w-]+\.[\w.]+", blob)}:
+        if em not in allowed:
+            failures.append(f"free text states email {em}, which is not on any retrieved record")
     for p in ans.picks:
         key = p.firm.strip().lower()
         rec = by_name.get(key)
@@ -136,6 +178,7 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
     t0 = time.monotonic()
     grounding: dict[str, dict] = {}
     pickable: set[str] = set()
+    context_only: dict[str, str] = {}  # crd -> firm name: visible to the model, not releasable
     seen_calls: set[tuple[str, str]] = set()  # loop-breaker: identical calls never re-execute
     messages: list[dict] = [{"role": "system", "content": SYSTEM},
                             {"role": "user", "content": f"Goal: {goal}"}]
@@ -210,6 +253,15 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                             grounding[crd] = r
                             if tool["pickable"]:
                                 pickable.add(crd)
+                    # Firms a non-pickable tool merely EXPOSED (quarantined, non-released). The
+                    # model can now see their names, so the release gate has to know them by name
+                    # to police the free text -- they never enter `grounding`, which is the set of
+                    # records an answer may draw evidence from.
+                    if not tool["pickable"]:
+                        for f in (payload.get("firms") or payload.get("flagged_records") or []):
+                            if isinstance(f, dict) and f.get("crd") and f.get("firm"):
+                                if f["crd"] not in pickable:
+                                    context_only[f["crd"]] = f["firm"]
                     content = json.dumps(payload, default=str)[:12000]
                     status = "ok"
                 except Exception as e:  # a tool failure is information, not a crash
@@ -228,7 +280,7 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                 limitations=["step budget exhausted before a valid submit_answer"])
             verification = {"passed": True, "failures": [], "repaired": False, "refused": True}
         else:
-            failures = _check_output(answer, grounding, pickable)
+            failures = _check_output(answer, grounding, pickable, context_only)
             verification = {"passed": not failures, "failures": failures, "repaired": False}
             if failures:
                 messages.append({"role": "user", "content":
@@ -260,7 +312,7 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                     except (ValidationError, json.JSONDecodeError):
                         repaired = None
                 if repaired is not None:
-                    f2 = _check_output(repaired, grounding, pickable)
+                    f2 = _check_output(repaired, grounding, pickable, context_only)
                     if not f2:
                         answer = repaired
                         verification = {"passed": True, "failures": [], "repaired": True}

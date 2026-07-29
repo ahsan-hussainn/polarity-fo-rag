@@ -307,6 +307,23 @@ def cmd_queue_seed(args):
     print(json.dumps(out, indent=2))
 
 
+def cmd_discover_13f(args):
+    """ADR-0035: discover family offices through Section 13(f), the lens Form ADV cannot provide."""
+    from pipeline.bronze import thirteenf
+    from pipeline.ops import discovery
+
+    res = thirteenf.discover(args.year, args.quarter)
+    out = {k: v for k, v in res.items() if k != "candidates"}
+    out["seed"] = discovery.seed_13f(res["candidates"], limit=args.limit, write=args.write,
+                                     enrich=thirteenf.enrich_profiles)
+    print(json.dumps(out, indent=2))
+    if not args.write:
+        print("\n(dry-run: nothing persisted. add --write to seed the discovery queue.)")
+        print("name-matched 13F filers BEFORE dedupe -- many are already held via ADV:")
+        for c in res["candidates"][:20]:
+            print(f"  [{c['tier']:6s}] cik:{c['cik']:<10s} {c['business_name']}")
+
+
 def cmd_gate(args):
     """ADR-0029: automated inclusion gate under the ADR-0028 tiered standard."""
     from pipeline.gold import gate
@@ -534,6 +551,14 @@ def main():
     qs.add_argument("--limit", type=int, default=None)
     qs.add_argument("--write", action="store_true", help="persist (default: dry-run)")
     qs.set_defaults(func=cmd_queue_seed)
+
+    df = sub.add_parser("discover-13f",
+                        help="Stage 2 (ADR-0035): discover FO candidates from SEC 13F filers")
+    df.add_argument("--year", type=int, default=2026)
+    df.add_argument("--quarter", type=int, default=2, choices=(1, 2, 3, 4))
+    df.add_argument("--limit", type=int, default=None)
+    df.add_argument("--write", action="store_true", help="seed the queue (default: dry-run)")
+    df.set_defaults(func=cmd_discover_13f)
 
     ga = sub.add_parser("gate", help="Stage 2 (ADR-0029): automated inclusion gate (ADR-0028 standard)")
     ga.add_argument("keys", nargs="*", help="entity keys to evaluate (crd:<n> / plain CRD)")

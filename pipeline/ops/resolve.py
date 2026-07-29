@@ -179,7 +179,10 @@ def _stranded(limit: int | None) -> list[dict]:
 
 def _adv_facts(crd: str) -> dict:
     with db.get_conn() as c, c.cursor() as cur:
-        cur.execute("select raw from bronze.captures where source in ('sec_form_adv','state_form_adv')"
+        # sec_13f included: a 13F candidate's corroborators (city, phone) come from its submission
+        # header, lifted into the same keys the ADV captures use, so proof works identically here.
+        cur.execute("select raw from bronze.captures "
+                    "where source in ('sec_form_adv','state_form_adv','sec_13f')"
                     " and entity_key = %s order by id desc limit 1", (crd,))
         r = cur.fetchone()
     return r[0] if r else {}

@@ -53,10 +53,14 @@ def assemble(entity_key: str) -> dict:
     crd = entity_key.split(":", 1)[-1]
     ev: dict = {"entity_key": entity_key}
     with db.get_conn() as c, c.cursor() as cur:
+        # 'sec_13f' is included so CIK-keyed candidates have a registry row at all -- but a 13F
+        # filing carries only a name (ADR-0035), so the client-mix and free-text rules simply find
+        # nothing and score zero. That is correct: the gate should know less about a firm we know
+        # less about, rather than borrowing confidence from a different source's fields.
         cur.execute(
             "select raw from bronze.captures "
-            "where source in ('sec_form_adv', 'state_form_adv') and entity_key = %s "
-            "order by id desc limit 1", (crd,))
+            "where source in ('sec_form_adv', 'state_form_adv', 'sec_13f') and entity_key = %s "
+            "order by case source when 'sec_13f' then 1 else 0 end, id desc limit 1", (crd,))
         row = cur.fetchone()
         ev["adv"] = row[0] if row else None
         cur.execute(

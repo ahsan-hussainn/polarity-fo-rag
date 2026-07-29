@@ -22,6 +22,73 @@ from pipeline.ops import runlog as rl
 TIERS_DEFAULT = ("strong", "medium")
 
 
+def seed_13f(candidates: list[dict], *, limit: int | None = None, write: bool = False,
+             enrich=None) -> dict:
+    """Seed 13F-derived candidates (ADR-0035). Keyed `cik:` rather than `crd:` because these firms
+    have no adviser registration -- that IS the point of the channel -- and identity must not be
+    forced into a namespace they do not belong to.
+
+    Dedupe is by normalised name against everything we already hold, since a 13F filer and an ADV
+    registrant for the same firm share no identifier at all.
+    """
+    import re as _re
+
+    norm = lambda s: _re.sub(r"[^a-z0-9]", "", (s or "").lower())
+    with db.get_conn() as c_, c_.cursor() as cur:
+        cur.execute("select upper(firm_name) from silver.firms "
+                    "union select upper(family_office_name) from gold.records")
+        held_names = {norm(r[0]) for r in cur.fetchall()}
+        cur.execute("select entity_key, firm_name from ops.candidate_queue")
+        queued_keys, queued_names = set(), set()
+        for k, n in cur.fetchall():
+            queued_keys.add(k)
+            queued_names.add(norm(n))
+
+    fresh = [c for c in candidates
+             if f"cik:{c['cik']}" not in queued_keys
+             and norm(c["business_name"]) not in held_names
+             and norm(c["business_name"]) not in queued_names]
+    if limit:
+        fresh = fresh[:limit]
+    out = {"source": "13f", "candidates": len(candidates),
+           "already_held_or_queued": len(candidates) - len(fresh), "seeded": len(fresh),
+           "written": write}
+    if not write:
+        return out
+
+    # Enrich only the candidates we are actually keeping: the header fetch is a network call per
+    # firm and 39 of 59 name matches are already held via ADV.
+    if enrich is not None:
+        fresh = enrich(fresh)
+        out["profiles_fetched"] = sum(1 for c in fresh if c.get("profile"))
+
+    # The registry row a 13F candidate gets. Address and phone are lifted to the top level under
+    # the SAME keys the ADV captures use, so the gate and the domain resolver read one shape and
+    # neither needs to know which registry a candidate came from.
+    rows = []
+    for c in fresh:
+        p = c.get("profile") or {}
+        rows.append({"source": "sec_13f", "source_url": c["filing_url"], "entity_key": c["cik"],
+                     "raw": {**c, "city": p.get("city"), "state": p.get("state"),
+                             "street1": p.get("street1"), "phone": p.get("phone"),
+                             "ein": p.get("ein")}})
+    db.insert_captures(rows)
+    with db.get_conn() as c_, c_.cursor() as cur:
+        for c in fresh:
+            p = c.get("profile") or {}
+            cur.execute(
+                "insert into ops.candidate_queue (entity_key, source, firm_name, detail)"
+                " values (%s,%s,%s,%s::jsonb) on conflict (entity_key) do nothing",
+                (f"cik:{c['cik']}", "13f", c["business_name"],
+                 json.dumps({"tier": c["tier"], "reasons": c["reasons"], "website": None,
+                             "cik": c["cik"], "filing_url": c["filing_url"],
+                             "latest_filing_date": c["latest_filing_date"],
+                             "city": p.get("city"), "state": p.get("state"),
+                             "phone": p.get("phone")})))
+        c_.commit()
+    return out
+
+
 def seed_queue(jsonl_path: str, *, source: str, tiers=TIERS_DEFAULT,
                limit: int | None = None, write: bool = False) -> dict:
     """Load discovery candidates into the queue (and their registry rows into bronze), skipping

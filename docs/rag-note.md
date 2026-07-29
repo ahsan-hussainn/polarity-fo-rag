@@ -2,6 +2,11 @@
 
 Deliverable #6. Live at the submitted URL; run locally with `uvicorn pipeline.rag.app:app`.
 
+**Counts here are stamped to the pre-window sign-off (2026-07-22) unless marked otherwise.** The set
+changes every operating cycle; regenerate live figures from `python -m pipeline.cli reconcile` or
+`GET /stats`. Stage 2 additions (the `fit_rank` extension and the goal agent) are in their own
+section near the end.
+
 ## Stack
 
 - **Data:** Supabase Postgres — one system provides structured (SQL), semantic (`pgvector`), and
@@ -18,10 +23,13 @@ out, founded year, AUM, thesis, description, sectors, primary contact). Records 
 self-contained, so splitting them would only sever a firm from its own facts; at ~50 documents the
 "chunking" problem is really a rendering problem: what belongs in the searchable text. Contact emails
 are deliberately *not* embedded — they come from the structured row at answer time, with their grade.
-Retrieval is release-gated to **qualifying family offices only**: all 50 gold rows are indexed, but
-the gate serves only the 24 affirmed FOs — the 18 reclassified non-FOs (in `reclassified_firms.csv`)
-and the 8 quarantined firms never surface. This is a family-office product, so a non-FO must not
-appear in an answer at all, which is stronger than labeling it after the fact.
+Retrieval is release-gated to **qualifying records only**: every held row is indexed, but the gate
+serves only records whose `release_state` is `qualifying`; reclassified non-FOs and quarantined firms
+never surface. Under ADR-0028 "qualifying" is three labelled categories rather than two, so a record
+that is *counted* but is not a standalone family office (an advisory firm with an evidenced FO
+practice) is retrievable **and carries its label on every surface** — the answer prompt, the
+deterministic category check, the UI card, and the per-category `/stats` split. Presenting one as
+simply "a family office" is a blocking failure, not a warning.
 
 ## Embedding model
 
@@ -64,9 +72,9 @@ miss is reported below, not hidden.
 - **The check verifies structure, not semantics.** Emails, suppression, counts, and category honesty
   are checked deterministically; free-form *faithfulness* (a grounded-but-misleading sentence) is not.
   An LLM faithfulness judge is the next layer.
-- **Out-of-scope queries that share a token with a firm** get answered about that firm ("weather in
-  Zurich" → Marcuard). The answer is grounded but off-intent; `rag-eval` flags this case (7/8). A
-  relevance/scope gate would close it.
+- **Out-of-scope queries that share a token with a firm** used to get answered about that firm
+  ("weather in Zurich" → Marcuard) — grounded but off-intent. **Closed** by ADR-0026's deterministic
+  cosine-distance scope floor, which refuses before retrieval rather than hoping the prompt declines.
 - **No live-traffic groundedness number yet** — only the fixed adversarial suite. The intent
   classifier (ADR-0016) is still unmeasured.
 - Render free tier sleeps when idle: first request after a quiet period takes ~30–60s.
@@ -83,11 +91,37 @@ A-grade secondary contact, the office phone, or LinkedIn instead of dead-ending.
 analyst advice: verdict first, why-each-firm, how to reach them with verification status in words, one
 concrete next step.
 
+## Stage 2: what the retrieval layer gained
+
+**`fit_rank` — the new retrieval capability** (`pipeline/rag/fit.py`, ADR-0030), served at
+`POST /fit` and available to the agent as a tool. Stage 1 retrieval answers "which records match
+this query." `fit_rank` answers "rank the *whole* qualifying set against this investor mandate, and
+say how much to trust each ranking." It is deterministic — the only model call is embedding the
+mandate — and every rank is a weighted sum of named, inspectable components shipped in the output.
+
+The design decision worth the space: **the confidence tier comes from evidence *presence*, not score
+magnitude.** A record can sit at the top on document similarity and still be labelled
+`insufficient_evidence` because nothing in it evidences the mandate. That is the difference between
+a ranking a buyer can act on and one that merely looks confident, and it is what lets the agent
+abstain instead of laundering a high score into a claim.
+
+**The goal agent** (`/agent`, ADR-0031) uses retrieval as a tool rather than being a retrieval
+front-end: it decomposes a goal, calls tools repeatedly, compares, and returns a structured answer
+with per-pick confidence and explicit abstentions. Six tools, one of which (`record_history`) reads
+the operating ledger and is the only way to ask what *changed* rather than what *is*. The release
+gate around it is code, not prompt: grounded firms only, verbatim emails, tier ceilings, no
+recommending firms the system holds but does not release.
+
 ## What I would improve, in order
 
 1. An LLM faithfulness judge as a second gate behind the deterministic check (semantic, not just
-   structural, grounding).
+   structural, grounding) — a grounded-but-misleading sentence still passes today.
 2. A query→expected-record gold set with measured recall@k on live traffic, plus intent-classifier
    accuracy (the "measured, not asserted" bar, extended from the adversarial suite to real queries).
-3. A relevance/scope gate for out-of-scope queries (the one reported eval miss).
-4. Keep-warm ping or paid tier to remove the cold start.
+3. Firm-name grounding in `checkanswer`. It is listed in the module's own docstring history but was
+   never implemented — free-text firm-name detection is noisy, so firm honesty currently rests on
+   the email checks plus the blocking category check. Stated because the docstring used to imply
+   otherwise.
+4. `fit_rank` weights are pre-registered, not tuned. They are defensible and inspectable but have
+   never been measured against a preference set, because none exists.
+5. Keep-warm ping or paid tier to remove the cold start.

@@ -6,6 +6,18 @@ Read this first each session. Keep it current.
 
 ## Current phase: Stage 2 operating window (Mon 2026-07-27 12:00 → Sat 2026-08-01 12:00 +05)
 
+**Day 3 (2026-07-29) status.** Day-2 checkpoint email **sent**. Window conditions 2 and 3 met on
+natural evidence; condition 1 (48h across scheduled runs) completes Wed 20:18 PKT. Day 3 was a full
+adversarial review against the brief + Bridge Mandate, then the fixes it found: ADRs **0034–0040**.
+Qualifying **26 → 32** via the measured auto-release band (gate affirms no longer need per-record
+human ratification, but must clear client-mix corroboration — blanket auto-release stayed refused at
+54.8% measured precision). Second source class shipped (**13F**, reaching ADV-exempt SFOs). The ADV
+staleness detector was rebuilt because it could not fire; its write volume exposed and fixed the
+system's real first bottleneck (connection-per-ledger-write). Remaining: run the three goals,
+finish `docs/architecture-notes.md` (drafted), regenerate all `[regen]` figures, build summary,
+final review. **Counts anywhere in docs are stamped, not live — regenerate from `reconcile` /
+`/stats`.**
+
 Brief: **`docs/brief/` (in-repo, .docx + greppable .txt) — it outranks this file, the operating
 plan, and every ADR; where they disagree the brief is right.** Mandate: 24 → 500
 qualifying records, kept current by scheduled unattended cycles; an agent using retrieval as a tool;

@@ -4,8 +4,14 @@ Goal 2 is used verbatim as the brief requires. Goals 1 and 3 are framed here, be
 so the goal is a commitment rather than something reverse-engineered from a good-looking output.
 
 For each goal the submission carries four artifacts: the exact goal string, the output a user would
-get from the extended retrieval **manually**, the agent's structured output, and the raw run log
-(`ops.runs` + `ops.run_events` for the session, exported unedited).
+get from the extended retrieval **manually** (`POST /fit` — the same ranking the agent calls as a
+tool, served directly), the agent's structured output, and the raw run log — `ops.agent_messages`
+for the full message trace including tool results and any repair turn, plus `ops.runs` /
+`ops.run_events` for per-call timing, tokens and cost, exported unedited by `pipeline.cli
+ops-export`.
+
+**Counts in this document are stamped, not current.** The set changes every operating cycle; live
+figures come from `reconcile` and `/stats`.
 
 ---
 
@@ -27,9 +33,10 @@ quarantined contact ranks differently from one with moderate fit and a graded, r
 "search family offices" but "tell me who to call on Monday, and how confident you are." The output
 is an ordered approach list with a reason and a confidence per line.
 
-**What we expect to be hard.** Chicago-plus-industrials is a narrow slice of a 24-qualifying-record
-set, so we expect thin results and want the agent to say so rather than widen the criteria silently
-to fill a list. Silently relaxing a stated constraint is the failure mode to watch for.
+**What we expect to be hard.** Chicago-plus-industrials is a narrow slice of a small qualifying set
+(32 at the time of writing, 2026-07-29), so we expect thin results and want the agent to say so
+rather than widen the criteria silently to fill a list. Silently relaxing a stated constraint is the
+failure mode to watch for.
 
 ---
 
@@ -43,7 +50,9 @@ times. The run-9 → run-10 → run-12 progression (evidence laundering → iden
 weak-picks-plus-abstentions) is in the ledger and is the substance of architecture note §6.
 
 Uncertain records stay in the set for this run, per the brief's explicit instruction not to clean
-them away: 18 unresolved and 8 quarantined records remain visible with their status intact.
+them away: the unresolved and quarantined records remain visible with their status intact (18 and 9
+respectively at the time of writing, 2026-07-29 — regenerate from `reconcile` for the submitted
+figure).
 
 ---
 
@@ -58,6 +67,16 @@ cross-cycle evidence — what the system observed on an earlier cycle, what it o
 the judgment it formed about the difference. That is `ops.observations` and `ops.trust_events`, and
 it does not exist in a dataset export at any price.
 
+**This goal was unanswerable until day 3, which is worth stating rather than hiding.** The framing
+above was written on day 2, and at that point no tool could read `ops.*` at all — every tool
+returned the current state, so the agent's only honest answer would have been "I cannot see
+history." `record_history` (ADR-0038) closed that gap: with no arguments it lists released records
+whose evidence has moved; with a firm name it returns that firm's run-by-run history. The first
+version still failed, and instructively — asked what to stop trusting, the agent answered from
+`quarantine_summary`, naming never-released *candidates* as family offices to distrust. It conflated
+"never released" with "released and now doubtful," and it had no way to *discover* the flagged set.
+Both are fixed (ADR-0038, ADR-0039); the failing session is in the ledger.
+
 It is also the question that maps to real money: a fund manager's cost of acting on a stale record
 is a wasted introduction, and their cost of *not knowing* a decision-maker left is worse.
 
@@ -67,8 +86,14 @@ It cannot return "this changed since Tuesday and here is why we trust it less," 
 a property of any record — it is a property of the history of records. We expect the manual output
 to be visibly unable to answer, and that contrast is the deliverable.
 
-**What we expect to be hard.** The honest answer today is small: the trust ledger holds
-`website_dark` on 5 firms, `decision_maker_gone` on 2, and a large number of correctly-classified
-cosmetic changes that a user should *not* be told about. Reporting cosmetic churn as change would
-be noise sold as signal, so the interesting behaviour is what the agent leaves out. If it reports
-every hash flip it has failed this goal, even though it would look more impressive.
+**What we expect to be hard.** The honest answer is small. The trust ledger holds `website_dark`,
+`decision_maker_gone` and `adv_filing` events alongside a large number of correctly-classified
+cosmetic changes that a user should *not* be told about, and only a couple of records are flagged
+at any moment once superseded events are discounted (ADR-0037: a later refresh clears an earlier
+flag, so a re-verified firm stops carrying a scar). Reporting cosmetic churn as change would be
+noise sold as signal, so the interesting behaviour is what the agent leaves out. If it reports every
+hash flip it has failed this goal, even though it would look more impressive.
+
+The same applies to the size of the answer: two flagged records is a *correct* answer to this
+question today, and padding it would be the failure. Regenerate the figures at run time from
+`record_history` rather than quoting these.

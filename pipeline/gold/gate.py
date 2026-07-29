@@ -211,8 +211,12 @@ def retro(write: bool = False) -> dict:
         cur.execute("select crd from gold.excluded_firms")
         excluded = [r[0] for r in cur.fetchall()]
 
-    results = run_gate(list(adjudicated) + excluded, write=write)
-    by_key = {r["entity_key"]: r for r in results}
+    # Namespaced keys, so a retro-written decision lands in the SAME identity space as every other
+    # gate decision (ADR-0029 uses `crd:`). Writing bare CRDs here would create a second key format
+    # for the same entities and quietly break any join over gold.entity_gate.
+    labeled = list(adjudicated) + excluded
+    results = run_gate([f"crd:{crd}" for crd in labeled], write=write)
+    by_key = {r["entity_key"].split(":", 1)[-1]: r for r in results}
 
     def bucket(crd):
         if crd in excluded:

@@ -33,8 +33,15 @@ Three things are true of every part of this repo:
    governs what ships: quarantined firms are unretrievable, vendor-rejected addresses are removed from
    operational fields, and a claim is never stronger than its evidence.
 
-**Live demo:** https://polarity-fo-rag.onrender.com (Render free tier — first request after idle
-cold-starts in ~30–60 s).
+**Live system** (Render free tier — first request after idle cold-starts in ~30–60 s):
+
+| surface | what it is |
+|---|---|
+| [`/`](https://polarity-fo-rag.onrender.com) | Coverage Desk — grounded natural-language Q&A over the dataset (Stage 1) |
+| [`/agent`](https://polarity-fo-rag.onrender.com/agent) | the goal agent: give it a commercial goal, it plans, retrieves repeatedly, and returns a structured answer with per-pick confidence and explicit abstentions (Stage 2) |
+| `POST /fit` | **`fit_rank`** — the Stage 2 retrieval extension: rank the whole qualifying set against an investor mandate with per-record evidence, caveats and an evidence-based confidence tier. Same function the agent calls as a tool |
+| `GET /stats` | live release-state and per-category counts, regenerated from the database on every call — so no surface hand-carries a number |
+| `GET /agent/tools` | the agent's tool schemas, served from the running code |
 
 ## The deliverables, and where they live
 
@@ -48,6 +55,31 @@ cold-starts in ~30–60 s).
 | RAG documentation note | [`docs/rag-note.md`](./docs/rag-note.md) |
 | Build session summary (Stage 1) | [`BUILD_SESSION_SUMMARY.md`](./BUILD_SESSION_SUMMARY.md) |
 | Reasoning trail | [`adr/`](./adr/) (indexed in [`CLAUDE.md`](./CLAUDE.md)) + [`docs/findings/`](./docs/findings/) |
+
+### Stage 2 deliverables
+
+| Deliverable | Where |
+|---|---|
+| Architecture notes (7 sections) | [`docs/architecture-notes.md`](./docs/architecture-notes.md) |
+| The three goals — framing, then artifacts | [`docs/three-goals.md`](./docs/three-goals.md) |
+| Complete operating logs (uncurated) | `python -m pipeline.cli ops-export` → `runs`, `run_events`, `observations`, `trust_events`, `query_log`, `agent_messages` as JSONL |
+| Day-2 checkpoint predictions (committed before sending) | [`docs/day2-checkpoint-predictions.md`](./docs/day2-checkpoint-predictions.md) |
+| Operating plan, hard gates, window conditions | [`docs/OPERATING_PLAN.md`](./docs/OPERATING_PLAN.md) |
+| Brief reconciliation + Stage 1 records under the Stage 2 standard | [`docs/findings/stage2-brief-reconciliation.md`](./docs/findings/stage2-brief-reconciliation.md), [`stage1-under-stage2-standard.md`](./docs/findings/stage1-under-stage2-standard.md) |
+
+## Operating the system
+
+```bash
+python -m pipeline.cli operate --write        # one full cycle (what the scheduler runs)
+python -m pipeline.cli reconcile              # assert every surface agrees; exit 0 = agree
+python -m pipeline.cli ops-export             # dump the whole operating ledger to JSONL
+python -m pipeline.cli agent-goal "<goal>"    # one agent session, traced to ops.agent_messages
+python -m pipeline.cli discover-13f --write   # seed candidates from SEC 13F filers
+```
+
+The scheduler is GitHub Actions (`.github/workflows/operate.yml`), every ~6 hours, with a
+concurrency group so cycles can never overlap. Its run history is the platform-kept record the
+Stage 2 brief requires.
 
 ## Layout
 

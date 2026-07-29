@@ -128,16 +128,34 @@ def seed_queue(jsonl_path: str, *, source: str, tiers=TIERS_DEFAULT,
     return out
 
 
+MAX_ATTEMPTS = 3  # a transient failure gets retried; a persistent one stops burning budget
+
+
 def _claim(limit: int) -> list[dict]:
+    """Claim a tranche. `failed` candidates are retried up to MAX_ATTEMPTS.
+
+    They were previously dead-lettered permanently: one transient OpenAI 500 or network blip
+    removed a candidate from the climb forever, silently, with no sweeper and no alert. The brief
+    scores "partial failures across hundreds of records", and permanent loss on a temporary fault
+    is the wrong answer to one. Retries are ordered last so a poison record cannot starve fresh
+    work, and the attempt count is on the row so a repeatedly-failing candidate is visible rather
+    than looping forever.
+    """
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute(
             "update ops.candidate_queue q set status = 'in_progress', claimed_by = %s,"
-            " updated_at = now()"
+            " updated_at = now(),"
+            " detail = coalesce(q.detail,'{}'::jsonb) ||"
+            "          jsonb_build_object('attempts',"
+            "            coalesce((q.detail->>'attempts')::int, 0) + 1)"
             " where q.entity_key in (select entity_key from ops.candidate_queue"
-            "   where stage = 'discovered' and status in ('pending', 'in_progress')"
-            "   order by entity_key limit %s for update skip locked)"
+            "   where stage = 'discovered'"
+            "     and (status in ('pending', 'in_progress')"
+            "          or (status = 'failed'"
+            "              and coalesce((detail->>'attempts')::int, 0) < %s))"
+            "   order by (status = 'failed'), entity_key limit %s for update skip locked)"
             " returning q.entity_key, q.source, q.firm_name, q.detail",
-            (rl.current_run(), limit))
+            (rl.current_run(), MAX_ATTEMPTS, limit))
         rows = cur.fetchall()
         c.commit()
     return [{"entity_key": r[0], "source": r[1], "firm_name": r[2], "detail": r[3] or {}}

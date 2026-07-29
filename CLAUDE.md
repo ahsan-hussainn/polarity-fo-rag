@@ -119,3 +119,6 @@ code explanation + quality assessment + phone**, then the same block for a **sec
 | [0035](./adr/0035-thirteenf-discovery-channel.md) | 13F as the second source class: reaching the family offices ADV cannot see | Accepted |
 | [0036](./adr/0036-registry-recheck-detector.md) | Registry re-check detector + pooled ledger connections | Accepted |
 | [0037](./adr/0037-record-level-trust-state.md) | Evidence-based freshness on the record a buyer receives | Accepted |
+| [0038](./adr/0038-agent-trace-and-history.md) | Agent raw session trace + record_history (cross-cycle tool) | Accepted |
+| [0039](./adr/0039-free-text-release-gate.md) | The release gate covers free text, not just picks | Accepted |
+| [0040](./adr/0040-operating-robustness.md) | Operating robustness: politeness, backoff, retry, pre-publication gate | Accepted |

@@ -12,10 +12,13 @@ scope is a handful of public pages per firm with a courteous UA and rate limit.
 """
 from __future__ import annotations
 
+import os
 import re
 import ssl
+import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -92,26 +95,93 @@ class FetchedPage:
     fetched_at: str
 
 
+# Per-host politeness. The operating plan claimed "bounded worker pool with per-host politeness +
+# exponential backoff" and the code had neither: the worker pool is per-FIRM, so two firms on the
+# same host (or the same CDN) were fetched with no spacing at all, and a 429 was treated as a
+# terminal error rather than an instruction to wait.
+#
+# The lock map is keyed by host, so unrelated hosts never block each other -- the pool stays as
+# concurrent as before, it just cannot stampede one host.
+_MIN_HOST_INTERVAL = float(os.getenv("FETCH_MIN_HOST_INTERVAL", "1.0"))
+_RETRY_STATUS = {429, 500, 502, 503, 504}
+_MAX_ATTEMPTS = int(os.getenv("FETCH_MAX_ATTEMPTS", "3"))
+_host_lock = threading.Lock()
+_host_state: dict[str, tuple[threading.Lock, list]] = {}
+
+
+def _host_gate(url: str):
+    host = (urllib.parse.urlsplit(url).hostname or "").lower()
+    with _host_lock:
+        if host not in _host_state:
+            _host_state[host] = (threading.Lock(), [0.0])
+        return _host_state[host]
+
+
+def _wait_turn(url: str) -> None:
+    """Space requests to the same host, without serialising different hosts."""
+    lock, last = _host_gate(url)
+    with lock:
+        gap = time.monotonic() - last[0]
+        if gap < _MIN_HOST_INTERVAL:
+            time.sleep(_MIN_HOST_INTERVAL - gap)
+        last[0] = time.monotonic()
+
+
+def _retry_after(e: urllib.error.HTTPError, attempt: int) -> float:
+    """Honour Retry-After when the server sends one; otherwise exponential backoff."""
+    hdr = None
+    try:
+        hdr = e.headers.get("Retry-After") if e.headers else None
+    except Exception:
+        hdr = None
+    if hdr:
+        try:
+            return min(float(int(hdr)), 30.0)
+        except (TypeError, ValueError):
+            pass
+    return min(2.0 ** attempt, 30.0)
+
+
 def _fetch_raw(url: str, timeout: int, ua: str) -> tuple[int | None, bytes, str, bool, str | None]:
-    """(status, body, final_url, insecure, error). Never raises. Retries once w/o TLS verify."""
+    """(status, body, final_url, insecure, error). Never raises.
+
+    Retries once without TLS verification, and retries rate-limit / transient-server responses with
+    backoff (honouring Retry-After). A 429 answered by giving up is how a scraper turns a temporary
+    'slow down' into permanent missing evidence.
+    """
     headers = {"User-Agent": ua, "Accept": "text/html,application/xhtml+xml,text/plain"}
     insecure = False
-    for verify in (True, False):
-        try:
-            ctx = None if verify else ssl._create_unverified_context()
-            req = urllib.request.Request(url, headers=headers)
-            resp = urllib.request.urlopen(req, timeout=timeout, context=ctx)
-            return resp.getcode(), resp.read(), resp.geturl(), insecure, None
-        except urllib.error.HTTPError as e:
-            return e.code, b"", url, insecure, f"http_{e.code}"
-        except urllib.error.URLError as e:
-            if verify and isinstance(getattr(e, "reason", None), ssl.SSLError):
-                insecure = True
-                continue  # retry unverified
-            return None, b"", url, insecure, f"url_error: {e.reason}"
-        except Exception as e:  # socket timeouts, malformed responses, decode issues
-            return None, b"", url, insecure, f"{type(e).__name__}: {e}"
-    return None, b"", url, insecure, "unreachable"
+    last_err: str | None = None
+    for attempt in range(_MAX_ATTEMPTS):
+        for verify in (True, False):
+            _wait_turn(url)
+            try:
+                ctx = None if verify else ssl._create_unverified_context()
+                req = urllib.request.Request(url, headers=headers)
+                resp = urllib.request.urlopen(req, timeout=timeout, context=ctx)
+                return resp.getcode(), resp.read(), resp.geturl(), insecure, None
+            except urllib.error.HTTPError as e:
+                last_err = f"http_{e.code}"
+                if e.code in _RETRY_STATUS and attempt < _MAX_ATTEMPTS - 1:
+                    time.sleep(_retry_after(e, attempt))
+                    break  # next attempt, from the verified path again
+                return e.code, b"", url, insecure, last_err
+            except urllib.error.URLError as e:
+                if verify and isinstance(getattr(e, "reason", None), ssl.SSLError):
+                    insecure = True
+                    continue  # retry unverified, same attempt
+                last_err = f"url_error: {e.reason}"
+                if attempt < _MAX_ATTEMPTS - 1:
+                    time.sleep(min(2.0 ** attempt, 30.0))
+                    break
+                return None, b"", url, insecure, last_err
+            except Exception as e:  # socket timeouts, malformed responses, decode issues
+                last_err = f"{type(e).__name__}: {e}"
+                if attempt < _MAX_ATTEMPTS - 1:
+                    time.sleep(min(2.0 ** attempt, 30.0))
+                    break
+                return None, b"", url, insecure, last_err
+    return None, b"", url, insecure, last_err or "unreachable"
 
 
 def _parse(body: bytes):

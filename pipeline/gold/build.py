@@ -279,12 +279,20 @@ def _adv_facts(cur, crd: str) -> dict:
     Both registry channels carry the same raw shape; the SEC-feed capture wins where a firm has
     both. (Measured miss: CRD 120053 entered via the state channel only and shipped qualifying
     with NO ADV facts -- empty data_asof/is_stale/AUM -- because this query saw only sec_form_adv.)"""
+    # sec_13f included so a 13F-sourced record (ADR-0035) still carries a filing date, address and
+    # phone. Without it such a record would ship with a null data_asof -- which the pre-publication
+    # freshness invariant would (correctly) refuse to release, failing the whole cycle over a
+    # record the system had no ADV row for by construction. Ordering keeps the ADV feeds ahead of
+    # 13F wherever a firm appears in both, since ADV carries strictly more.
     cur.execute("select raw->>'city', raw->>'state', raw->>'country', raw->>'street1', "
                 "raw->>'street2', raw->>'phone', raw->>'raum_total', source_url, "
                 "raw->>'latest_filing_date' "
-                "from bronze.captures where source in ('sec_form_adv', 'state_form_adv') "
+                "from bronze.captures "
+                "where source in ('sec_form_adv', 'state_form_adv', 'sec_13f') "
                 "and entity_key=%s "
-                "order by case source when 'sec_form_adv' then 0 else 1 end limit 1", (crd,))
+                "order by case source when 'sec_form_adv' then 0 "
+                "                     when 'state_form_adv' then 1 else 2 end, id desc limit 1",
+                (crd,))
     r = cur.fetchone()
     if not r:
         return {}

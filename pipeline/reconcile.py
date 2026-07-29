@@ -29,15 +29,35 @@ REJECTED_GRADES = {"D", "F"}
 
 
 def _rows(path):
-    with open(path, encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
+    # Missing is tolerated so the pre-publication gate can run before any export exists (a fresh
+    # environment, or the very first cycle). The surface checks that would read these are skipped
+    # in db_only mode anyway; returning [] keeps that path from crashing on a file it never uses.
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return list(csv.DictReader(fh))
+    except FileNotFoundError:
+        return []
 
 
-def run() -> dict:
+def run(*, db_only: bool = False) -> dict:
+    """Assert every surface agrees.
+
+    `db_only` runs just the checks that need nothing but the database, so a cycle can gate its
+    OWN OUTPUT before publishing it (ADR-0040): the invariants about what may be released are
+    knowable before a CSV is written, and a control that only reports after the fact leaves an
+    inconsistent surface live in the meantime. The CSV- and retrieval-comparison checks are
+    inherently post-publication -- they compare against files that do not exist yet -- so the full
+    run still happens after export.
+    """
     checks: list[tuple[str, bool, str]] = []
 
     def check(name, ok, detail=""):
         checks.append((name, bool(ok), detail))
+
+    def surface_check(name, ok, detail=""):
+        """A check that compares against exported files; skipped in db_only mode."""
+        if not db_only:
+            check(name, ok, detail)
 
     prod = _rows(PRODUCT_CSV)
     practices = _rows(PRACTICES_CSV)
@@ -113,19 +133,29 @@ def run() -> dict:
         by_trust = dict(cur.fetchall())
         cur.execute("select count(*) from gold.records where release_state='qualifying' and data_asof is null")
         qual_no_freshness = cur.fetchone()[0]
+        cur.execute(
+            "select count(*) from gold.records r where r.release_state = 'qualifying' and exists ("
+            "  select 1 from gold.contact_audit a"
+            "   where lower(a.email) in (lower(r.primary_contact_email),"
+            "                            lower(r.secondary_contact_email)))")
+        db_leaked = cur.fetchone()[0]
+        cur.execute("select count(*) from gold.records where release_state='qualifying' "
+                    "and primary_email_grade = any(%s) and coalesce(primary_contact_email,'') <> ''",
+                    (list(REJECTED_GRADES),))
+        db_graded_reject = cur.fetchone()[0]
 
     # 1. the three exports partition every record the system holds; product == qualifying FOs.
     #    Totals are DERIVED from the database, never hardcoded, so these hold at any dataset size
     #    (the Stage 1 versions asserted the literal numbers 50/24/18, which breaks on the first
     #    record the Stage 2 climb adds -- and a release control that fails on growth teaches
     #    people to ignore it).
-    check("product CSV == DB qualifying family offices", len(prod) == db_qual, f"CSV {len(prod)} vs DB {db_qual}")
-    check("practices CSV == DB qualifying embedded practices", len(practices) == db_practices,
+    surface_check("product CSV == DB qualifying family offices", len(prod) == db_qual, f"CSV {len(prod)} vs DB {db_qual}")
+    surface_check("practices CSV == DB qualifying embedded practices", len(practices) == db_practices,
           f"CSV {len(practices)} vs DB {db_practices}")
-    check("pending CSV == DB affirmed-awaiting-decision-maker", len(pending) == db_pending,
+    surface_check("pending CSV == DB affirmed-awaiting-decision-maker", len(pending) == db_pending,
           f"CSV {len(pending)} vs DB {db_pending}")
-    check("reclassified CSV == DB reclassified", len(reclass) == db_reclass, f"CSV {len(reclass)} vs DB {db_reclass}")
-    check("quarantine CSV == DB quarantined", len(quar) == db_quar, f"CSV {len(quar)} vs DB {db_quar}")
+    surface_check("reclassified CSV == DB reclassified", len(reclass) == db_reclass, f"CSV {len(reclass)} vs DB {db_reclass}")
+    surface_check("quarantine CSV == DB quarantined", len(quar) == db_quar, f"CSV {len(quar)} vs DB {db_quar}")
     # Stage 2 split this from three surfaces to five. Entity affirmation and decision-maker
     # adjudication are separate human gates, so the climb produces records that clear the first and
     # await the second; and ADR-0028 forbids counting an evidenced practice in the same number as a
@@ -133,14 +163,14 @@ def run() -> dict:
     # itself is unchanged in kind: every held record appears in exactly one surface, totals derived
     # from the database. It caught this gap on scheduled run 20 and failed the run, which is the
     # behaviour that makes it worth keeping.
-    check("five exports partition all held records",
+    surface_check("five exports partition all held records",
           len(prod) + len(practices) + len(pending) + len(reclass) + len(quar) == db_total,
           f"{len(prod)}+{len(practices)}+{len(pending)}+{len(reclass)}+{len(quar)} "
           f"vs DB total {db_total}")
 
     # 2. the product is family offices ONLY, each with a proven person
-    check("product is family offices only (no non-FO leaked in)", not non_fo_in_prod, f"{len(non_fo_in_prod)} leaked")
-    check("qualifying == affirmed FOs", db_qual == db_fo == len(prod), f"db_qual {db_qual}, db_fo {db_fo}, csv {len(prod)}")
+    surface_check("product is family offices only (no non-FO leaked in)", not non_fo_in_prod, f"{len(non_fo_in_prod)} leaked")
+    surface_check("qualifying == affirmed FOs", db_qual == db_fo == len(prod), f"db_qual {db_qual}, db_fo {db_fo}, csv {len(prod)}")
     check("every human-ratified FO has a ratified primary contact", qual_without_contact == 0,
           f"{qual_without_contact}")
     check("every human-ratified FO has person_status=proven", qual_unproven_person == 0,
@@ -161,16 +191,25 @@ def run() -> dict:
     check("every qualifying record carries its freshness basis (data_asof)", qual_no_freshness == 0,
           f"{qual_no_freshness} missing")
 
-    # 3. suppression: no vendor-rejected/quarantined address in the product CSV
+    # 3. suppression, checked twice on purpose. The DATABASE versions run pre-publication and can
+    #    stop a leak before it is written; the CSV versions confirm the file that actually shipped.
+    #    Reading only the CSV would validate the PREVIOUS export during a pre-publication gate,
+    #    which is worse than not checking, because it looks like a check.
+    check("no vendor-rejected address on a qualifying record (DB)", db_leaked == 0,
+          f"{db_leaked} records")
+    check("no D/F-graded address on a qualifying record (DB)", db_graded_reject == 0,
+          f"{db_graded_reject} records")
     leaked = [r[f] for r in prod for f in ("Primary Email", "Secondary Email")
               if r.get(f, "").strip() and r[f].strip().lower() in audited]
-    check("no audited (vendor-rejected) address in product CSV", not leaked, f"leaked: {leaked[:3]}")
+    surface_check("no audited (vendor-rejected) address in product CSV", not leaked,
+                  f"leaked: {leaked[:3]}")
     graded_reject = [r for r in prod if r["Primary Email Grade"] in REJECTED_GRADES and r["Primary Email"].strip()]
-    check("no D/F-graded address shipped operational", not graded_reject, f"{len(graded_reject)} rows")
+    surface_check("no D/F-graded address shipped operational", not graded_reject,
+                  f"{len(graded_reject)} rows")
 
     # 4. categorical integrity (counts themselves are covered by the derived checks above)
     check("some qualifying family offices exist", len(prod) > 0, f"{len(prod)}")
-    check("reclassified are all wealth_manager/ria_with_fo_practice",
+    surface_check("reclassified are all wealth_manager/ria_with_fo_practice",
           all(r["Entity Category"] in ("wealth_manager", "ria_with_fo_practice") for r in reclass),
           f"{len(reclass)} rows")
 
@@ -185,11 +224,11 @@ def run() -> dict:
     quar_hits = [_probe(r) for r in quar[:3] if len(by_name(_probe(r))) > 0]
     reclass_hits = [_probe(r) for r in reclass[:3] if len(by_name(_probe(r))) > 0]
     prod_miss = [_probe(r) for r in prod[:2] if len(by_name(_probe(r))) == 0]
-    check("quarantined firms NOT retrievable", not quar_hits,
+    surface_check("quarantined firms NOT retrievable", not quar_hits,
           f"sampled {min(3, len(quar))}; hits: {quar_hits}")
-    check("reclassified non-FOs NOT retrievable", not reclass_hits,
+    surface_check("reclassified non-FOs NOT retrievable", not reclass_hits,
           f"sampled {min(3, len(reclass))}; hits: {reclass_hits}")
-    check("qualifying FOs ARE retrievable", not prod_miss,
+    surface_check("qualifying FOs ARE retrievable", not prod_miss,
           f"sampled {min(2, len(prod))}; misses: {prod_miss}")
 
     passed = sum(ok for _, ok, _ in checks)

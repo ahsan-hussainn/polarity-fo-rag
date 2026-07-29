@@ -328,10 +328,30 @@ def _rebuild_phase(write: bool) -> dict:
     t0 = time.monotonic()
     g = gb.build(write=write)
     rl.event("rebuild", "build_gold", call_class="db", duration_ms=int((time.monotonic() - t0) * 1000),
-             detail={"firms": g.get("firms"), "with_primary": g.get("with_primary")})
+             detail={"firms": g.get("firms"), "with_primary": g.get("with_primary"),
+                     "by_release": g.get("by_release")})
     out["gold_firms"] = g.get("firms")
+    out["by_release"] = g.get("by_release")
 
     if write:
+        # PRE-PUBLICATION GATE. The database-only checks run BEFORE the CSVs and the retrieval
+        # index are written, so an inconsistent state is prevented rather than reported. On
+        # scheduled run 20 the post-hoc version correctly failed the run -- 37 minutes after
+        # shipping the inconsistent export to the live surface, which is the wrong half of the job.
+        # The full check still runs after publication (below), because surface-vs-CSV agreement
+        # cannot be tested until the CSVs exist.
+        t0 = time.monotonic()
+        pre = rec.run(db_only=True)
+        rl.event("rebuild", "reconcile_pre", call_class="db",
+                 status="ok" if pre["all_agree"] else "error",
+                 duration_ms=int((time.monotonic() - t0) * 1000),
+                 detail={"passed": pre["passed"], "checks": pre["checks"],
+                         "failures": pre["failures"]})
+        out["reconcile_pre"] = f"{pre['passed']}/{pre['checks']}"
+        if not pre["all_agree"]:
+            raise RuntimeError(
+                f"pre-publication release control failed, nothing was exported: {pre['failures']}")
+
         t0 = time.monotonic()
         exp = gb.export()
         rl.event("rebuild", "gold_export", call_class="db",

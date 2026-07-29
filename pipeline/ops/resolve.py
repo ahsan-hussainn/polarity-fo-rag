@@ -164,10 +164,19 @@ def prove(domain: str, *, name: str, phone: str | None, city: str | None,
 
 
 def _stranded(limit: int | None) -> list[dict]:
-    """Queued candidates with no usable firm domain: absent, or a social profile."""
+    """Queued candidates with no usable firm domain: absent, or a social profile.
+
+    Ordered by how many times we have already tried and failed, so the queue ROTATES. It used to
+    order by entity_key alone and take the first N, which meant the same unresolvable head of the
+    queue was re-attempted every cycle while candidates past position N were never reached at all:
+    with 140 stranded and a limit of 40, positions 41-140 were unreachable by construction, and the
+    measured proof rate decayed 13 -> 5 -> 4 -> 1 -> 1 across runs as the head filled with
+    permanent failures. Attempts are recorded per candidate by run(), below.
+    """
     with db.get_conn() as c, c.cursor() as cur:
         cur.execute("select entity_key, firm_name, detail from ops.candidate_queue "
-                    "where coalesce(detail->>'resolved_domain','') = '' order by entity_key")
+                    "where coalesce(detail->>'resolved_domain','') = '' "
+                    "order by coalesce((detail->>'resolve_attempts')::int, 0), entity_key")
         rows = []
         for key, name, detail in cur.fetchall():
             site = (detail or {}).get("website")
@@ -228,6 +237,8 @@ def run(*, limit: int | None = None, write: bool = False, workers: int = 6) -> d
             stats["dns_checked"] += checked
             if not ev:
                 stats["unresolved"] += 1
+                if write:
+                    _note_attempt(cand["entity_key"])
                 continue
             stats["proven"] += 1
             rl.event("resolve", "domain_proven", call_class="external_api",
@@ -236,6 +247,23 @@ def run(*, limit: int | None = None, write: bool = False, workers: int = 6) -> d
             if write:
                 _apply(cand["entity_key"], ev)
     return stats
+
+
+def _note_attempt(entity_key: str) -> None:
+    """Record a failed resolution so the queue rotates instead of re-burning the same head.
+
+    Deliberately a counter rather than a permanent give-up flag: a firm with no website today may
+    publish one next week, and the resolver is cheap. This changes the ORDER work is attempted in,
+    not whether it is ever attempted again.
+    """
+    with db.get_conn() as c, c.cursor() as cur:
+        cur.execute(
+            "update ops.candidate_queue set detail = coalesce(detail,'{}'::jsonb) ||"
+            " jsonb_build_object('resolve_attempts',"
+            "   coalesce((detail->>'resolve_attempts')::int, 0) + 1,"
+            "   'resolve_last_attempt', now()::text)"
+            " where entity_key = %s", (entity_key,))
+        c.commit()
 
 
 def _apply(entity_key: str, ev: dict) -> None:

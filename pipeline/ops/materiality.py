@@ -129,31 +129,62 @@ def _diff_facts(old: dict, ext) -> tuple[dict[str, str], list[str]]:
     return deltas, wording
 
 
+def _field_value(facts: dict, field: str):
+    """The value a delta key refers to inside a fact fingerprint."""
+    key, _, rest = field.partition(":")
+    if key == "title":
+        return (facts.get("titles") or {}).get(rest)
+    return facts.get({"roster_gone": "roster", "roster_added": "roster"}.get(key, key))
+
+
 def _confirm(crd: str, deltas: dict[str, str], new_facts: dict, *, write: bool
-             ) -> tuple[dict[str, str], dict[str, str]]:
-    """Split deltas into CONFIRMED (this exact new value was also extracted last cycle) and
-    UNCONFIRMED (first sighting).
+             ) -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
+    """Split deltas into CONFIRMED, UNCONFIRMED (first sighting) and OSCILLATING.
 
     A site change is a claim about the world; extraction variance is a claim about the model. The
-    two are separable by one property -- a real change reproduces, variance does not. So a delta
-    moves silver only on its second consecutive identical sighting. Cost: a genuine change lands
-    one cycle (~6h) later than it could. Benefit: the trust ledger stops reporting model noise as
-    world change, which is the only reason its staleness events are worth reading.
+    first separator was reproduction -- a real change repeats, variance does not -- so a delta had
+    to be seen twice consecutively before moving silver. Production falsified that as sufficient.
+
+    Measured on CRD 329496 over runs 15/17/20/22: the extractor emitted exactly two sector sets,
+    one of them intermittently dropping 'Asset Protection & Risk Management' from a ten-item list.
+    Set A appeared at run 15, vanished at 17, returned at 20 and 22 -- and because 20 and 22
+    agreed, the delta confirmed and rewrote silver. Nothing on the site had changed. This is the
+    residual the day-2 finding predicted in writing ("a model that produces the wrong value ~50% of
+    the time will occasionally emit it twice in a row").
+
+    Reproduction cannot see it, because a returning value and a new value that repeated look
+    identical when you only hold the previous observation. The sequence tells them apart: a value
+    that was already seen, then superseded, and has now come back is OSCILLATING. Silver is not
+    rewritten for it, and the trust event says so in those words -- which is a more useful thing to
+    tell a reader than a fifth "site facts changed".
     """
-    prior = rl.latest_observation(crd, "fact_fingerprint", exclude_run=rl.current_run())
-    prev = json.loads(prior[0]) if prior and prior[0] else {}
+    hist = rl.observation_history(crd, "fact_fingerprint", limit=6,
+                                  exclude_run=rl.current_run())
+    seq = [json.loads(v) for v, _, _ in hist if v]
+    prev = seq[-1] if seq else {}
     if write:
         rl.observe(crd, "fact_fingerprint", json.dumps(new_facts, default=str, sort_keys=True))
 
-    confirmed, unconfirmed = {}, {}
+    confirmed, unconfirmed, oscillating = {}, {}, {}
     for field, text in deltas.items():
-        key = field.split(":", 1)[0]
-        now = new_facts.get("titles", {}).get(field.split(":", 1)[1]) if key == "title" \
-            else new_facts.get({"roster_gone": "roster", "roster_added": "roster"}.get(key, key))
-        before = prev.get("titles", {}).get(field.split(":", 1)[1]) if key == "title" \
-            else prev.get({"roster_gone": "roster", "roster_added": "roster"}.get(key, key))
-        (confirmed if prev and before is not None and _same(before, now) else unconfirmed)[field] = text
-    return confirmed, unconfirmed
+        now = _field_value(new_facts, field)
+        before = _field_value(prev, field) if prev else None
+        past = [_field_value(f, field) for f in seq]
+        # Did this exact value appear earlier and then get displaced by a different one? That is
+        # what oscillation looks like in a sequence, and it stays true however many times the value
+        # has since repeated: A,B,A,A is still a model alternating between A and B, not a site that
+        # changed twice. Testing only "the previous observation differs" misses that -- measured on
+        # 329496, where the A,B,A,A sequence confirmed on its second consecutive A.
+        returned = any(_same(past[i], now) and any(not _same(past[j], now)
+                                                   for j in range(i + 1, len(past)))
+                       for i in range(len(past)))
+        if returned:
+            oscillating[field] = text
+        elif prev and before is not None and _same(before, now):
+            confirmed[field] = text
+        else:
+            unconfirmed[field] = text
+    return confirmed, unconfirmed, oscillating
 
 
 def _same(a, b) -> bool:
@@ -207,10 +238,11 @@ def classify(firm: dict, *, write: bool, prior_run) -> dict:
         deltas, wording = _diff_facts(old, ext)
         new_team = {m.name.strip().lower(): (m.title, m.is_principal) for m in ext.team}
         new_facts = _facts(ext.sectors, ext.founded_year, new_team)
-        confirmed, unconfirmed = _confirm(crd, deltas, new_facts, write=write)
+        confirmed, unconfirmed, oscillating = _confirm(crd, deltas, new_facts, write=write)
         material = list(confirmed.values())
         out["deltas"] = material
         out["unconfirmed"] = list(unconfirmed.values())
+        out["oscillating"] = list(oscillating.values())
 
         # The raw capture is history either way (append-only; identical pages dedupe to 0 rows).
         if write:
@@ -218,8 +250,15 @@ def classify(firm: dict, *, write: bool, prior_run) -> dict:
 
         since = f"since run {prior_run[2]} ({prior_run[1]:%Y-%m-%d %H:%M}Z)" if prior_run else ""
         if not material:
-            out["verdict"] = "unconfirmed" if unconfirmed else "cosmetic"
-            if unconfirmed:
+            out["verdict"] = ("oscillating" if oscillating else
+                              "unconfirmed" if unconfirmed else "cosmetic")
+            if oscillating:
+                detail = (f"fact delta OSCILLATING ({'; '.join(list(oscillating.values())[:3])}) -- "
+                          "this exact value was recorded earlier, replaced, and has now returned, "
+                          "so the extractor is alternating between forms rather than the site "
+                          "changing; silver not rewritten and this record's site-derived cells "
+                          "cannot be kept current by re-extraction alone")
+            elif unconfirmed:
                 detail = (f"fact delta seen ONCE ({'; '.join(list(unconfirmed.values())[:4])}) -- "
                           "not yet reproduced, so it is not yet distinguishable from extraction "
                           "variance; silver not rewritten, re-checked next cycle")

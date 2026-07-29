@@ -125,6 +125,22 @@ def latest_observation(crd: str, kind: str, *, exclude_run: int | None = None):
         return cur.fetchone()
 
 
+def observation_history(crd: str, kind: str, *, limit: int = 6, exclude_run: int | None = None):
+    """The last `limit` observations for (crd, kind), oldest first.
+
+    Comparing only against the previous run cannot tell a change from an oscillation: a value that
+    was superseded and has now returned looks identical to a new value that reproduced. Telling
+    those apart needs the sequence, not the last element.
+    """
+    with db.get_conn() as c, c.cursor() as cur:
+        cur.execute(
+            "select value, observed_at, run_id from ops.observations"
+            " where crd = %s and kind = %s and (%s::bigint is null or run_id <> %s)"
+            " order by observed_at desc limit %s",
+            (crd, kind, exclude_run, exclude_run, limit))
+        return list(reversed(cur.fetchall()))
+
+
 def trust_event(crd: str, check_type: str, prior: str | None, current: str | None,
                 evidence: str, action: str) -> None:
     rid = _run_id.get()

@@ -36,7 +36,13 @@ _WORD = re.compile(r"[a-z]{3,}")
 _GENERIC = {"services", "service", "fund", "funds", "investment", "investments", "management",
             "capital", "partners", "group", "firm", "market", "markets", "sector", "sectors",
             "industry", "company", "companies", "business", "wealth", "asset", "assets",
-            "equity", "strategies", "strategy", "office", "family"}
+            "equity", "strategies", "strategy", "office", "family",
+            # Size-band and LP-language tokens: "lower-middle-market" describes a fund's deal
+            # segment, not a sector, and "limited partners" / "private" appear in every LP-seeking
+            # mandate. Left unfiltered, "middle" substring-matched stated sectors and re-opened
+            # the same laundering path the original stoplist closed -- on the verbatim Goal 2
+            # mandate itself.
+            "lower", "middle", "upper", "seeking", "limited", "private"}
 
 
 def _informative(term: str) -> list[str]:
@@ -106,6 +112,13 @@ def fit_rank(mandate: str, *, sector_terms: list[str] | None = None,
         cols = [d[0] for d in cur.description]
         recs = [dict(zip(cols, row)) for row in cur.fetchall()]
         _attach_signals(cur, recs)
+        # Coverage honesty: a qualifying record without an indexed embedding would silently drop
+        # out of a ranking that presents itself as covering the whole qualifying set. Count them
+        # and say so instead of claiming "ALL" while ranking a subset.
+        cur.execute(
+            "select count(*) from gold.records r left join gold.rag_docs d using (crd) "
+            "where r.release_state = 'qualifying' and (d.crd is null or d.embedding is null)")
+        unranked = cur.fetchone()[0]
 
     ranked = []
     for r in recs:
@@ -163,8 +176,12 @@ def fit_rank(mandate: str, *, sector_terms: list[str] | None = None,
             "fit_confidence": tier, "evidence": evidence, "caveats": caveats,
             "aum_note": aum_note})
     ranked.sort(key=lambda x: -x["fit_score"])
+    note = ("deterministic weighted ranking over all indexed qualifying records; sector "
+            "matching is keyword-based (approximate); confidence tier reflects "
+            "evidence presence, not score size")
+    if unranked:
+        note += f"; {unranked} qualifying record(s) not yet indexed and NOT ranked here"
     return {"mandate": mandate, "sector_terms": sector_terms or [],
-            "weights": WEIGHTS, "considered": len(ranked), "ranked": ranked[:k],
-            "method_note": ("deterministic weighted ranking over ALL qualifying records; sector "
-                            "matching is keyword-based (approximate); confidence tier reflects "
-                            "evidence presence, not score size")}
+            "weights": WEIGHTS, "considered": len(ranked),
+            "unranked_no_embedding": unranked, "ranked": ranked[:k],
+            "method_note": note}

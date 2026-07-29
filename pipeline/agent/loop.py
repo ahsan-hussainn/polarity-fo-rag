@@ -91,7 +91,14 @@ def _check_output(ans: GoalAnswer, grounding: dict[str, dict], pickable: set[str
             by_name.setdefault(nm, r)
     for p in ans.picks:
         key = p.firm.strip().lower()
-        rec = by_name.get(key) or next((r for n, r in by_name.items() if key in n or n in key), None)
+        rec = by_name.get(key)
+        if rec is None:
+            # Substring fallback covers stylistic name variants ("Wellspring" for "Wellspring
+            # Family Office, LLC") -- but only when UNIQUE. An ambiguous partial name must fail
+            # the gate rather than bind to an arbitrary record and have the email/tier checks
+            # run against the wrong firm.
+            subs = [r for n, r in by_name.items() if key in n or n in key]
+            rec = subs[0] if len(subs) == 1 else None
         if rec is None:
             failures.append(f"pick '{p.firm}' is not a record any tool returned this session")
             continue

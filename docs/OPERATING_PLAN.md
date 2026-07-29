@@ -44,9 +44,24 @@ for: order of work is by product consequence, and deviations get recorded here, 
   baselines for all held records) → compare vs prior observations → evidence-based trust events →
   refresh oldest-checked batch → discovery tranche (once the inclusion gate exists) → build-gold →
   reconcile → export → incremental rag-index → close ledger row with tokens/cost/latency.
-- **Staleness detectors (3, independent):** website field-level diff (re-extract on hash change;
-  cosmetic changes logged but labeled), ADV filing-date delta, rotating small-sample vendor
-  re-verification. Any one firing satisfies condition 3; status tracked daily.
+- **Staleness detectors — CORRECTED 2026-07-29 (day 3) after measuring each one.** This line
+  previously claimed "3, independent" and that was not true of the code. What is actually running:
+  1. **Website field-level diff** (re-extract on hash change; cosmetic changes logged but labeled).
+     Real from cycle 1, and the detector that satisfied window condition 3 — 101 trust events.
+  2. **Registry re-check (ADR-0036)** — REBUILT. The original ADV filing-date detector compared our
+     own held `data_asof` against our own previous observation of it, which nothing updates, so it
+     could never fire: 772 observations, zero events. It now asks IAPD for the adviser's current
+     record and compares four live facts (filing date, registration scope, registered name, whether
+     the CRD still resolves). First run: 59/59 checked, 3 firms carrying a newer filing.
+  3. **Vendor re-verification — NOT AVAILABLE, and the cycle says so every run.** The
+     MillionVerifier credential has been out of credits since day 1 and now returns HTTP 403. It
+     was never built and cannot be until the credential is replaced. Rather than drop the claim
+     quietly, `_vendor_preflight` checks the credential each cycle and ledgers the failure with the
+     vendor's actual response and its consequence (held grades keep their original basis and are
+     not re-asserted as current). A capability the system knows it lacks is worth more than one it
+     pretends to have.
+
+  Condition 3 is satisfied by detectors 1 and 2, both evidence-based and cross-run.
 - **Concurrency:** bounded worker pool (~8) with per-host politeness + exponential backoff; batch
   caps sized so a cycle finishes well under the 6h cadence; DB work-claiming so an interrupted run
   resumes instead of duplicating (also the architecture-note §4 answer).

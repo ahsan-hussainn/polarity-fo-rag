@@ -88,6 +88,45 @@ def _fetch_home(url: str) -> dict:
             "duration_ms": dur, "url": page.url}
 
 
+def _vendor_preflight() -> dict:
+    """Check the email-verification vendor credential and RECORD the answer, every cycle.
+
+    The operating plan claimed three staleness detectors; the third was rotating vendor
+    re-verification of email grades. It was never built, and it cannot be: the MillionVerifier
+    credential has been out of credits since day 1 and now returns 403. The cycle writes
+    `email_grades` observations that no code reads -- 777 of them with zero consumers.
+
+    Retracting the claim silently would leave the same hole with better prose. Instead the cycle
+    states its own degraded capability on every run, with the vendor's actual response as the
+    reason, so the gap is evidence in the ledger rather than an absence a reader has to notice.
+    A capability the system knows it does not have is worth more than one it pretends to.
+    """
+    import urllib.request
+
+    key = os.getenv("MILLIONVERIFIER_API_KEY")
+    if not key:
+        out = {"available": False, "reason": "no MILLIONVERIFIER_API_KEY configured"}
+        rl.event("observe", "vendor_preflight", call_class="external_api", status="error",
+                 detail=out)
+        return out
+    t0 = time.monotonic()
+    try:
+        with urllib.request.urlopen(
+                f"https://api.millionverifier.com/api/v3/credits?api={key}", timeout=20) as r:
+            body = r.read().decode("utf-8", errors="replace")[:200]
+        out = {"available": True, "response": body}
+        status = "ok"
+    except Exception as e:
+        out = {"available": False,
+               "reason": f"vendor credential rejected: {type(e).__name__}: {e}",
+               "consequence": ("email grades cannot be re-verified this cycle; held grades keep "
+                               "their original basis and are NOT re-asserted as current")}
+        status = "error"
+    rl.event("observe", "vendor_preflight", call_class="external_api", status=status,
+             duration_ms=int((time.monotonic() - t0) * 1000), detail=out)
+    return out
+
+
 def _fetch_registry(crd: str) -> dict:
     """One firm's current IAPD registration record, timed and ledgered (ADR-0036)."""
     from pipeline.bronze import iapd
@@ -111,6 +150,7 @@ def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
              "reclassify_budget": reclassify_budget(len(firms))}
     rid = rl.current_run()
     changed: list[tuple] = []
+    stats["vendor_reverification"] = _vendor_preflight()
 
     # A dry run must not write into the chain that scheduled runs compare against: observations
     # and trust events from a laptop would become some future cycle's "previous run" baseline, and

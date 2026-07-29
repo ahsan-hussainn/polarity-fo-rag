@@ -38,6 +38,9 @@ RESOLVE_PER_CYCLE = int(os.getenv("OPS_RESOLVE_PER_CYCLE", "40"))
 # Promotion re-extracts each promoted firm into silver (one model call each), so it is budgeted
 # like discovery rather than left unbounded (ADR-0034).
 PROMOTE_PER_CYCLE = int(os.getenv("OPS_PROMOTE_PER_CYCLE", "25"))
+# One government API rather than N independent hosts, so the polite ceiling is well below the
+# website sweep's worker count (ADR-0036).
+REGISTRY_WORKERS = int(os.getenv("OPS_REGISTRY_WORKERS", "4"))
 
 
 def reclassify_budget(monitored: int) -> int:
@@ -85,13 +88,40 @@ def _fetch_home(url: str) -> dict:
             "duration_ms": dur, "url": page.url}
 
 
+def _fetch_registry(crd: str) -> dict:
+    """One firm's current IAPD registration record, timed and ledgered (ADR-0036)."""
+    from pipeline.bronze import iapd
+
+    t0 = time.monotonic()
+    snap = iapd.fetch_firm(crd, timeout=FETCH_TIMEOUT)
+    rl.event("observe", "fetch_registry", call_class="external_api", target=crd,
+             status="ok" if snap.get("found") else "error",
+             duration_ms=int((time.monotonic() - t0) * 1000),
+             detail={"crd": crd, "found": snap.get("found"), "scope": snap.get("ia_scope"),
+                     "filing_date": snap.get("adv_filing_date")})
+    return snap
+
+
 def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
     stats = {"monitored": len(firms), "fetched": 0, "fetch_errors": 0,
              "baselined": 0, "changed": 0, "dark": 0, "adv_filing_moved": 0,
+             "registration_inactive": 0, "registry_name_changed": 0, "registry_missing": 0,
+             "registry_checked": 0, "registry_errors": 0,
              "material": 0, "cosmetic": 0, "unconfirmed": 0, "reclassify_skipped": 0,
              "reclassify_budget": reclassify_budget(len(firms))}
     rid = rl.current_run()
     changed: list[tuple] = []
+
+    # A dry run must not write into the chain that scheduled runs compare against: observations
+    # and trust events from a laptop would become some future cycle's "previous run" baseline, and
+    # cross-run evidence would be measuring a local test. Reads still happen; only writes are held.
+    def observe(*a, **kw):
+        if write:
+            rl.observe(*a, **kw)
+
+    def trust_event(*a, **kw):
+        if write:
+            rl.trust_event(*a, **kw)
 
     with_sites = [f for f in firms if f.get("website")]
     results: dict[str, dict] = {}
@@ -105,22 +135,77 @@ def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
                 results[crd] = {"status": None, "hash": None, "error": repr(e),
                                 "duration_ms": None, "url": None}
 
+    # The regulator's current record for every held CRD (ADR-0036). Fewer workers than the website
+    # sweep on purpose: this is one government API rather than N independent hosts, so the polite
+    # concurrency ceiling is much lower.
+    registry: dict[str, dict] = {}
+    with ThreadPoolExecutor(max_workers=REGISTRY_WORKERS) as pool:
+        futs = {pool.submit(_fetch_registry, f["crd"]): f["crd"] for f in firms}
+        for fut in as_completed(futs):
+            crd = futs[fut]
+            try:
+                snap = fut.result()
+            except Exception as e:
+                stats["registry_errors"] += 1
+                rl.event("observe", "fetch_registry", call_class="external_api", target=crd,
+                         status="error", detail={"crd": crd, "error": repr(e)})
+                continue
+            stats["registry_checked"] += 1
+            registry[crd] = snap
+
     for f in firms:
         crd = f["crd"]
 
-        # Non-fetch baselines: the held ADV filing date (detector: new/amended SEC filing) and the
-        # current email grades (detector: vendor re-verification flips, day-2+).
-        if f.get("data_asof"):
-            held = str(f["data_asof"])
-            prior = rl.latest_observation(crd, "adv_filing_date", exclude_run=rid)
-            rl.observe(crd, "adv_filing_date", held)
-            if prior and prior[0] != held:
-                stats["adv_filing_moved"] += 1
-                rl.trust_event(crd, "adv_filing", prior[0], held,
-                               f"SEC ADV latest filing date moved since run {prior[2]}: "
-                               f"{prior[0]} -> {held} (a new or amended filing reached bronze); "
-                               "held firm facts may be superseded", "flagged")
-        rl.observe(crd, "email_grades",
+        # The registry detector compares the REGULATOR'S current record against what we hold
+        # (ADR-0036). It previously compared our held filing date against our own previous
+        # observation of that same held value -- which nothing in the cycle updates, so it could
+        # not fire, and did not: 772 observations, zero events.
+        reg = registry.get(crd)
+        if reg is not None and reg.get("found"):
+            live_filed = reg.get("adv_filing_date")
+            held_filed = str(f["data_asof"]) if f.get("data_asof") else None
+            if live_filed:
+                observe(crd, "adv_filing_date_live", live_filed)
+                if held_filed and live_filed > held_filed:
+                    stats["adv_filing_moved"] += 1
+                    trust_event(crd, "adv_filing", held_filed, live_filed,
+                                   f"the adviser's current IAPD record shows a filing dated "
+                                   f"{live_filed}; the record we hold was built from the "
+                                   f"{held_filed} filing, so ADV-derived cells (AUM, address, "
+                                   f"phone, client mix) may be superseded", "flagged")
+            scope = reg.get("ia_scope")
+            if scope:
+                prior_scope = rl.latest_observation(crd, "adv_registration_scope", exclude_run=rid)
+                observe(crd, "adv_registration_scope", scope)
+                # Stronger than a filing bump: a firm that is no longer a registered adviser
+                # invalidates the BASIS of every ADV-derived cell, not just their currency.
+                if scope != "ACTIVE":
+                    stats["registration_inactive"] += 1
+                    if not prior_scope or prior_scope[0] == "ACTIVE":
+                        trust_event(crd, "adv_registration_lapsed",
+                                       (prior_scope[0] if prior_scope else "ACTIVE"), scope,
+                                       f"IAPD now reports this adviser's registration as {scope}; "
+                                       "ADV-derived cells rest on a registration that is no longer "
+                                       "current", "flagged")
+            live_name = (reg.get("firm_name") or "").strip()
+            held_name = (f.get("family_office_name") or "").strip()
+            if live_name and held_name and live_name.upper() != held_name.upper():
+                stats["registry_name_changed"] += 1
+                observe(crd, "adv_firm_name", live_name)
+                trust_event(crd, "adv_name_changed", held_name, live_name,
+                               "the adviser's registered name at IAPD differs from the name on "
+                               "the held record; this is an identity event, not a cosmetic one",
+                               "flagged")
+        elif reg is not None and reg.get("found") is False:
+            stats["registry_missing"] += 1
+            prior_seen = rl.latest_observation(crd, "adv_registration_scope", exclude_run=rid)
+            observe(crd, "adv_registration_scope", "not_found")
+            if prior_seen and prior_seen[0] != "not_found":
+                trust_event(crd, "adv_registration_gone", prior_seen[0], "not_found",
+                               "this CRD no longer resolves to a firm record at IAPD; the "
+                               "regulatory basis for the held record cannot be re-checked",
+                               "flagged")
+        observe(crd, "email_grades",
                    f"{f.get('primary_email_grade') or '-'}/{f.get('secondary_email_grade') or '-'}")
 
         r = results.get(crd)
@@ -135,17 +220,17 @@ def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
 
         prior_status = rl.latest_observation(crd, "website_http_status", exclude_run=rid)
         prior_hash = rl.latest_observation(crd, "website_home_hash", exclude_run=rid)
-        rl.observe(crd, "website_http_status",
+        observe(crd, "website_http_status",
                    str(r["status"]) if r["status"] is not None else f"error:{r['error']}",
                    url=r["url"])
         if r["hash"]:
-            rl.observe(crd, "website_home_hash", r["hash"], url=r["url"])
+            observe(crd, "website_home_hash", r["hash"], url=r["url"])
 
         # Cross-run comparison -- the evidence-based staleness the mandate's condition 3 requires.
         now_desc = f"HTTP {r['status']}" if r["status"] is not None else (r["error"] or "unreachable")
         if prior_status and prior_status[0] == "200" and r["status"] != 200:
             stats["dark"] += 1
-            rl.trust_event(crd, "website_dark", prior_status[0], now_desc,
+            trust_event(crd, "website_dark", prior_status[0], now_desc,
                            f"home page was reachable (HTTP 200) at run {prior_status[2]} "
                            f"({prior_status[1]:%Y-%m-%d %H:%M}Z) and now returns {now_desc}; the "
                            "source may have gone dark -- trust reduced pending next cycle's re-check",
@@ -153,7 +238,7 @@ def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
         elif prior_hash and r["hash"] and prior_hash[0] != r["hash"]:
             stats["changed"] += 1
             if not write:
-                rl.trust_event(crd, "website_change", prior_hash[0][:16], r["hash"][:16],
+                trust_event(crd, "website_change", prior_hash[0][:16], r["hash"][:16],
                                "home-page text changed (dry-run: materiality not classified)",
                                "flagged")
             else:

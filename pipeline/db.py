@@ -44,12 +44,18 @@ def get_conn() -> psycopg.Connection:
     return psycopg.connect(get_dsn())
 
 
-# --- Pooled connections for the serving path (ADR-0017) -------------------------------------
-# Each psycopg.connect() to the Supabase pooler pays ~1s of TLS handshake -- fine for batch
-# pipeline stages, unacceptable per web request. The pool keeps connections open and hands them
-# out safely across FastAPI's worker threads (a bare cached connection would NOT be thread-safe).
-# Serving is read-only, so connections are autocommit: no transaction state to leak between
-# requests. check=idle-reconnect is handled by the pool itself.
+# --- One pooled connection set per process (ADR-0017, extended by ADR-0036) -----------------
+# Each psycopg.connect() to the Supabase pooler pays ~1s of TLS handshake. That was tolerable
+# when only the serving path cared about latency, and the ops ledger opened a fresh connection
+# per write. It stopped being tolerable when measured: one observe sweep over 59 firms writes
+# several hundred ledger rows, and the pooler began CLOSING CONNECTIONS mid-sweep
+# ("server closed the connection unexpectedly") -- a hard failure, not just slowness. At 500
+# records the same sweep would have opened several thousand.
+#
+# So the pool is now the process-wide connection source for both serving and the ops ledger.
+# It hands connections out safely across threads (a bare cached connection would NOT be
+# thread-safe), autocommits (no transaction state leaks between callers, and every ledger write
+# is independently durable), and revalidates idle connections the pooler has dropped.
 _pool = None
 
 
@@ -59,7 +65,7 @@ def get_pool():
         from psycopg_pool import ConnectionPool
 
         _pool = ConnectionPool(
-            get_dsn(), min_size=0, max_size=4, open=True,
+            get_dsn(), min_size=0, max_size=int(os.getenv("DB_POOL_MAX", "8")), open=True,
             kwargs={"autocommit": True},
             check=ConnectionPool.check_connection,  # revalidate idle conns (pooler drops them)
         )

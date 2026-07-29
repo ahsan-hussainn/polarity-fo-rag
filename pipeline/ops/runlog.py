@@ -54,13 +54,12 @@ def _git_sha() -> str | None:
 
 
 def start_run(kind: str, trigger: str, config: dict | None = None) -> int:
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "insert into ops.runs (kind, trigger, git_sha, config) "
             "values (%s, %s, %s, %s::jsonb) returning run_id",
             (kind, trigger, _git_sha(), json.dumps(config or {})))
         rid = cur.fetchone()[0]
-        c.commit()
     _run_id.set(rid)
     return rid
 
@@ -69,7 +68,7 @@ def finish_run(status: str = "ok", *, error: str | None = None, summary: dict | 
     rid = _run_id.get()
     if rid is None:
         return
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "update ops.runs set finished_at = now(), status = %s, error = %s, summary = %s::jsonb,"
             " tokens_in  = coalesce((select sum(tokens_in)  from ops.run_events where run_id = %s), 0),"
@@ -77,7 +76,6 @@ def finish_run(status: str = "ok", *, error: str | None = None, summary: dict | 
             " usd_est    = coalesce((select sum(usd_est)    from ops.run_events where run_id = %s), 0)"
             " where run_id = %s",
             (status, error, json.dumps(summary or {}, default=str), rid, rid, rid, rid))
-        c.commit()
     _run_id.set(None)
 
 
@@ -88,14 +86,13 @@ def event(phase: str, name: str, *, call_class: str | None = None, target: str |
     rid = _run_id.get()
     if rid is None:
         return
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "insert into ops.run_events (run_id, phase, event, call_class, target, status,"
             " duration_ms, tokens_in, tokens_out, usd_est, detail)"
             " values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb)",
             (rid, phase, name, call_class, target, status, duration_ms, tokens_in, tokens_out,
              usd, json.dumps(detail or {}, default=str)))
-        c.commit()
 
 
 def observe(crd: str, kind: str, value: str | None, *, url: str | None = None,
@@ -103,12 +100,11 @@ def observe(crd: str, kind: str, value: str | None, *, url: str | None = None,
     rid = _run_id.get()
     if rid is None:
         return
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "insert into ops.observations (run_id, crd, kind, value, url, detail)"
             " values (%s,%s,%s,%s,%s,%s::jsonb)",
             (rid, crd, kind, value, url, json.dumps(detail or {}, default=str)))
-        c.commit()
 
 
 def latest_observation(crd: str, kind: str, *, exclude_run: int | None = None):
@@ -116,7 +112,7 @@ def latest_observation(crd: str, kind: str, *, exclude_run: int | None = None):
 
     Returns (value, observed_at, run_id) or None. exclude_run keeps a run from comparing against
     its own writes (cross-run means cross-run)."""
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "select value, observed_at, run_id from ops.observations"
             " where crd = %s and kind = %s and (%s::bigint is null or run_id <> %s)"
@@ -132,7 +128,7 @@ def observation_history(crd: str, kind: str, *, limit: int = 6, exclude_run: int
     was superseded and has now returned looks identical to a new value that reproduced. Telling
     those apart needs the sequence, not the last element.
     """
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "select value, observed_at, run_id from ops.observations"
             " where crd = %s and kind = %s and (%s::bigint is null or run_id <> %s)"
@@ -146,12 +142,11 @@ def trust_event(crd: str, check_type: str, prior: str | None, current: str | Non
     rid = _run_id.get()
     if rid is None:
         return
-    with db.get_conn() as c, c.cursor() as cur:
+    with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             "insert into ops.trust_events (run_id, crd, check_type, prior, current, evidence, action)"
             " values (%s,%s,%s,%s,%s,%s,%s)",
             (rid, crd, check_type, prior, current, evidence, action))
-        c.commit()
 
 
 def log_query(*, source: str, query: str, intent: str | None = None,
@@ -159,12 +154,11 @@ def log_query(*, source: str, query: str, intent: str | None = None,
               verification: dict | None = None, latency_ms: int | None = None) -> None:
     """ADR-0026 Layer 3. Always attempted (run or no run); NEVER raises into the answer path."""
     try:
-        with db.get_conn() as c, c.cursor() as cur:
+        with db.get_pool().connection() as c, c.cursor() as cur:
             cur.execute(
                 "insert into ops.query_log (source, query, intent, nearest_distance, outcome,"
                 " verification, latency_ms, run_id) values (%s,%s,%s,%s,%s,%s::jsonb,%s,%s)",
                 (source, query, intent, nearest_distance, outcome,
                  json.dumps(verification or {}, default=str), latency_ms, _run_id.get()))
-            c.commit()
     except Exception:
         _log.warning("query_log write failed (answer path unaffected)", exc_info=True)

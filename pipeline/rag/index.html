@@ -285,8 +285,11 @@ function card(s, i){
     s.adv_filing_url ? `<a href="${esc(s.adv_filing_url)}" target="_blank" rel="noopener">SEC ADV filing</a>`:"",
     (s.matched||[]).length ? `<span class="sig">matched: ${s.matched.join(" + ")}</span>`:"",
   ].filter(Boolean).join("");
+  const CATEGORY_TAG = {wealth_manager:"wealth manager — not a family office",
+                        ria_with_fo_practice:"RIA w/ FO practice — not a family office",
+                        embedded_fo_practice:"advisory firm — evidenced family-office practice"};
   const tag = s.is_family_office === false
-    ? `<span class="role" style="color:var(--warn,#b06d00)">· ${s.entity_category==="wealth_manager"?"wealth manager — not a family office":"RIA w/ FO practice — not a family office"}</span>`
+    ? `<span class="role" style="color:var(--warn,#b06d00)">· ${CATEGORY_TAG[s.entity_category]||"not a standalone family office"}</span>`
     : "";
   return `<div class="card" style="animation-delay:${i*45}ms">
     <div class="rail"><div class="rank">${String(i+1).padStart(2,"0")}</div>${seal}</div>
@@ -349,7 +352,7 @@ async function askStream(q){
 function groundingNote(v){
   if (!v) return "";
   if (v.passed && !v.repaired)
-    return `<div class="gcheck ok">✓ independent grounding check passed — every firm and email is from the dataset</div>`;
+    return `<div class="gcheck ok">✓ independent grounding check passed — every email is from the dataset, no quarantined address, entity labels honest</div>`;
   if (v.passed && v.repaired)
     return `<div class="gcheck warn">⟳ first draft failed the grounding check and was corrected before release</div>`;
   return `<div class="gcheck warn">⚠ answer withheld — could not be fully grounded in the dataset</div>`;
@@ -384,8 +387,16 @@ $("#q").addEventListener("keydown", e => { if (e.key === "Enter") ask(); });
 
 // The coverage count is read live from /stats, never hand-carried in this file: the qualifying
 // set changes every operating cycle, and a hardcoded number here would silently go stale.
+// Rendered per category (ADR-0028: the three qualifying categories are never blended into one
+// number on any surface).
+const CATEGORY_NOUN = {single_family_office:"single-family office", multi_family_office:"multi-family office",
+                       embedded_fo_practice:"advisory firm with an evidenced FO practice"};
 fetch("/stats").then(r => r.json())
-  .then(d => { if (d.qualifying) $("#qcount").textContent = `${d.qualifying} qualifying records`; })
+  .then(d => {
+    const parts = Object.entries(d.qualifying_by_category || {})
+      .map(([cat, n]) => `${n} ${CATEGORY_NOUN[cat] || cat}${n === 1 ? "" : "s"}`);
+    if (parts.length) $("#qcount").textContent = parts.join(" + ");
+  })
   .catch(() => {});
 </script>
 </body>

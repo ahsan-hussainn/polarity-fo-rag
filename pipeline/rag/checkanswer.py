@@ -7,11 +7,20 @@ may ship. It does not call an LLM -- it checks the text against the evidence wit
 logic, so it cannot be talked out of a failure the way a self-grading model can.
 
 Checks (each a way an answer can be ungrounded or unsafe):
-  1. firm grounding   -- every firm the answer names is in the retrieved set (no invented firms).
-  2. email grounding  -- every email in the answer belongs to a retrieved record (no invented address).
-  3. suppression      -- no quarantined/vendor-rejected address (gold.contact_audit) appears anywhere.
-  4. count fidelity   -- if the retrieval carried a dataset total, the answer's count matches it.
-  5. category honesty -- a reclassified non-FO named in the answer is not called a "family office".
+  1. email grounding  -- every email in the answer belongs to a retrieved record (no invented
+                         address). BLOCKS release.
+  2. suppression      -- no quarantined/vendor-rejected address (gold.contact_audit) appears
+                         anywhere. BLOCKS release.
+  3. count fidelity   -- if the retrieval carried a dataset total, an explicit count claim that
+                         contradicts it is logged as a WARNING (count phrases are regex-detected,
+                         too noisy to block on).
+  4. category honesty -- a firm that is not a standalone family office (wealth manager, RIA with
+                         an FO practice, or an advisory firm with an evidenced embedded FO
+                         practice) named in the answer must carry its label; a bare "family
+                         office" presentation of one BLOCKS release.
+Firm-name grounding from free text is NOT implemented -- firm-name detection in prose is too noisy
+to block on. Firm honesty is enforced through the email checks plus the category check above.
+Stated here so the control's documented scope matches its code, not more.
 
 Returns a Verdict; answer.py repairs-or-refuses on failure and logs the result, so the control is
 visible in real runs (a check that never changes a release has not proved authority).
@@ -25,8 +34,11 @@ from pipeline import db
 
 _EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 _FO_CATEGORIES = {"single_family_office", "multi_family_office"}
-# Category -> the plain label the answer is allowed to use for a non-FO firm.
-_NON_FO_LABEL = {"wealth_manager": "wealth manager", "ria_with_fo_practice": "RIA with a family-office practice"}
+# Category -> the plain label the answer must carry for a firm that is not a standalone FO
+# (ADR-0028: embedded_fo_practice qualifies for coverage but is never presented as an FO).
+_NON_FO_LABEL = {"wealth_manager": "wealth manager",
+                 "ria_with_fo_practice": "RIA with a family-office practice",
+                 "embedded_fo_practice": "family-office practice"}
 
 
 @dataclass
@@ -62,22 +74,17 @@ def check(answer_text: str, hits: list[dict], total: int | None = None) -> Verdi
     allowed_emails.discard("")
     crds = [h["crd"] for h in hits]
 
-    # 1. firm grounding -- each firm name in the answer must be a retrieved firm. We check the reverse-
-    #    safe direction: any retrieved firm may be named; flag emails/firms that are NOT retrievable.
-    #    (Firm-name detection from free text is noisy, so firm grounding is asserted via emails + a
-    #    check that the answer does not name a firm we can prove is absent -- see category check.)
-
-    # 2. email grounding -- every email string in the answer must belong to a retrieved record.
+    # 1. email grounding -- every email string in the answer must belong to a retrieved record.
     for em in {m.group(0).lower() for m in _EMAIL_RE.finditer(text)}:
         if em not in allowed_emails:
             v.failures.append(f"answer contains an email not in the retrieved records: {em}")
 
-    # 3. suppression -- a vendor-rejected/quarantined address must not appear on any surface.
+    # 2. suppression -- a vendor-rejected/quarantined address must not appear on any surface.
     for em in _quarantined_emails(crds):
         if em and em in low:
             v.failures.append(f"answer exposes a quarantined (vendor-rejected) address: {em}")
 
-    # 4. count fidelity -- if a dataset total was provided, a count CLAIM must match it. Only explicit
+    # 3. count fidelity -- if a dataset total was provided, a count CLAIM must match it. Only explicit
     #    count phrasings are judged ("N family offices", "there are N", "a total of N") -- never bare
     #    numbers or list markers like "2." which are not counts.
     if total is not None:
@@ -88,15 +95,17 @@ def check(answer_text: str, hits: list[dict], total: int | None = None) -> Verdi
             if n != total:
                 v.warnings.append(f"answer states a count of '{n}' but the dataset total is {total}")
 
-    # 5. category honesty -- a reclassified non-FO must not be called a family office in the answer.
+    # 4. category honesty -- a firm that is not a standalone FO must not be presented as one.
+    #    BLOCKS release: a confidently mislabelled entity is the exact harm ADR-0023 exists to stop,
+    #    and the repair path (answer.py names the failure and re-composes) handles it.
     for h in hits:
         cat = h.get("entity_category")
         if cat in _NON_FO_LABEL:
             name_l = _norm(h.get("family_office_name"))
             # if the firm is named AND the answer calls it a family office without the correction label
             if name_l and name_l in _norm(text) and "family office" in low and _NON_FO_LABEL[cat] not in low:
-                v.warnings.append(f"{h['family_office_name']} is a {_NON_FO_LABEL[cat]}, not a family office; "
-                                  f"answer should label it as such")
+                v.failures.append(f"{h['family_office_name']} is a {_NON_FO_LABEL[cat]}, not a "
+                                  f"standalone family office; the answer must label it as such")
 
     v.ok = not v.failures
     return v

@@ -99,8 +99,10 @@ SYSTEM = (
     "- Use only the records below; never invent a firm, person, email, number, or fact.\n"
     "- ENTITY HONESTY: each record has an 'Entity type'. Lead with affirmed family offices. A record "
     "marked 'wealth manager' or 'RIA with a family-office practice' is NOT a family office -- if you "
-    "mention it, say so plainly and never call it a family office. Do not present a non-FO as a "
-    "family office to satisfy the question.\n"
+    "mention it, say so plainly and never call it a family office. A record marked 'advisory firm "
+    "with an evidenced family-office practice' qualifies for coverage but is NOT a standalone family "
+    "office: include it where relevant, always with that label, never as simply 'a family office'. "
+    "Do not present a non-FO as a family office to satisfy the question.\n"
     "- If a 'Dataset total' line is present, use THAT number for any count -- the listed records may "
     "be a subset.\n"
     "- If no record matches the criteria exactly, say so plainly, then offer the nearest records as "
@@ -121,11 +123,14 @@ SYSTEM = (
 )
 
 
-# Plain labels for the entity category (ADR-0023: never present a non-FO as a family office).
+# Plain labels for the entity category (ADR-0023: never present a non-FO as a family office;
+# ADR-0028: the third qualifying category is counted but always labelled, never blended).
 _CATEGORY_LABEL = {
     "multi_family_office": "multi-family office", "single_family_office": "single-family office",
     "wealth_manager": "wealth manager (NOT a family office)",
     "ria_with_fo_practice": "RIA with a family-office practice (NOT a family office)",
+    "embedded_fo_practice": "advisory firm with an evidenced family-office practice "
+                            "(qualifying, but not a standalone family office)",
 }
 
 

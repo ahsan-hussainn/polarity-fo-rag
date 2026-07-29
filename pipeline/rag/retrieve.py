@@ -20,10 +20,12 @@ from pipeline import db
 
 RRF_K = 60   # standard RRF constant; dampens the influence of low ranks
 
-# Release gate: the RAG serves ONLY qualifying family offices (entity affirmed FO + decision-maker
-# proven). Reclassified non-FOs (wealth managers / RIAs) and quarantined firms are never retrievable
-# -- this is a family-office product, so a non-FO must not surface in an answer at all (stronger than
-# labeling it after the fact). The reclassified firms live in reclassified_firms.csv for audit.
+# Release gate: the RAG serves ONLY qualifying records. Under ADR-0028 that is three labelled
+# categories -- SFO, MFO, and advisory firms with an evidenced embedded FO practice -- and every
+# serving surface carries the label (answer.py's ENTITY HONESTY rules; checkanswer's blocking
+# category check); the categories are never blended into one number. Reclassified wealth managers
+# and quarantined firms are never retrievable; they live in reclassified_firms.csv /
+# quarantined.csv for audit.
 _RELEASE_GATE = "release_state = 'qualifying'"
 
 # Everything the answer layer needs to say "whom to contact, why them, and how to reach them" --

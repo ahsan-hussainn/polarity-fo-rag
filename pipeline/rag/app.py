@@ -91,8 +91,13 @@ def stats():
 
     with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute("select release_state, count(*) from gold.records group by release_state")
-        counts = {row[0]: row[1] for row in cur.fetchall()}
-    return {"qualifying": counts.get("qualifying", 0), "by_release_state": counts}
+        by_state = {row[0]: row[1] for row in cur.fetchall()}
+        # ADR-0028: the qualifying set is three labelled categories, never blended into one
+        # number on a surface -- so this endpoint serves the per-category split, not a total.
+        cur.execute("select entity_category, count(*) from gold.records "
+                    "where release_state = 'qualifying' group by entity_category")
+        by_cat = {row[0]: row[1] for row in cur.fetchall()}
+    return {"qualifying_by_category": by_cat, "by_release_state": by_state}
 
 
 @app.get("/agent", response_class=HTMLResponse)

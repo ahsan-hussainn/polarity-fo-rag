@@ -192,3 +192,100 @@ that unresolved status "remain visible", and while those records are visible on 
 surface — `/stats`, `reconcile`, the Coverage Desk — this answer does not point at them. A stronger
 answer would name the excluded count and why it is excluded. `abstained` also lists eight firms as
 bare names with no reason, where the schema asks for the reason.
+
+---
+
+## Goal 3 · Paid-tier case — run 2026-07-30, day 4
+
+**Exact goal string** (as committed in `docs/three-goals.md`):
+
+> Which records in your coverage have changed in a way that would change how I approach them since I
+> last looked, what specifically changed, and which ones should I now stop trusting?
+
+| Artifact | File |
+|---|---|
+| Manual retrieval — both surfaces tried | `goal3-manual.json` |
+| Agent structured output | `goal3-agent-output.json` (**run 56**) |
+| Raw run log | `goal3-run-log.jsonl` (30 rows) |
+| **Superseded — refused, kept deliberately** | `goal3-agent-run49-REFUSED.json` + log |
+| **Superseded — answered on faulty flags, kept deliberately** | `goal3-agent-run50-PREFIX.json` + log |
+
+### The manual path cannot answer this at all
+
+Not "answers it worse" — cannot answer. Both surfaces, same goal text:
+
+- **`POST /query`** returns a **refusal** from the out-of-scope floor (ADR-0026): *"That question is
+  outside what this dataset covers, so I don't have grounded records to answer it."* Correct
+  behaviour, and it is the whole point — the scope gate knows this is not a question about record
+  content.
+- **`POST /fit`** returns 5 records ranked by document similarity against a nonsense mandate, every
+  one `insufficient_evidence`. Arguably worse than the refusal: plausible-looking output with no
+  relationship to what was asked.
+
+The reason is structural. Change over time is not a property of any record; it is a property of the
+*history* of records. Both retrieval surfaces return current state, so neither can reach it. This is
+the widest manual-vs-agent gap of the three goals, which is what the brief asks Goal 3 to show.
+
+### What the agent produced
+
+Run 56: 7 steps, **$0.00637**, verification passed with no repair. **4 watchlist entries, 0 picks** —
+complete recall against the 4 records the ledger actually flags — each citing the current IAPD filing
+date *and* the filing date the held record was built from. That two-date evidence is what makes the
+answer actionable rather than a warning light.
+
+### Run 49 refused, and the control fired on the wrong target
+
+The agent named all 8 then-flagged records; the gate rejected every one as *"not a record any tool
+returned this session"*; the repair turn could not fix it and the session withheld its answer.
+Refusing beat laundering, but Goal 3 produced nothing.
+
+Two causes, both fixed. `t_record_history` returned `recs=[]` and was `pickable: False` — yet its
+no-arg branch returns `release_state='qualifying'` records, already released, as its own note says.
+ADR-0039 made it non-pickable to stop **never-released** candidates being presented as family offices
+to distrust, and `quarantine_summary` is still rightly non-pickable for exactly that. The same flag
+also blocked the released records the tool exists to surface. Separately, the schema had nowhere to
+put the answer: `picks` carry `fit_summary`/`confidence`/`outreach` — the shape of a recommendation to
+act — whereas "stop trusting this" is its opposite. Added a **gated** `watchlist`, verified three ways
+including the ADR-0039 regression case (a never-released firm on a distrust list must fail).
+
+### Run 50 answered — on flags that were not evidence
+
+Run 50 passed the gate with 7 entries, and none of them should have been there. Auditing it exposed a
+defect in the **dataset**, not the goal: `website_dark` fired on `prior == 200 and now != 200`, so any
+non-200 counted as the source going dark. Across the window that produced 20 events, of which **16
+were HTTP 202** — a success code — and 2 were HTTP 429.
+
+The proof was accidental. Two cycles overlapped, and the **same six firms** returned HTTP 200 at
+09:03–09:04Z and HTTP 202 at 09:08–09:11Z. A host that answers 200 and 202 five minutes apart has not
+gone dark; that is CDN or bot-protection behaviour toward our crawler. And 429 means we were
+throttled — with a per-host politeness budget the likely cause is our own crawl rate, so counting it
+as decay lets our own behaviour reduce a firm's trust.
+
+Corrected in `pipeline/ops/cycle.py`: 2xx/3xx reachable, 429 → "could not check", 4xx/5xx flag when
+the host served us before, and timeouts flag only if they reproduce on two consecutive cycles — the
+same rule the materiality classifier already applies to text changes. Also added the **recovery path,
+which never existed**: `trust_latest` takes the newest event per `(crd, check_type)`, so a flag stood
+forever with nothing to supersede it. ADR-0037 promised a re-verified firm stops carrying a scar; that
+is now true.
+
+Flags fell **8 → 4**, and all four survivors are `adv_filing` — live IAPD showing a filing newer than
+the held record's basis, which is genuine evidence. Every `website_dark` flag was withdrawn, because
+every one rested on a 2xx or 429. The two raised on 429 could not clear through the normal recovery
+path (that needs an observed 2xx, and a throttling host never gives one), so they were withdrawn by an
+explicit ledgered correction run which states that it asserts nothing about whether the site is up —
+it withdraws an inference the evidence never supported.
+
+**Window condition 3 is unaffected.** It rests on `adv_filing` and `decision_maker_gone`, not on these.
+
+### Remaining weakness: severity is overstated
+
+All four entries are labelled `stop trusting`. The evidence does not support that. An `adv_filing`
+event means *our source document has been superseded* — the correct action is the enum's other option,
+`re-verify before contacting`. The agent's own verdict prose is closer to right ("stop trusting these
+records **until they can be re-verified**") than its structured label. `coverage_note` and
+`limitations` are also both empty, so the answer never states its denominator: 4 of 40.
+
+Recorded rather than patched. The honest fix is another deterministic rule — an evidence type caps the
+severity it can justify, so `adv_filing` cannot reach "stop trusting" while a confirmed dark or
+`decision_maker_gone` event can. Severity is the actionable part of this answer, so it deserves
+measurement rather than a same-day patch.

@@ -1,0 +1,64 @@
+{
+  "answer": {
+    "verdict": "Several records have changed in a way that affects trust. The following firms are now flagged due to various issues: POINTONE FAMILY OFFICE is experiencing website access issues, CAMBIENT FAMILY OFFICE, LLC and ONEASCENT FAMILY OFFICES have updated ADV filings that may supersede previous data, and several others have reported website access problems. These firms should be approached with caution or not at all until further verification is conducted.",
+    "picks": [],
+    "watchlist": [
+      {
+        "firm": "POINTONE FAMILY OFFICE",
+        "what_changed": "Website now returns HTTP 429, indicating potential access issues.",
+        "recommendation": "stop trusting",
+        "observed_at": "2026-07-30 03:42:26.953101+00:00"
+      },
+      {
+        "firm": "CAMBIENT FAMILY OFFICE, LLC",
+        "what_changed": "Current IAPD record shows a filing dated 2026-07-16, which may supersede previous data.",
+        "recommendation": "stop trusting",
+        "observed_at": "2026-07-30 03:41:58.270364+00:00"
+      },
+      {
+        "firm": "ONEASCENT FAMILY OFFICES",
+        "what_changed": "Current IAPD record shows a filing dated 2026-07-15, which may supersede previous data.",
+        "recommendation": "stop trusting",
+        "observed_at": "2026-07-30 03:41:32.837204+00:00"
+      },
+      {
+        "firm": "CUSTOS FAMILY OFFICE LLC",
+        "what_changed": "Website now returns HTTP 202, indicating potential access issues.",
+        "recommendation": "stop trusting",
+        "observed_at": "2026-07-30 03:40:38.808731+00:00"
+      },
+      {
+        "firm": "CLASS VI FAMILY OFFICE, LLC",
+        "what_changed": "Website now returns HTTP 202, indicating potential access issues.",
+        "recommendation": "stop trusting",
+        "observed_at": "2026-07-30 03:40:26.341146+00:00"
+      },
+      {
+        "firm": "MARCUARD FAMILY OFFICE LTD",
+        "what_changed": "Current IAPD record shows a filing dated 2026-07-17, which may supersede previous data.",
+        "recommendation": "stop trusting",
+        "observed_at": "2026-07-30 03:39:36.463915+00:00"
+      },
+      {
+        "firm": "CORNERSTONE FAMILY OFFICE, LLC",
+        "what_changed": "Website now returns HTTP 202, indicating potential access issues.",
+        "recommendation": "stop trusting",
+        "observed_at": "2026-07-30 03:38:37.781526+00:00"
+      }
+    ],
+    "abstained": [],
+    "coverage_note": null,
+    "next_steps": [],
+    "limitations": []
+  },
+  "verification": {
+    "passed": true,
+    "failures": [],
+    "repaired": false
+  },
+  "run_id": 50,
+  "steps": 10,
+  "usd": 0.01042,
+  "messages_traced": 22,
+  "trace_note": "raw run log: ops.agent_messages (full message trace, incl. tool results and any repair turn) + ops.run_events (per-call timing, tokens, cost) where run_id=50"
+}

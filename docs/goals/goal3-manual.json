@@ -1,0 +1,275 @@
+{
+  "captured_at": "2026-07-30 (day 4), against the deployed service at https://polarity-fo-rag.onrender.com",
+  "note": "Both manual retrieval surfaces tried with the SAME goal text. /query is the natural-language path; /fit is the Stage 2 extension. Neither can answer a question about CHANGE, because change is a property of the history of records, not of any record - and both surfaces return current state only.",
+  "attempt_1_query": {
+    "endpoint": "POST /query",
+    "request": {
+      "question": "Which records in your coverage have changed in a way that would change how I approach them since I last looked, what specifically changed, and which ones should I now stop trusting?",
+      "k": 5
+    },
+    "latency_ms": 33304,
+    "response": {
+      "answer": "That question is outside what this dataset covers, so I don't have grounded records to answer it. I answer questions about the family offices in this dataset -- which firms to approach, who the decision-maker is, and how to reach them. Try asking about a firm, a location, an AUM range, or a sector.",
+      "sources": [],
+      "query": "Which records in your coverage have changed in a way that would change how I approach them since I last looked, what specifically changed, and which ones should I now stop trusting?",
+      "intent": {
+        "intent": "discovery",
+        "firm_name": null,
+        "state": null,
+        "sector_term": null,
+        "min_aum_usd": null,
+        "max_aum_usd": null
+      },
+      "verification": {
+        "passed": true,
+        "failures": [],
+        "warnings": [],
+        "repaired": false
+      }
+    }
+  },
+  "attempt_2_fit": {
+    "endpoint": "POST /fit",
+    "request": {
+      "mandate": "Which records in your coverage have changed in a way that would change how I approach them since I last looked, what specifically changed, and which ones should I now stop trusting?",
+      "k": 5
+    },
+    "latency_ms": 2330,
+    "response": {
+      "mandate": "Which records in your coverage have changed in a way that would change how I approach them since I last looked, what specifically changed, and which ones should I now stop trusting?",
+      "sector_terms": [],
+      "geo_filter": null,
+      "weights": {
+        "semantic": 0.35,
+        "sector": 0.25,
+        "confidence": 0.15,
+        "reachability": 0.15,
+        "signals": 0.1
+      },
+      "considered": 40,
+      "unranked_no_embedding": 0,
+      "ranked": [
+        {
+          "crd": "294025",
+          "family_office_name": "CUSTOS FAMILY OFFICE LLC",
+          "entity_category": "multi_family_office",
+          "city": null,
+          "state": null,
+          "aum_usd": 346555336,
+          "investing_sectors": [
+            "Asset Management",
+            "Private Investments",
+            "Income Generation",
+            "Tax Efficient Investing",
+            "Retirement Planning",
+            "Family Governance",
+            "Succession",
+            "Philanthropy",
+            "Legacy Planning",
+            "Trust & Estate Coordination",
+            "Liquidity Management",
+            "Risk Management",
+            "Hedging Strategies",
+            "Insurance Review",
+            "Capital Preservation"
+          ],
+          "investment_thesis": "We help clients identify risk, diversify and continue to grow their assets to fund current lifestyle, future generations and philanthropic goals.",
+          "primary_contact_name": "Tony (Anthony M.) Lopiccolo, CFA",
+          "primary_contact_title": "Principal & Chief Investment Officer",
+          "primary_contact_email": "anthony@custosfo.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-04-07",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3518,
+          "components": {
+            "semantic": 0.148,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "338122",
+          "family_office_name": "XCEPTION FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "ATLANTA",
+          "state": "GA",
+          "aum_usd": 189340109,
+          "investing_sectors": [
+            "Public Markets",
+            "Private Investments",
+            "Real Assets",
+            "Commodities",
+            "Natural Resources",
+            "Hedge Funds",
+            "Private Equity",
+            "Private Credit"
+          ],
+          "investment_thesis": "We focus on thoughtful asset allocation and diversification across public markets and private investments, emphasizing risk management and after-tax returns.",
+          "primary_contact_name": "Cort Alan Haber, CFP",
+          "primary_contact_title": "Co-founder & CIO (CCO on ADV)",
+          "primary_contact_email": "chaber@xceptionfamilyoffice.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-05-27",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2025-08",
+              "description": "Launched as a newly SEC-registered RIA (Georgia entity formed 2025-08-20) under CEO Michael Callahan, serving families below single-family-office scale (~$189M AUM)."
+            }
+          ],
+          "fit_score": 0.3474,
+          "components": {
+            "semantic": 0.136,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "281675",
+          "family_office_name": "EAGLE BAY FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "NEW YORK",
+          "state": "NY",
+          "aum_usd": 680792794,
+          "investing_sectors": [],
+          "investment_thesis": "Prudently preserving and growing clients' wealth for generations to come through comprehensive family office and investment advisory services.",
+          "primary_contact_name": "Michael D. Nelson, J.D., CFA",
+          "primary_contact_title": "CEO / Managing Partner",
+          "primary_contact_email": "michael@eaglebayadvisors.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-04-15",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3413,
+          "components": {
+            "semantic": 0.118,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "285035",
+          "family_office_name": "CLASS VI FAMILY OFFICE, LLC",
+          "entity_category": "multi_family_office",
+          "city": "DENVER",
+          "state": "CO",
+          "aum_usd": 1498011942,
+          "investing_sectors": [
+            "Investment Banking",
+            "Wealth Management",
+            "Mergers and Acquisitions"
+          ],
+          "investment_thesis": "We specialize in helping entrepreneurs prepare for and achieve their personal best in the M&A transaction process, focusing on business optimization and transaction preparation.",
+          "primary_contact_name": "Matt Blackburn",
+          "primary_contact_title": "Managing Partner / Managing Director & co-founder, Class VI Family Office",
+          "primary_contact_email": "Matt@classvipartners.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-02-11",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2026-02",
+              "description": "Affiliated investment bank Class VI Partners represented Helimix in its acquisition by YETI, part of a 2025-2026 exit/M&A pipeline that channels newly-liquid business owners into the family office."
+            },
+            {
+              "type": "recent_investment",
+              "date": "2025-07",
+              "description": "Class VI Partners advised Electric Equipment & Engineering on its recapitalization by HKW Inc., one of several 2025 liquidity events from the affiliated deal practice."
+            }
+          ],
+          "fit_score": 0.3373,
+          "components": {
+            "semantic": 0.106,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "122448",
+          "family_office_name": "FIFTH AVENUE FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "NAPLES",
+          "state": "FL",
+          "aum_usd": 1350847041,
+          "investing_sectors": [
+            "Investment Management",
+            "Estate Planning",
+            "Tax Coordination",
+            "Philanthropy",
+            "Private Equity",
+            "Venture Capital",
+            "Real Estate"
+          ],
+          "investment_thesis": "Fifth Avenue Family Office specializes in comprehensive family office services, including investment management, estate and legacy planning, and tax coordination, tailored to the unique needs of high-net-worth entrepreneurial families.",
+          "primary_contact_name": "Timothy J. Cartwright",
+          "primary_contact_title": "Partner / Member (co-founder)",
+          "primary_contact_email": "tim@fifthavenuefamily.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-03-16",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.329,
+          "components": {
+            "semantic": 0.083,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        }
+      ],
+      "method_note": "deterministic weighted ranking over all indexed qualifying records; sector matching is keyword-based (approximate); confidence tier reflects evidence presence, not score size"
+    }
+  }
+}

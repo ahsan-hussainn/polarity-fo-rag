@@ -115,13 +115,31 @@ def t_record_history(args: dict) -> tuple[dict, list[dict]]:
                        for a, b, c_, d, e in cur.fetchall()]
             cur.execute("select count(*) from gold.records where release_state = 'qualifying'")
             total = cur.fetchone()[0]
+            # These are GROUNDED, unlike quarantine_summary's firms. Every row here is
+            # release_state='qualifying' by the query above -- already released, already in the
+            # product -- so the agent is entitled to name it in a structured list. Returning []
+            # here was an over-correction: ADR-0039 stopped the agent presenting NEVER-RELEASED
+            # candidates as family offices to distrust, and quarantine_summary is still rightly
+            # non-pickable for that reason. But it also blocked the released records this tool
+            # exists to surface. Measured on goal run 49: the agent named all 8 flagged records,
+            # the gate rejected every one as "not a record any tool returned this session", and the
+            # session refused -- a correct control firing on the wrong target.
+            # Evidence-only shape, deliberately: no contact fields, so grounding these records
+            # cannot become a side channel that puts an email in an answer.
+            recs = [{"crd": f["crd"], "family_office_name": f["firm"],
+                     "entity_category": f["category"], "release_state": "qualifying",
+                     "trust_state": "flagged", "trust_reason": f["why"],
+                     "last_checked_at": f["last_checked"]}
+                    for f in flagged]
             return {"scope": "all qualifying records",
                     "qualifying_total": total, "flagged_count": len(flagged),
                     "flagged_records": flagged,
                     "note": ("RELEASED records whose evidence moved since the system recorded them "
                              "-- these are in the product and need re-checking. This is NOT the "
                              "quarantined/unresolved set, which was never released at all. Call "
-                             "again with a firm name for that firm's full cross-cycle history.")}, []
+                             "again with a firm name for that firm's full cross-cycle history. "
+                             "Report these in `watchlist`, not `picks`: the question they answer is "
+                             "what to STOP trusting, which is not a recommendation.")}, recs
         if not crd:
             cur.execute("select crd, family_office_name from gold.records "
                         "where family_office_name ilike %s order by family_office_name limit 1",
@@ -139,9 +157,10 @@ def t_record_history(args: dict) -> tuple[dict, list[dict]]:
             if firm is None:
                 return {"found": False, "note": f"no held record with CRD {crd}"}, []
 
-        cur.execute("select trust_state, trust_reason, last_checked_at, data_asof, release_basis "
-                    "from gold.records where crd = %s", (crd,))
+        cur.execute("select trust_state, trust_reason, last_checked_at, data_asof, release_basis, "
+                    "release_state from gold.records where crd = %s", (crd,))
         st = cur.fetchone()
+        rel_state = st[5] if st else None
         cur.execute(
             "select te.check_type, te.prior, te.current, te.evidence, te.action, te.created_at, "
             "       te.run_id from ops.trust_events te join ops.runs r using (run_id) "
@@ -164,7 +183,14 @@ def t_record_history(args: dict) -> tuple[dict, list[dict]]:
             "release_basis": st[4] if st else None,
             "trust_events": events, "observation_coverage": coverage,
             "note": ("cross-cycle history from the operating ledger: what the system observed, "
-                     "when, and why trust changed. Evidence only -- no contact data.")}, []
+                     "when, and why trust changed. Evidence only -- no contact data.")}, (
+        # Grounded only if this firm is actually released. The name/CRD branches query gold.records
+        # without a release_state filter, so they can land on a quarantined or unresolved entity --
+        # which must NOT become groundable just because someone asked for its history.
+        [{"crd": crd, "family_office_name": firm, "release_state": rel_state,
+          "trust_state": st[0] if st else None, "trust_reason": st[1] if st else None,
+          "last_checked_at": str(st[2]) if st and st[2] else None}]
+        if rel_state == "qualifying" else [])
 
 
 TOOLS = {
@@ -223,7 +249,10 @@ TOOLS = {
         "parameters": {"type": "object", "properties": {"name": {"type": "string"}},
                        "required": ["name"]}},
     "record_history": {
-        "fn": t_record_history, "pickable": False,
+        # pickable: every record this tool grounds is release_state='qualifying' (enforced in the
+        # function, both branches). quarantine_summary stays non-pickable -- its firms were never
+        # released, which is the distinction ADR-0039 actually cared about.
+        "fn": t_record_history, "pickable": True,
         "description": "Cross-cycle history from the operating ledger -- the ONLY tool that sees "
                        "anything but the current state. Call with NO arguments to list every "
                        "RELEASED record whose evidence has moved and now needs re-checking (use "

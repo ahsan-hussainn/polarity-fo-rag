@@ -74,9 +74,23 @@ class Pick(BaseModel):
     outreach: Optional[str] = Field(None, description="the honest contact route and its basis")
 
 
+class Watch(BaseModel):
+    """A released record whose trust has MOVED. Deliberately not a Pick: a pick is a
+    recommendation to act, and 'stop trusting this one' is the opposite of one. Goal run 49 had
+    nowhere to put these and forced them into `picks`, where a nontechnical buyer reads a
+    distrust warning as a suggestion to make contact."""
+    firm: str
+    what_changed: str = Field(description="the observed change, from the ledger, with its evidence")
+    recommendation: Literal["re-verify before contacting", "stop trusting", "monitor"]
+    observed_at: Optional[str] = None
+
+
 class GoalAnswer(BaseModel):
     verdict: str = Field(description="the direct answer to the goal, 2-4 sentences")
     picks: list[Pick] = []
+    watchlist: list[Watch] = Field(
+        default=[], description="released records whose trust has changed; use this rather than "
+                                "`picks` when the answer is what to re-check or stop trusting")
     abstained: list[str] = Field(default=[], description="firms/aspects where evidence is too thin, with the reason")
     coverage_note: Optional[str] = Field(None, description="what the dataset does/doesn't cover for this goal")
     next_steps: list[str] = []
@@ -100,7 +114,10 @@ def _free_text(ans: GoalAnswer) -> str:
     thing read and was entirely ungated, so an unreleasable firm could be recommended in prose
     while the picks list stayed clean."""
     return " ".join([ans.verdict or "", ans.coverage_note or ""]
-                    + list(ans.abstained) + list(ans.next_steps) + list(ans.limitations))
+                    + list(ans.abstained) + list(ans.next_steps) + list(ans.limitations)
+                    # watchlist is user-visible prose too; adding the field without adding it here
+                    # would have created a brand-new ungated surface, which is the ADR-0039 mistake.
+                    + [w.what_changed for w in ans.watchlist])
 
 
 _STATE_CODES = {
@@ -219,6 +236,23 @@ def _check_output(ans: GoalAnswer, grounding: dict[str, dict], pickable: set[str
                             "measured insufficient evidence")
         if tier == "weak" and p.confidence == "strong":
             failures.append(f"pick '{p.firm}' claims strong confidence over weak measured evidence")
+
+    # 2b. Watchlist entries obey the SAME grounding rule as picks, and the same release rule. A
+    #     record the system never released must not appear as something to "stop trusting" -- that
+    #     was ADR-0039's original failure, where never-released candidates were presented as family
+    #     offices the user should distrust, implying they had once been vouched for.
+    for w in ans.watchlist:
+        key = w.firm.strip().lower()
+        rec = by_name.get(key)
+        if rec is None:
+            subs = [r for n, r in by_name.items() if key in n or n in key]
+            rec = subs[0] if len(subs) == 1 else None
+        if rec is None:
+            failures.append(f"watchlist entry '{w.firm}' is not a record any tool returned this "
+                            f"session")
+        elif (rec.get("crd") or "") not in pickable:
+            failures.append(f"watchlist entry '{w.firm}' is not a released record; the system "
+                            f"cannot tell a user to stop trusting something it never released")
 
     # 3. A stated geographic constraint must be honoured or DISCLOSED (measured need: goal run 45
     #    was asked for family offices "out of Chicago", ranked the whole country, never surfaced

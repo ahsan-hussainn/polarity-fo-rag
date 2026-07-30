@@ -1,0 +1,39 @@
+{
+  "answer": {
+    "verdict": "The agent's answer failed the independent release check twice, so it is withheld rather than shipped unsupported.",
+    "picks": [],
+    "abstained": [],
+    "coverage_note": "records retrieved this session: ",
+    "next_steps": [],
+    "limitations": [
+      "pick 'CAMBIENT FAMILY OFFICE, LLC' is not a record any tool returned this session",
+      "pick 'ONEASCENT FAMILY OFFICES' is not a record any tool returned this session",
+      "pick 'MARCUARD FAMILY OFFICE LTD' is not a record any tool returned this session",
+      "pick 'MATTER FAMILY OFFICE' is not a record any tool returned this session",
+      "pick 'POINTONE FAMILY OFFICE' is not a record any tool returned this session",
+      "pick 'CUSTOS FAMILY OFFICE LLC' is not a record any tool returned this session",
+      "pick 'CLASS VI FAMILY OFFICE, LLC' is not a record any tool returned this session",
+      "pick 'CORNERSTONE FAMILY OFFICE, LLC' is not a record any tool returned this session"
+    ]
+  },
+  "verification": {
+    "passed": false,
+    "failures": [
+      "pick 'CAMBIENT FAMILY OFFICE, LLC' is not a record any tool returned this session",
+      "pick 'ONEASCENT FAMILY OFFICES' is not a record any tool returned this session",
+      "pick 'MARCUARD FAMILY OFFICE LTD' is not a record any tool returned this session",
+      "pick 'MATTER FAMILY OFFICE' is not a record any tool returned this session",
+      "pick 'POINTONE FAMILY OFFICE' is not a record any tool returned this session",
+      "pick 'CUSTOS FAMILY OFFICE LLC' is not a record any tool returned this session",
+      "pick 'CLASS VI FAMILY OFFICE, LLC' is not a record any tool returned this session",
+      "pick 'CORNERSTONE FAMILY OFFICE, LLC' is not a record any tool returned this session"
+    ],
+    "repaired": true,
+    "refused": true
+  },
+  "run_id": 49,
+  "steps": 4,
+  "usd": 0.0043,
+  "messages_traced": 12,
+  "trace_note": "raw run log: ops.agent_messages (full message trace, incl. tool results and any repair turn) + ops.run_events (per-call timing, tokens, cost) where run_id=49"
+}

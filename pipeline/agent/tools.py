@@ -63,6 +63,7 @@ def t_fit_rank(args: dict) -> tuple[dict, list[dict]]:
     out = fit_rank(str(args.get("mandate") or ""),
                    sector_terms=args.get("sector_terms") or [],
                    min_aum=args.get("min_aum_usd"), max_aum=args.get("max_aum_usd"),
+                   state=args.get("state"), city=args.get("city"),
                    k=min(int(args.get("k") or 10), 24))
     recs = out["ranked"]
     return {**out, "ranked": [_slim(r) for r in recs]}, recs
@@ -185,14 +186,24 @@ TOOLS = {
             "required": ["query"]}},
     "fit_rank": {
         "fn": t_fit_rank, "pickable": True,
-        "description": "Rank ALL qualifying records for an investor mandate. Deterministic weighted "
+        "description": "Rank qualifying records for an investor mandate. Deterministic weighted "
                        "scoring with per-record component breakdown, evidence list, caveats, and an "
                        "evidence-based fit_confidence tier (strong/moderate/weak/"
-                       "insufficient_evidence). The primary tool for LP-fit goals.",
+                       "insufficient_evidence). The primary tool for LP-fit goals. Ranks the WHOLE "
+                       "qualifying set unless you pass state/city, which filter it exactly.",
         "parameters": {"type": "object", "properties": {
             "mandate": {"type": "string", "description": "the investor mandate in plain words"},
             "sector_terms": {"type": "array", "items": {"type": "string"},
                              "description": "sector/strategy keywords to evidence against"},
+            "state": {"type": "string",
+                      "description": "2-letter US state code. Pass this whenever the goal states a "
+                                     "geographic constraint on the family offices ('out of "
+                                     "Chicago' -> state=IL). EXACT filter, applied before ranking. "
+                                     "An empty result means no record matches that geography, "
+                                     "which is a real answer to report, not a reason to drop the "
+                                     "constraint and rank the whole country instead."},
+            "city": {"type": "string",
+                     "description": "exact city name, for a tighter constraint than state"},
             "min_aum_usd": {
                 "type": "integer",
                 "description": "ONLY when the goal constrains the size of the FAMILY OFFICE itself "

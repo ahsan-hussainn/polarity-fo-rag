@@ -97,27 +97,52 @@ def _signal_recency(rec: dict) -> tuple[float, str | None]:
 
 
 def fit_rank(mandate: str, *, sector_terms: list[str] | None = None,
-             min_aum: int | None = None, max_aum: int | None = None, k: int = 10) -> dict:
+             min_aum: int | None = None, max_aum: int | None = None,
+             state: str | None = None, city: str | None = None, k: int = 10) -> dict:
     """Rank every qualifying record for an investor mandate. Returns ranked records, each with
-    its component scores, evidence list, caveats, and an evidence-based confidence tier."""
+    its component scores, evidence list, caveats, and an evidence-based confidence tier.
+
+    `state` / `city` are EXACT structured filters, not ranking signals. They exist because a
+    mandate routinely carries a hard geographic constraint ("out of Chicago") and this tool had no
+    way to express it: a Goal-1 run ranked the whole country, never surfaced the one Chicago record
+    the set holds, and never said it had dropped the constraint. Geography is a filter, so it
+    filters -- it is deliberately NOT folded into the weighted score, because a firm does not
+    become a better mandate fit by being nearby.
+    """
     qvec = embed_query(mandate)
     lit = "[" + ",".join(f"{x:.6f}" for x in qvec) + "]"
+    where = ["r.release_state = 'qualifying'", "d.embedding is not null"]
+    params: list = [lit]
+    if state:
+        where.append("upper(r.state) = upper(%s)")
+        params.append(state)
+    if city:
+        where.append("upper(r.city) = upper(%s)")
+        params.append(city)
+    clause = " and ".join(where)
     with db.get_pool().connection() as c, c.cursor() as cur:
         cur.execute(
             f"select {RECORD_COLUMNS}, r.reachability_score, r.is_stale, "
             "(d.embedding <=> %s::vector) as dist "
-            "from gold.records r join gold.rag_docs d using (crd) "
-            "where r.release_state = 'qualifying' and d.embedding is not null",
-            (lit,))
+            f"from gold.records r join gold.rag_docs d using (crd) where {clause}",
+            tuple(params))
         cols = [d[0] for d in cur.description]
         recs = [dict(zip(cols, row)) for row in cur.fetchall()]
         _attach_signals(cur, recs)
         # Coverage honesty: a qualifying record without an indexed embedding would silently drop
         # out of a ranking that presents itself as covering the whole qualifying set. Count them
-        # and say so instead of claiming "ALL" while ranking a subset.
-        cur.execute(
-            "select count(*) from gold.records r left join gold.rag_docs d using (crd) "
-            "where r.release_state = 'qualifying' and (d.crd is null or d.embedding is null)")
+        # and say so instead of claiming "ALL" while ranking a subset. The geographic filter is
+        # applied here too, so the count describes the population actually being ranked.
+        ucl = ["r.release_state = 'qualifying'", "(d.crd is null or d.embedding is null)"]
+        uparams: list = []
+        if state:
+            ucl.append("upper(r.state) = upper(%s)")
+            uparams.append(state)
+        if city:
+            ucl.append("upper(r.city) = upper(%s)")
+            uparams.append(city)
+        cur.execute("select count(*) from gold.records r left join gold.rag_docs d using (crd) "
+                    f"where {' and '.join(ucl)}", tuple(uparams))
         unranked = cur.fetchone()[0]
 
     ranked = []
@@ -183,12 +208,24 @@ def fit_rank(mandate: str, *, sector_terms: list[str] | None = None,
             "fit_confidence": tier, "evidence": evidence, "caveats": caveats,
             "aum_note": aum_note})
     ranked.sort(key=lambda x: -x["fit_score"])
-    note = ("deterministic weighted ranking over all indexed qualifying records; sector "
+    scope = "all indexed qualifying records"
+    geo = {k_: v for k_, v in (("state", state), ("city", city)) if v}
+    if geo:
+        scope = ("indexed qualifying records in "
+                 + ", ".join(f"{k_}={v}" for k_, v in geo.items()))
+    note = (f"deterministic weighted ranking over {scope}; sector "
             "matching is keyword-based (approximate); confidence tier reflects "
             "evidence presence, not score size")
+    if geo:
+        note += ("; geography is an EXACT filter applied before ranking, not a scoring signal "
+                 "(proximity is not mandate evidence)")
     if unranked:
         note += f"; {unranked} qualifying record(s) not yet indexed and NOT ranked here"
+    if geo and not ranked:
+        note += ("; NO qualifying record matches this geography -- the constraint held and the "
+                 "result is genuinely empty, which is the answer, not a failure to search")
     return {"mandate": mandate, "sector_terms": sector_terms or [],
+            "geo_filter": geo or None,
             "weights": WEIGHTS, "considered": len(ranked),
             "unranked_no_embedding": unranked, "ranked": ranked[:k],
             "method_note": note}

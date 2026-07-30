@@ -1,478 +1,960 @@
 {
-  "endpoint": "POST /fit",
-  "request": {
-    "mandate": "$150M lower-middle-market industrials buyout fund based in Chicago seeking limited partners",
-    "sector_terms": [
-      "industrials",
-      "manufacturing"
-    ],
-    "k": 10
-  },
-  "latency_ms": 15061,
-  "response": {
-    "mandate": "$150M lower-middle-market industrials buyout fund based in Chicago seeking limited partners",
-    "sector_terms": [
-      "industrials",
-      "manufacturing"
-    ],
-    "weights": {
-      "semantic": 0.35,
-      "sector": 0.25,
-      "confidence": 0.15,
-      "reachability": 0.15,
-      "signals": 0.1
+  "note": "Two manual attempts. (1) what a user types first: mandate only, no geography - the retrieval cannot honour \"out of Chicago\". (2) the same mandate with the state filter added to POST /fit on 2026-07-30 as part of the Goal-1 fix. Both are shown because the difference IS the finding.",
+  "attempt_1_no_geography": {
+    "endpoint": "POST /fit",
+    "request": {
+      "mandate": "$150M lower-middle-market industrials buyout fund based in Chicago seeking limited partners",
+      "sector_terms": [
+        "industrials",
+        "manufacturing"
+      ],
+      "k": 10
     },
-    "considered": 40,
-    "unranked_no_embedding": 0,
-    "ranked": [
-      {
-        "crd": "285035",
-        "family_office_name": "CLASS VI FAMILY OFFICE, LLC",
-        "entity_category": "multi_family_office",
-        "city": "DENVER",
-        "state": "CO",
-        "aum_usd": 1498011942,
-        "investing_sectors": [
-          "Investment Banking",
-          "Wealth Management",
-          "Mergers and Acquisitions"
-        ],
-        "investment_thesis": "We specialize in helping entrepreneurs prepare for and achieve their personal best in the M&A transaction process, focusing on business optimization and transaction preparation.",
-        "primary_contact_name": "Matt Blackburn",
-        "primary_contact_title": "Managing Partner / Managing Director & co-founder, Class VI Family Office",
-        "primary_contact_email": "Matt@classvipartners.com",
-        "primary_email_grade": "PUB",
-        "reachability_tier": "High",
-        "confidence_score": 100,
-        "data_asof": "2026-02-11",
-        "is_stale": false,
-        "signals": [
-          {
-            "type": "news",
-            "date": "2026-02",
-            "description": "Affiliated investment bank Class VI Partners represented Helimix in its acquisition by YETI, part of a 2025-2026 exit/M&A pipeline that channels newly-liquid business owners into the family office."
+    "latency_ms": 37923,
+    "response": {
+      "mandate": "$150M lower-middle-market industrials buyout fund based in Chicago seeking limited partners",
+      "sector_terms": [
+        "industrials",
+        "manufacturing"
+      ],
+      "weights": {
+        "semantic": 0.35,
+        "sector": 0.25,
+        "confidence": 0.15,
+        "reachability": 0.15,
+        "signals": 0.1
+      },
+      "considered": 40,
+      "unranked_no_embedding": 0,
+      "ranked": [
+        {
+          "crd": "285035",
+          "family_office_name": "CLASS VI FAMILY OFFICE, LLC",
+          "entity_category": "multi_family_office",
+          "city": "DENVER",
+          "state": "CO",
+          "aum_usd": 1498011942,
+          "investing_sectors": [
+            "Investment Banking",
+            "Wealth Management",
+            "Mergers and Acquisitions"
+          ],
+          "investment_thesis": "We specialize in helping entrepreneurs prepare for and achieve their personal best in the M&A transaction process, focusing on business optimization and transaction preparation.",
+          "primary_contact_name": "Matt Blackburn",
+          "primary_contact_title": "Managing Partner / Managing Director & co-founder, Class VI Family Office",
+          "primary_contact_email": "Matt@classvipartners.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-02-11",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2026-02",
+              "description": "Affiliated investment bank Class VI Partners represented Helimix in its acquisition by YETI, part of a 2025-2026 exit/M&A pipeline that channels newly-liquid business owners into the family office."
+            },
+            {
+              "type": "recent_investment",
+              "date": "2025-07",
+              "description": "Class VI Partners advised Electric Equipment & Engineering on its recapitalization by HKW Inc., one of several 2025 liquidity events from the affiliated deal practice."
+            }
+          ],
+          "fit_score": 0.424,
+          "components": {
+            "semantic": 0.354,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
           },
-          {
-            "type": "recent_investment",
-            "date": "2025-07",
-            "description": "Class VI Partners advised Electric Equipment & Engineering on its recapitalization by HKW Inc., one of several 2025 liquidity events from the affiliated deal practice."
-          }
-        ],
-        "fit_score": 0.424,
-        "components": {
-          "semantic": 0.354,
-          "sector": 0.0,
-          "confidence": 1.0,
-          "reachability": 1.0,
-          "signals": 0.0
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
         },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "122448",
-        "family_office_name": "FIFTH AVENUE FAMILY OFFICE",
-        "entity_category": "multi_family_office",
-        "city": "NAPLES",
-        "state": "FL",
-        "aum_usd": 1350847041,
-        "investing_sectors": [
-          "Investment Management",
-          "Estate Planning",
-          "Tax Coordination",
-          "Philanthropy",
-          "Private Equity",
-          "Venture Capital",
-          "Real Estate"
-        ],
-        "investment_thesis": "Fifth Avenue Family Office specializes in comprehensive family office services, including investment management, estate and legacy planning, and tax coordination, tailored to the unique needs of high-net-worth entrepreneurial families.",
-        "primary_contact_name": "Timothy J. Cartwright",
-        "primary_contact_title": "Partner / Member (co-founder)",
-        "primary_contact_email": "tim@fifthavenuefamily.com",
-        "primary_email_grade": "PUB",
-        "reachability_tier": "High",
-        "confidence_score": 100,
-        "data_asof": "2026-03-16",
-        "is_stale": false,
-        "signals": [],
-        "fit_score": 0.4025,
-        "components": {
-          "semantic": 0.293,
-          "sector": 0.0,
-          "confidence": 1.0,
-          "reachability": 1.0,
-          "signals": 0.0
-        },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "338122",
-        "family_office_name": "XCEPTION FAMILY OFFICE",
-        "entity_category": "multi_family_office",
-        "city": "ATLANTA",
-        "state": "GA",
-        "aum_usd": 189340109,
-        "investing_sectors": [
-          "Public Markets",
-          "Private Investments",
-          "Real Assets",
-          "Commodities",
-          "Natural Resources",
-          "Hedge Funds",
-          "Private Equity",
-          "Private Credit"
-        ],
-        "investment_thesis": "We focus on thoughtful asset allocation and diversification across public markets and private investments, emphasizing risk management and after-tax returns.",
-        "primary_contact_name": "Cort Alan Haber, CFP",
-        "primary_contact_title": "Co-founder & CIO (CCO on ADV)",
-        "primary_contact_email": "chaber@xceptionfamilyoffice.com",
-        "primary_email_grade": "PUB",
-        "reachability_tier": "High",
-        "confidence_score": 100,
-        "data_asof": "2026-05-27",
-        "is_stale": false,
-        "signals": [
-          {
-            "type": "news",
-            "date": "2025-08",
-            "description": "Launched as a newly SEC-registered RIA (Georgia entity formed 2025-08-20) under CEO Michael Callahan, serving families below single-family-office scale (~$189M AUM)."
-          }
-        ],
-        "fit_score": 0.3999,
-        "components": {
-          "semantic": 0.285,
-          "sector": 0.0,
-          "confidence": 1.0,
-          "reachability": 1.0,
-          "signals": 0.0
-        },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "294025",
-        "family_office_name": "CUSTOS FAMILY OFFICE LLC",
-        "entity_category": "multi_family_office",
-        "city": null,
-        "state": null,
-        "aum_usd": 346555336,
-        "investing_sectors": [
-          "Asset Management",
-          "Private Investments",
-          "Income Generation",
-          "Tax Efficient Investing",
-          "Retirement Planning",
-          "Family Governance",
-          "Succession",
-          "Philanthropy",
-          "Legacy Planning",
-          "Trust & Estate Coordination",
-          "Liquidity Management",
-          "Risk Management",
-          "Hedging Strategies",
-          "Insurance Review",
-          "Capital Preservation"
-        ],
-        "investment_thesis": "We help clients identify risk, diversify and continue to grow their assets to fund current lifestyle, future generations and philanthropic goals.",
-        "primary_contact_name": "Tony (Anthony M.) Lopiccolo, CFA",
-        "primary_contact_title": "Principal & Chief Investment Officer",
-        "primary_contact_email": "anthony@custosfo.com",
-        "primary_email_grade": "PUB",
-        "reachability_tier": "High",
-        "confidence_score": 100,
-        "data_asof": "2026-04-07",
-        "is_stale": false,
-        "signals": [],
-        "fit_score": 0.3987,
-        "components": {
-          "semantic": 0.282,
-          "sector": 0.0,
-          "confidence": 1.0,
-          "reachability": 1.0,
-          "signals": 0.0
-        },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "281675",
-        "family_office_name": "EAGLE BAY FAMILY OFFICE",
-        "entity_category": "multi_family_office",
-        "city": "NEW YORK",
-        "state": "NY",
-        "aum_usd": 680792794,
-        "investing_sectors": [],
-        "investment_thesis": "Prudently preserving and growing clients' wealth for generations to come through comprehensive family office and investment advisory services.",
-        "primary_contact_name": "Michael D. Nelson, J.D., CFA",
-        "primary_contact_title": "CEO / Managing Partner",
-        "primary_contact_email": "michael@eaglebayadvisors.com",
-        "primary_email_grade": "PUB",
-        "reachability_tier": "High",
-        "confidence_score": 100,
-        "data_asof": "2026-04-15",
-        "is_stale": false,
-        "signals": [],
-        "fit_score": 0.3933,
-        "components": {
-          "semantic": 0.267,
-          "sector": 0.0,
-          "confidence": 1.0,
-          "reachability": 1.0,
-          "signals": 0.0
-        },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "106806",
-        "family_office_name": "MATTER FAMILY OFFICE",
-        "entity_category": "multi_family_office",
-        "city": "ST LOUIS",
-        "state": "MO",
-        "aum_usd": 3811053690,
-        "investing_sectors": [
-          "wealth management",
-          "family operations",
-          "investment management",
-          "wealth planning",
-          "project management"
-        ],
-        "investment_thesis": "We’re long-term investors focused on assets with great potential to achieve your family’s objectives and support your legacy.",
-        "primary_contact_name": "Jerrel Armstrong, MBA",
-        "primary_contact_title": "Partner, Chief Investment Officer",
-        "primary_contact_email": "jarmstrong@matterfamilyoffice.com",
-        "primary_email_grade": "A",
-        "reachability_tier": "High",
-        "confidence_score": 90,
-        "data_asof": "2026-07-08",
-        "is_stale": false,
-        "signals": [
-          {
-            "type": "news",
-            "date": "2025-11",
-            "description": "Merged with Denver-based IWP Family Office to form a ~$10B+ AUA multi-family office of 90+ professionals across St. Louis, Denver, and Dallas-Fort Worth, ~140 UHNW families."
+        {
+          "crd": "122448",
+          "family_office_name": "FIFTH AVENUE FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "NAPLES",
+          "state": "FL",
+          "aum_usd": 1350847041,
+          "investing_sectors": [
+            "Investment Management",
+            "Estate Planning",
+            "Tax Coordination",
+            "Philanthropy",
+            "Private Equity",
+            "Venture Capital",
+            "Real Estate"
+          ],
+          "investment_thesis": "Fifth Avenue Family Office specializes in comprehensive family office services, including investment management, estate and legacy planning, and tax coordination, tailored to the unique needs of high-net-worth entrepreneurial families.",
+          "primary_contact_name": "Timothy J. Cartwright",
+          "primary_contact_title": "Partner / Member (co-founder)",
+          "primary_contact_email": "tim@fifthavenuefamily.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-03-16",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.4025,
+          "components": {
+            "semantic": 0.293,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
           },
-          {
-            "type": "recent_investment",
-            "date": "2025-11",
-            "description": "BW Forsyth Partners provided strategic evergreen capital backing the merger and future acquisitions; Katherine Lintz managing partner, IWP's Charlie Willhoit CEO."
-          }
-        ],
-        "fit_score": 0.3783,
-        "components": {
-          "semantic": 0.331,
-          "sector": 0.0,
-          "confidence": 0.9,
-          "reachability": 0.85,
-          "signals": 0.0
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
         },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "143112",
-        "family_office_name": "WELLSPRING FAMILY OFFICE",
-        "entity_category": "multi_family_office",
-        "city": "CLEVELAND",
-        "state": "OH",
-        "aum_usd": 5055010974,
-        "investing_sectors": [
-          "Wealth Management",
-          "Tax Planning",
-          "Investment Management",
-          "Family Governance",
-          "Education",
-          "Philanthropy Planning",
-          "Business Advisory"
-        ],
-        "investment_thesis": "We help your family invest with intention, purpose, and care, integrating financial, personal and overall wellness within one vision.",
-        "primary_contact_name": "Richard (Rich) Joseph Turgeon, CFA, CAIA, MSFS",
-        "primary_contact_title": "Chief Investment Officer | Senior Managing Director",
-        "primary_contact_email": "rturgeon@wellspringfo.com",
-        "primary_email_grade": "A",
-        "reachability_tier": "High",
-        "confidence_score": 90,
-        "data_asof": "2026-06-23",
-        "is_stale": false,
-        "signals": [
-          {
-            "type": "news",
-            "date": "2025-09",
-            "description": "Wellspring Financial Advisors rebranded as Wellspring Family Office to reflect its multigenerational-family model (~$6.5B client net worth)."
+        {
+          "crd": "338122",
+          "family_office_name": "XCEPTION FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "ATLANTA",
+          "state": "GA",
+          "aum_usd": 189340109,
+          "investing_sectors": [
+            "Public Markets",
+            "Private Investments",
+            "Real Assets",
+            "Commodities",
+            "Natural Resources",
+            "Hedge Funds",
+            "Private Equity",
+            "Private Credit"
+          ],
+          "investment_thesis": "We focus on thoughtful asset allocation and diversification across public markets and private investments, emphasizing risk management and after-tax returns.",
+          "primary_contact_name": "Cort Alan Haber, CFP",
+          "primary_contact_title": "Co-founder & CIO (CCO on ADV)",
+          "primary_contact_email": "chaber@xceptionfamilyoffice.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-05-27",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2025-08",
+              "description": "Launched as a newly SEC-registered RIA (Georgia entity formed 2025-08-20) under CEO Michael Callahan, serving families below single-family-office scale (~$189M AUM)."
+            }
+          ],
+          "fit_score": 0.3999,
+          "components": {
+            "semantic": 0.285,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
           },
-          {
-            "type": "leadership_change",
-            "date": "2025-09",
-            "description": "The Pritzker Organization took a minority equity stake in a long-term strategic partnership; some Pritzker family members became clients."
-          }
-        ],
-        "fit_score": 0.3637,
-        "components": {
-          "semantic": 0.289,
-          "sector": 0.0,
-          "confidence": 0.9,
-          "reachability": 0.85,
-          "signals": 0.0
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
         },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
+        {
+          "crd": "294025",
+          "family_office_name": "CUSTOS FAMILY OFFICE LLC",
+          "entity_category": "multi_family_office",
+          "city": null,
+          "state": null,
+          "aum_usd": 346555336,
+          "investing_sectors": [
+            "Asset Management",
+            "Private Investments",
+            "Income Generation",
+            "Tax Efficient Investing",
+            "Retirement Planning",
+            "Family Governance",
+            "Succession",
+            "Philanthropy",
+            "Legacy Planning",
+            "Trust & Estate Coordination",
+            "Liquidity Management",
+            "Risk Management",
+            "Hedging Strategies",
+            "Insurance Review",
+            "Capital Preservation"
+          ],
+          "investment_thesis": "We help clients identify risk, diversify and continue to grow their assets to fund current lifestyle, future generations and philanthropic goals.",
+          "primary_contact_name": "Tony (Anthony M.) Lopiccolo, CFA",
+          "primary_contact_title": "Principal & Chief Investment Officer",
+          "primary_contact_email": "anthony@custosfo.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-04-07",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3987,
+          "components": {
+            "semantic": 0.282,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "281675",
+          "family_office_name": "EAGLE BAY FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "NEW YORK",
+          "state": "NY",
+          "aum_usd": 680792794,
+          "investing_sectors": [],
+          "investment_thesis": "Prudently preserving and growing clients' wealth for generations to come through comprehensive family office and investment advisory services.",
+          "primary_contact_name": "Michael D. Nelson, J.D., CFA",
+          "primary_contact_title": "CEO / Managing Partner",
+          "primary_contact_email": "michael@eaglebayadvisors.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-04-15",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3933,
+          "components": {
+            "semantic": 0.267,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "106806",
+          "family_office_name": "MATTER FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "ST LOUIS",
+          "state": "MO",
+          "aum_usd": 3811053690,
+          "investing_sectors": [
+            "wealth management",
+            "family operations",
+            "investment management",
+            "wealth planning",
+            "project management"
+          ],
+          "investment_thesis": "We’re long-term investors focused on assets with great potential to achieve your family’s objectives and support your legacy.",
+          "primary_contact_name": "Jerrel Armstrong, MBA",
+          "primary_contact_title": "Partner, Chief Investment Officer",
+          "primary_contact_email": "jarmstrong@matterfamilyoffice.com",
+          "primary_email_grade": "A",
+          "reachability_tier": "High",
+          "confidence_score": 90,
+          "data_asof": "2026-07-08",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2025-11",
+              "description": "Merged with Denver-based IWP Family Office to form a ~$10B+ AUA multi-family office of 90+ professionals across St. Louis, Denver, and Dallas-Fort Worth, ~140 UHNW families."
+            },
+            {
+              "type": "recent_investment",
+              "date": "2025-11",
+              "description": "BW Forsyth Partners provided strategic evergreen capital backing the merger and future acquisitions; Katherine Lintz managing partner, IWP's Charlie Willhoit CEO."
+            }
+          ],
+          "fit_score": 0.3783,
+          "components": {
+            "semantic": 0.331,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.85,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "143112",
+          "family_office_name": "WELLSPRING FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "CLEVELAND",
+          "state": "OH",
+          "aum_usd": 5055010974,
+          "investing_sectors": [
+            "Wealth Management",
+            "Tax Planning",
+            "Investment Management",
+            "Family Governance",
+            "Education",
+            "Philanthropy Planning",
+            "Business Advisory"
+          ],
+          "investment_thesis": "We help your family invest with intention, purpose, and care, integrating financial, personal and overall wellness within one vision.",
+          "primary_contact_name": "Richard (Rich) Joseph Turgeon, CFA, CAIA, MSFS",
+          "primary_contact_title": "Chief Investment Officer | Senior Managing Director",
+          "primary_contact_email": "rturgeon@wellspringfo.com",
+          "primary_email_grade": "A",
+          "reachability_tier": "High",
+          "confidence_score": 90,
+          "data_asof": "2026-06-23",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2025-09",
+              "description": "Wellspring Financial Advisors rebranded as Wellspring Family Office to reflect its multigenerational-family model (~$6.5B client net worth)."
+            },
+            {
+              "type": "leadership_change",
+              "date": "2025-09",
+              "description": "The Pritzker Organization took a minority equity stake in a long-term strategic partnership; some Pritzker family members became clients."
+            }
+          ],
+          "fit_score": 0.3637,
+          "components": {
+            "semantic": 0.289,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.85,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "150748",
+          "family_office_name": "TIMONIER",
+          "entity_category": "multi_family_office",
+          "city": "WINSTON SALEM",
+          "state": "NC",
+          "aum_usd": 450303587,
+          "investing_sectors": [
+            "Human Capital",
+            "Financial Planning",
+            "Investment Advisory",
+            "Tax Planning",
+            "Estate Planning",
+            "Real Estate",
+            "401(k) Solutions",
+            "Philanthropy"
+          ],
+          "investment_thesis": "Evidence-Based Investment Philosophy harnessing the power of low-fee diversified investments and patience, coupled with amazing advice to ensure a successful investing future.",
+          "primary_contact_name": "Nicholas (Nick) C. Baker",
+          "primary_contact_title": "President (50-75% owner)",
+          "primary_contact_email": "nicholas@timonier.com",
+          "primary_email_grade": "A",
+          "reachability_tier": "High",
+          "confidence_score": 90,
+          "data_asof": "2026-02-10",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "recent_investment",
+              "date": "2026-05",
+              "description": "Opened a new ~$793K position in the Dimensional Short-Duration Fixed Income ETF (DFSD) in its latest 13F."
+            }
+          ],
+          "fit_score": 0.3609,
+          "components": {
+            "semantic": 0.281,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.85,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "120053",
+          "family_office_name": "CORNERSTONE FAMILY OFFICE, LLC",
+          "entity_category": "multi_family_office",
+          "city": "MAYFIELD HEIGHTS",
+          "state": "OH",
+          "aum_usd": null,
+          "investing_sectors": [],
+          "investment_thesis": null,
+          "primary_contact_name": "Catherine G. Veres",
+          "primary_contact_title": "Founding Principal and President",
+          "primary_contact_email": "cveres@crnstn.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 85,
+          "data_asof": "2026-04-30",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3605,
+          "components": {
+            "semantic": 0.237,
+            "sector": 0.0,
+            "confidence": 0.85,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "107141",
+          "family_office_name": "BOSTON FAMILY OFFICE LLC",
+          "entity_category": "multi_family_office",
+          "city": "BOSTON",
+          "state": "MA",
+          "aum_usd": 2019164947,
+          "investing_sectors": [
+            "Equities",
+            "Fixed Income",
+            "International Investing",
+            "Private Equity",
+            "Real Estate"
+          ],
+          "investment_thesis": "Our focus is on building and managing portfolios of growth-oriented equities, using fixed income and other asset classes for balance and stability.",
+          "primary_contact_name": "Benjamin T. Richardson, CFA",
+          "primary_contact_title": "Chief Investment Officer; Partner & Portfolio Manager; Managing Member",
+          "primary_contact_email": "benjamin.richardson@bosfam.com",
+          "primary_email_grade": "B",
+          "reachability_tier": "Medium",
+          "confidence_score": 90,
+          "data_asof": "2026-03-02",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "leadership_change",
+              "date": "2026",
+              "description": "Portfolio manager Dylan C. Brix, CFA, CTFA was promoted to Partner (joined 2020)."
+            }
+          ],
+          "fit_score": 0.3409,
+          "components": {
+            "semantic": 0.331,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.6,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        }
+      ],
+      "method_note": "deterministic weighted ranking over all indexed qualifying records; sector matching is keyword-based (approximate); confidence tier reflects evidence presence, not score size"
+    }
+  },
+  "attempt_2_state_filter": {
+    "endpoint": "POST /fit",
+    "request": {
+      "mandate": "$150M lower-middle-market industrials buyout fund based in Chicago seeking limited partners",
+      "sector_terms": [
+        "industrials",
+        "manufacturing"
+      ],
+      "k": 10,
+      "state": "IL"
+    },
+    "latency_ms": 2455,
+    "response": {
+      "mandate": "$150M lower-middle-market industrials buyout fund based in Chicago seeking limited partners",
+      "sector_terms": [
+        "industrials",
+        "manufacturing"
+      ],
+      "weights": {
+        "semantic": 0.35,
+        "sector": 0.25,
+        "confidence": 0.15,
+        "reachability": 0.15,
+        "signals": 0.1
       },
-      {
-        "crd": "150748",
-        "family_office_name": "TIMONIER",
-        "entity_category": "multi_family_office",
-        "city": "WINSTON SALEM",
-        "state": "NC",
-        "aum_usd": 450303587,
-        "investing_sectors": [
-          "Human Capital",
-          "Financial Planning",
-          "Investment Advisory",
-          "Tax Planning",
-          "Estate Planning",
-          "Real Estate",
-          "401(k) Solutions",
-          "Philanthropy"
-        ],
-        "investment_thesis": "Evidence-Based Investment Philosophy harnessing the power of low-fee diversified investments and patience, coupled with amazing advice to ensure a successful investing future.",
-        "primary_contact_name": "Nicholas (Nick) C. Baker",
-        "primary_contact_title": "President (50-75% owner)",
-        "primary_contact_email": "nicholas@timonier.com",
-        "primary_email_grade": "A",
-        "reachability_tier": "High",
-        "confidence_score": 90,
-        "data_asof": "2026-02-10",
-        "is_stale": false,
-        "signals": [
-          {
-            "type": "recent_investment",
-            "date": "2026-05",
-            "description": "Opened a new ~$793K position in the Dimensional Short-Duration Fixed Income ETF (DFSD) in its latest 13F."
-          }
-        ],
-        "fit_score": 0.3609,
-        "components": {
-          "semantic": 0.281,
-          "sector": 0.0,
-          "confidence": 0.9,
-          "reachability": 0.85,
-          "signals": 0.0
+      "considered": 40,
+      "unranked_no_embedding": 0,
+      "ranked": [
+        {
+          "crd": "285035",
+          "family_office_name": "CLASS VI FAMILY OFFICE, LLC",
+          "entity_category": "multi_family_office",
+          "city": "DENVER",
+          "state": "CO",
+          "aum_usd": 1498011942,
+          "investing_sectors": [
+            "Investment Banking",
+            "Wealth Management",
+            "Mergers and Acquisitions"
+          ],
+          "investment_thesis": "We specialize in helping entrepreneurs prepare for and achieve their personal best in the M&A transaction process, focusing on business optimization and transaction preparation.",
+          "primary_contact_name": "Matt Blackburn",
+          "primary_contact_title": "Managing Partner / Managing Director & co-founder, Class VI Family Office",
+          "primary_contact_email": "Matt@classvipartners.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-02-11",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2026-02",
+              "description": "Affiliated investment bank Class VI Partners represented Helimix in its acquisition by YETI, part of a 2025-2026 exit/M&A pipeline that channels newly-liquid business owners into the family office."
+            },
+            {
+              "type": "recent_investment",
+              "date": "2025-07",
+              "description": "Class VI Partners advised Electric Equipment & Engineering on its recapitalization by HKW Inc., one of several 2025 liquidity events from the affiliated deal practice."
+            }
+          ],
+          "fit_score": 0.424,
+          "components": {
+            "semantic": 0.354,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
         },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "120053",
-        "family_office_name": "CORNERSTONE FAMILY OFFICE, LLC",
-        "entity_category": "multi_family_office",
-        "city": "MAYFIELD HEIGHTS",
-        "state": "OH",
-        "aum_usd": null,
-        "investing_sectors": [],
-        "investment_thesis": null,
-        "primary_contact_name": "Catherine G. Veres",
-        "primary_contact_title": "Founding Principal and President",
-        "primary_contact_email": "cveres@crnstn.com",
-        "primary_email_grade": "PUB",
-        "reachability_tier": "High",
-        "confidence_score": 85,
-        "data_asof": "2026-04-30",
-        "is_stale": false,
-        "signals": [],
-        "fit_score": 0.3605,
-        "components": {
-          "semantic": 0.237,
-          "sector": 0.0,
-          "confidence": 0.85,
-          "reachability": 1.0,
-          "signals": 0.0
+        {
+          "crd": "122448",
+          "family_office_name": "FIFTH AVENUE FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "NAPLES",
+          "state": "FL",
+          "aum_usd": 1350847041,
+          "investing_sectors": [
+            "Investment Management",
+            "Estate Planning",
+            "Tax Coordination",
+            "Philanthropy",
+            "Private Equity",
+            "Venture Capital",
+            "Real Estate"
+          ],
+          "investment_thesis": "Fifth Avenue Family Office specializes in comprehensive family office services, including investment management, estate and legacy planning, and tax coordination, tailored to the unique needs of high-net-worth entrepreneurial families.",
+          "primary_contact_name": "Timothy J. Cartwright",
+          "primary_contact_title": "Partner / Member (co-founder)",
+          "primary_contact_email": "tim@fifthavenuefamily.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-03-16",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.4025,
+          "components": {
+            "semantic": 0.293,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
         },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      },
-      {
-        "crd": "107141",
-        "family_office_name": "BOSTON FAMILY OFFICE LLC",
-        "entity_category": "multi_family_office",
-        "city": "BOSTON",
-        "state": "MA",
-        "aum_usd": 2019164947,
-        "investing_sectors": [
-          "Equities",
-          "Fixed Income",
-          "International Investing",
-          "Private Equity",
-          "Real Estate"
-        ],
-        "investment_thesis": "Our focus is on building and managing portfolios of growth-oriented equities, using fixed income and other asset classes for balance and stability.",
-        "primary_contact_name": "Benjamin T. Richardson, CFA",
-        "primary_contact_title": "Chief Investment Officer; Partner & Portfolio Manager; Managing Member",
-        "primary_contact_email": "benjamin.richardson@bosfam.com",
-        "primary_email_grade": "B",
-        "reachability_tier": "Medium",
-        "confidence_score": 90,
-        "data_asof": "2026-03-02",
-        "is_stale": false,
-        "signals": [
-          {
-            "type": "leadership_change",
-            "date": "2026",
-            "description": "Portfolio manager Dylan C. Brix, CFA, CTFA was promoted to Partner (joined 2020)."
-          }
-        ],
-        "fit_score": 0.3409,
-        "components": {
-          "semantic": 0.331,
-          "sector": 0.0,
-          "confidence": 0.9,
-          "reachability": 0.6,
-          "signals": 0.0
+        {
+          "crd": "338122",
+          "family_office_name": "XCEPTION FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "ATLANTA",
+          "state": "GA",
+          "aum_usd": 189340109,
+          "investing_sectors": [
+            "Public Markets",
+            "Private Investments",
+            "Real Assets",
+            "Commodities",
+            "Natural Resources",
+            "Hedge Funds",
+            "Private Equity",
+            "Private Credit"
+          ],
+          "investment_thesis": "We focus on thoughtful asset allocation and diversification across public markets and private investments, emphasizing risk management and after-tax returns.",
+          "primary_contact_name": "Cort Alan Haber, CFP",
+          "primary_contact_title": "Co-founder & CIO (CCO on ADV)",
+          "primary_contact_email": "chaber@xceptionfamilyoffice.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-05-27",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2025-08",
+              "description": "Launched as a newly SEC-registered RIA (Georgia entity formed 2025-08-20) under CEO Michael Callahan, serving families below single-family-office scale (~$189M AUM)."
+            }
+          ],
+          "fit_score": 0.3999,
+          "components": {
+            "semantic": 0.285,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
         },
-        "fit_confidence": "insufficient_evidence",
-        "evidence": [],
-        "caveats": [
-          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
-        ],
-        "aum_note": null
-      }
-    ],
-    "method_note": "deterministic weighted ranking over all indexed qualifying records; sector matching is keyword-based (approximate); confidence tier reflects evidence presence, not score size"
+        {
+          "crd": "294025",
+          "family_office_name": "CUSTOS FAMILY OFFICE LLC",
+          "entity_category": "multi_family_office",
+          "city": null,
+          "state": null,
+          "aum_usd": 346555336,
+          "investing_sectors": [
+            "Asset Management",
+            "Private Investments",
+            "Income Generation",
+            "Tax Efficient Investing",
+            "Retirement Planning",
+            "Family Governance",
+            "Succession",
+            "Philanthropy",
+            "Legacy Planning",
+            "Trust & Estate Coordination",
+            "Liquidity Management",
+            "Risk Management",
+            "Hedging Strategies",
+            "Insurance Review",
+            "Capital Preservation"
+          ],
+          "investment_thesis": "We help clients identify risk, diversify and continue to grow their assets to fund current lifestyle, future generations and philanthropic goals.",
+          "primary_contact_name": "Tony (Anthony M.) Lopiccolo, CFA",
+          "primary_contact_title": "Principal & Chief Investment Officer",
+          "primary_contact_email": "anthony@custosfo.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-04-07",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3987,
+          "components": {
+            "semantic": 0.282,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "281675",
+          "family_office_name": "EAGLE BAY FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "NEW YORK",
+          "state": "NY",
+          "aum_usd": 680792794,
+          "investing_sectors": [],
+          "investment_thesis": "Prudently preserving and growing clients' wealth for generations to come through comprehensive family office and investment advisory services.",
+          "primary_contact_name": "Michael D. Nelson, J.D., CFA",
+          "primary_contact_title": "CEO / Managing Partner",
+          "primary_contact_email": "michael@eaglebayadvisors.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 100,
+          "data_asof": "2026-04-15",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3933,
+          "components": {
+            "semantic": 0.267,
+            "sector": 0.0,
+            "confidence": 1.0,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "106806",
+          "family_office_name": "MATTER FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "ST LOUIS",
+          "state": "MO",
+          "aum_usd": 3811053690,
+          "investing_sectors": [
+            "wealth management",
+            "family operations",
+            "investment management",
+            "wealth planning",
+            "project management"
+          ],
+          "investment_thesis": "We’re long-term investors focused on assets with great potential to achieve your family’s objectives and support your legacy.",
+          "primary_contact_name": "Jerrel Armstrong, MBA",
+          "primary_contact_title": "Partner, Chief Investment Officer",
+          "primary_contact_email": "jarmstrong@matterfamilyoffice.com",
+          "primary_email_grade": "A",
+          "reachability_tier": "High",
+          "confidence_score": 90,
+          "data_asof": "2026-07-08",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2025-11",
+              "description": "Merged with Denver-based IWP Family Office to form a ~$10B+ AUA multi-family office of 90+ professionals across St. Louis, Denver, and Dallas-Fort Worth, ~140 UHNW families."
+            },
+            {
+              "type": "recent_investment",
+              "date": "2025-11",
+              "description": "BW Forsyth Partners provided strategic evergreen capital backing the merger and future acquisitions; Katherine Lintz managing partner, IWP's Charlie Willhoit CEO."
+            }
+          ],
+          "fit_score": 0.3783,
+          "components": {
+            "semantic": 0.331,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.85,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "143112",
+          "family_office_name": "WELLSPRING FAMILY OFFICE",
+          "entity_category": "multi_family_office",
+          "city": "CLEVELAND",
+          "state": "OH",
+          "aum_usd": 5055010974,
+          "investing_sectors": [
+            "Wealth Management",
+            "Tax Planning",
+            "Investment Management",
+            "Family Governance",
+            "Education",
+            "Philanthropy Planning",
+            "Business Advisory"
+          ],
+          "investment_thesis": "We help your family invest with intention, purpose, and care, integrating financial, personal and overall wellness within one vision.",
+          "primary_contact_name": "Richard (Rich) Joseph Turgeon, CFA, CAIA, MSFS",
+          "primary_contact_title": "Chief Investment Officer | Senior Managing Director",
+          "primary_contact_email": "rturgeon@wellspringfo.com",
+          "primary_email_grade": "A",
+          "reachability_tier": "High",
+          "confidence_score": 90,
+          "data_asof": "2026-06-23",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "news",
+              "date": "2025-09",
+              "description": "Wellspring Financial Advisors rebranded as Wellspring Family Office to reflect its multigenerational-family model (~$6.5B client net worth)."
+            },
+            {
+              "type": "leadership_change",
+              "date": "2025-09",
+              "description": "The Pritzker Organization took a minority equity stake in a long-term strategic partnership; some Pritzker family members became clients."
+            }
+          ],
+          "fit_score": 0.3637,
+          "components": {
+            "semantic": 0.289,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.85,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "150748",
+          "family_office_name": "TIMONIER",
+          "entity_category": "multi_family_office",
+          "city": "WINSTON SALEM",
+          "state": "NC",
+          "aum_usd": 450303587,
+          "investing_sectors": [
+            "Human Capital",
+            "Financial Planning",
+            "Investment Advisory",
+            "Tax Planning",
+            "Estate Planning",
+            "Real Estate",
+            "401(k) Solutions",
+            "Philanthropy"
+          ],
+          "investment_thesis": "Evidence-Based Investment Philosophy harnessing the power of low-fee diversified investments and patience, coupled with amazing advice to ensure a successful investing future.",
+          "primary_contact_name": "Nicholas (Nick) C. Baker",
+          "primary_contact_title": "President (50-75% owner)",
+          "primary_contact_email": "nicholas@timonier.com",
+          "primary_email_grade": "A",
+          "reachability_tier": "High",
+          "confidence_score": 90,
+          "data_asof": "2026-02-10",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "recent_investment",
+              "date": "2026-05",
+              "description": "Opened a new ~$793K position in the Dimensional Short-Duration Fixed Income ETF (DFSD) in its latest 13F."
+            }
+          ],
+          "fit_score": 0.3609,
+          "components": {
+            "semantic": 0.281,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.85,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "120053",
+          "family_office_name": "CORNERSTONE FAMILY OFFICE, LLC",
+          "entity_category": "multi_family_office",
+          "city": "MAYFIELD HEIGHTS",
+          "state": "OH",
+          "aum_usd": null,
+          "investing_sectors": [],
+          "investment_thesis": null,
+          "primary_contact_name": "Catherine G. Veres",
+          "primary_contact_title": "Founding Principal and President",
+          "primary_contact_email": "cveres@crnstn.com",
+          "primary_email_grade": "PUB",
+          "reachability_tier": "High",
+          "confidence_score": 85,
+          "data_asof": "2026-04-30",
+          "is_stale": false,
+          "signals": [],
+          "fit_score": 0.3605,
+          "components": {
+            "semantic": 0.237,
+            "sector": 0.0,
+            "confidence": 0.85,
+            "reachability": 1.0,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        },
+        {
+          "crd": "107141",
+          "family_office_name": "BOSTON FAMILY OFFICE LLC",
+          "entity_category": "multi_family_office",
+          "city": "BOSTON",
+          "state": "MA",
+          "aum_usd": 2019164947,
+          "investing_sectors": [
+            "Equities",
+            "Fixed Income",
+            "International Investing",
+            "Private Equity",
+            "Real Estate"
+          ],
+          "investment_thesis": "Our focus is on building and managing portfolios of growth-oriented equities, using fixed income and other asset classes for balance and stability.",
+          "primary_contact_name": "Benjamin T. Richardson, CFA",
+          "primary_contact_title": "Chief Investment Officer; Partner & Portfolio Manager; Managing Member",
+          "primary_contact_email": "benjamin.richardson@bosfam.com",
+          "primary_email_grade": "B",
+          "reachability_tier": "Medium",
+          "confidence_score": 90,
+          "data_asof": "2026-03-02",
+          "is_stale": false,
+          "signals": [
+            {
+              "type": "leadership_change",
+              "date": "2026",
+              "description": "Portfolio manager Dylan C. Brix, CFA, CTFA was promoted to Partner (joined 2020)."
+            }
+          ],
+          "fit_score": 0.3409,
+          "components": {
+            "semantic": 0.331,
+            "sector": 0.0,
+            "confidence": 0.9,
+            "reachability": 0.6,
+            "signals": 0.0
+          },
+          "fit_confidence": "insufficient_evidence",
+          "evidence": [],
+          "caveats": [
+            "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+          ],
+          "aum_note": null
+        }
+      ],
+      "method_note": "deterministic weighted ranking over all indexed qualifying records; sector matching is keyword-based (approximate); confidence tier reflects evidence presence, not score size"
+    }
   }
 }

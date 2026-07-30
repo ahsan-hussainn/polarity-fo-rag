@@ -103,8 +103,60 @@ def _free_text(ans: GoalAnswer) -> str:
                     + list(ans.abstained) + list(ans.next_steps) + list(ans.limitations))
 
 
+_STATE_CODES = {
+    "alabama": "AL", "alaska": "AK", "arizona": "AZ", "arkansas": "AR", "california": "CA",
+    "colorado": "CO", "connecticut": "CT", "delaware": "DE", "florida": "FL", "georgia": "GA",
+    "hawaii": "HI", "idaho": "ID", "illinois": "IL", "indiana": "IN", "iowa": "IA",
+    "kansas": "KS", "kentucky": "KY", "louisiana": "LA", "maine": "ME", "maryland": "MD",
+    "massachusetts": "MA", "michigan": "MI", "minnesota": "MN", "mississippi": "MS",
+    "missouri": "MO", "montana": "MT", "nebraska": "NE", "nevada": "NV", "new hampshire": "NH",
+    "new jersey": "NJ", "new mexico": "NM", "new york": "NY", "north carolina": "NC",
+    "north dakota": "ND", "ohio": "OH", "oklahoma": "OK", "oregon": "OR", "pennsylvania": "PA",
+    "rhode island": "RI", "south carolina": "SC", "south dakota": "SD", "tennessee": "TN",
+    "texas": "TX", "utah": "UT", "vermont": "VT", "virginia": "VA", "washington": "WA",
+    "west virginia": "WV", "wisconsin": "WI", "wyoming": "WY",
+}
+# Cities the corpus knows but whose names are too short to match safely as bare words. 'ADA' would
+# fire inside ordinary prose; a missed constraint is a disclosure gap, a false one blocks a correct
+# answer, so the short names are skipped and that is stated rather than hidden.
+_MIN_CITY_LEN = 5
+
+
+def _corpus_locations() -> tuple[set[str], set[str]]:
+    """Cities and state codes the qualifying set actually contains. The constraint vocabulary is
+    read from the DATA, not from a hand-written list, so it cannot drift away from the corpus."""
+    from pipeline import db
+    with db.get_conn() as c, c.cursor() as cur:
+        cur.execute("select distinct upper(city), upper(state) from gold.records "
+                    "where release_state = 'qualifying'")
+        rows = cur.fetchall()
+    cities = {r[0] for r in rows if r[0] and len(r[0]) >= _MIN_CITY_LEN}
+    states = {r[1] for r in rows if r[1]}
+    return cities, states
+
+
+def _stated_locations(goal: str, cities: set[str], states: set[str]) -> list[dict]:
+    """Geographic constraints the GOAL states, matched against the corpus vocabulary.
+
+    Deliberately conservative. Full state names are matched (mapped to codes) and city names of
+    >= 5 characters; bare two-letter codes are NEVER matched, because 'IN', 'OH', 'MA' and 'CA'
+    are ordinary words and would fire on almost any goal. Word-boundary matching only.
+    """
+    import re as _re
+    low = f" {goal.lower()} "
+    found: list[dict] = []
+    for city in sorted(cities):
+        if _re.search(rf"\b{_re.escape(city.lower())}\b", low):
+            found.append({"kind": "city", "value": city})
+    for name, code in _STATE_CODES.items():
+        if code in states and _re.search(rf"\b{_re.escape(name)}\b", low):
+            found.append({"kind": "state", "value": code})
+    return found
+
+
 def _check_output(ans: GoalAnswer, grounding: dict[str, dict], pickable: set[str],
-                  context_only: dict[str, str] | None = None) -> list[str]:
+                  context_only: dict[str, str] | None = None,
+                  stated_locations: list[dict] | None = None) -> list[str]:
     """Deterministic release gate over the structured answer. Returns failures (empty = pass)."""
     failures = []
     by_name = {}
@@ -167,6 +219,39 @@ def _check_output(ans: GoalAnswer, grounding: dict[str, dict], pickable: set[str
                             "measured insufficient evidence")
         if tier == "weak" and p.confidence == "strong":
             failures.append(f"pick '{p.firm}' claims strong confidence over weak measured evidence")
+
+    # 3. A stated geographic constraint must be honoured or DISCLOSED (measured need: goal run 45
+    #    was asked for family offices "out of Chicago", ranked the whole country, never surfaced
+    #    BMO FAMILY OFFICE in Chicago -- which the set holds -- and never said the constraint had
+    #    been dropped. `limitations` and `next_steps` were both empty).
+    #
+    #    The gate enforces DISCLOSURE, not judgment. It does not require that a record in the
+    #    stated place be recommended: the honest answer may well be "we hold one and it is a poor
+    #    mandate fit." What it forbids is silence -- answering a geographically-constrained goal
+    #    with an unconstrained list and no acknowledgement. That is a claim stronger than the
+    #    evidence, which is the failure class this whole project is built around.
+    for loc in (stated_locations or []):
+        val = loc["value"]
+        matched = False
+        for p in ans.picks:
+            rec = by_name.get(p.firm.strip().lower())
+            if rec is None:
+                subs = [r for n, r in by_name.items()
+                        if p.firm.strip().lower() in n or n in p.firm.strip().lower()]
+                rec = subs[0] if len(subs) == 1 else None
+            if rec is None:
+                continue
+            field = "city" if loc["kind"] == "city" else "state"
+            if (rec.get(field) or "").strip().upper() == val:
+                matched = True
+                break
+        if matched or val.lower() in blob:
+            continue
+        failures.append(
+            f"the goal states the geographic constraint '{val}' but no pick is in {val} and the "
+            f"answer never mentions it. Either return a record there, or say plainly in "
+            f"`limitations` that the constraint could not be met and why. Use fit_rank or "
+            f"structured_search with the state/city filter to check before answering")
     return failures
 
 
@@ -182,6 +267,17 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
     seen_calls: set[tuple[str, str]] = set()  # loop-breaker: identical calls never re-execute
     messages: list[dict] = [{"role": "system", "content": SYSTEM},
                             {"role": "user", "content": f"Goal: {goal}"}]
+    # Constraint vocabulary read from the corpus, so the gate below cannot drift from the data.
+    # Never fatal: a goal with no location simply yields an empty list, and a DB hiccup here must
+    # not take down a run over an advisory check.
+    try:
+        _cities, _states = _corpus_locations()
+        stated_locations = _stated_locations(goal, _cities, _states)
+    except Exception:
+        stated_locations = []
+    if stated_locations:
+        rl.event("goal", "stated_constraints", call_class="decision",
+                 detail={"locations": stated_locations})
     oai_tools = T.openai_tools() + [_SUBMIT]
     usd = 0.0
     answer: GoalAnswer | None = None
@@ -294,7 +390,7 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                 limitations=["step budget exhausted before a valid submit_answer"])
             verification = {"passed": True, "failures": [], "repaired": False, "refused": True}
         else:
-            failures = _check_output(answer, grounding, pickable, context_only)
+            failures = _check_output(answer, grounding, pickable, context_only, stated_locations)
             verification = {"passed": not failures, "failures": failures, "repaired": False}
             if failures:
                 messages.append({"role": "user", "content":
@@ -326,7 +422,8 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                     except (ValidationError, json.JSONDecodeError):
                         repaired = None
                 if repaired is not None:
-                    f2 = _check_output(repaired, grounding, pickable, context_only)
+                    f2 = _check_output(repaired, grounding, pickable, context_only,
+                                       stated_locations)
                     if not f2:
                         answer = repaired
                         verification = {"passed": True, "failures": [], "repaired": True}

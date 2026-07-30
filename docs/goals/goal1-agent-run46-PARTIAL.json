@@ -1,0 +1,135 @@
+{
+  "answer": {
+    "verdict": "Here is a prioritized list of family offices to contact for your $150M lower-middle-market industrials buyout fund:",
+    "picks": [
+      {
+        "firm": "CLASS VI FAMILY OFFICE, LLC",
+        "fit_summary": "They have a significant AUM of $1.5B and focus on M&A transactions, which may align with your fund's objectives, although their sector focus is not explicitly stated.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $1,498M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: Matt@classvipartners.com (High reachability)"
+      },
+      {
+        "firm": "CUSTOS FAMILY OFFICE LLC",
+        "fit_summary": "With an AUM of $346M, they focus on private investments and asset management, which could be relevant for your fund.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $347M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: anthony@custosfo.com (High reachability)"
+      },
+      {
+        "firm": "XCEPTION FAMILY OFFICE",
+        "fit_summary": "They manage $189M and focus on private equity and private investments, which may align with your fund's strategy.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $189M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: chaber@xceptionfamilyoffice.com (High reachability)"
+      },
+      {
+        "firm": "FIFTH AVENUE FAMILY OFFICE",
+        "fit_summary": "With an AUM of $1.35B, they provide comprehensive family office services, including private equity, which may be relevant to your fund.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $1,351M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: tim@fifthavenuefamily.com (High reachability)"
+      },
+      {
+        "firm": "EAGLE BAY FAMILY OFFICE",
+        "fit_summary": "They have an AUM of $681M and focus on investment advisory services, which could be relevant for your fund.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $681M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: michael@eaglebayadvisors.com (High reachability)"
+      },
+      {
+        "firm": "MATTER FAMILY OFFICE",
+        "fit_summary": "They manage $3.81B and focus on wealth management and investment management, which may align with your fund's objectives.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $3,811M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: jarmstrong@matterfamilyoffice.com (High reachability)"
+      },
+      {
+        "firm": "TIMONIER",
+        "fit_summary": "With an AUM of $450M, they focus on investment advisory and financial planning, which could be relevant for your fund.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $450M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: nicholas@timonier.com (High reachability)"
+      },
+      {
+        "firm": "WELLSPRING FAMILY OFFICE",
+        "fit_summary": "They manage $5.06B and focus on wealth management and investment management, which may align with your fund's objectives.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $5,055M within the requested band"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: rturgeon@wellspringfo.com (High reachability)"
+      },
+      {
+        "firm": "CORNERSTONE FAMILY OFFICE, LLC",
+        "fit_summary": "They provide personalized financial services to wealthy individuals, but their AUM is not stated, making it difficult to assess fit.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM not stated in the record; size fit unknown"
+        ],
+        "caveats": [
+          "no stated sectors or thesis in the record -- fit cannot be evidenced; ranking rests on document similarity alone"
+        ],
+        "outreach": "Email: cveres@crnstn.com (High reachability)"
+      }
+    ],
+    "abstained": [
+      "None"
+    ],
+    "coverage_note": "The dataset does not cover specific investment strategies or preferences for these family offices, which may limit the ability to assess fit confidently.",
+    "next_steps": [
+      "Reach out to the listed contacts via email to introduce your fund and explore potential interest."
+    ],
+    "limitations": [
+      "The fit for some family offices is based on insufficient evidence, and their investment strategies may not align perfectly with your fund's focus."
+    ]
+  },
+  "verification": {
+    "passed": true,
+    "failures": [],
+    "repaired": false
+  },
+  "run_id": 46,
+  "steps": 10,
+  "usd": 0.01633,
+  "messages_traced": 30,
+  "trace_note": "raw run log: ops.agent_messages (full message trace, incl. tool results and any repair turn) + ops.run_events (per-call timing, tokens, cost) where run_id=46"
+}

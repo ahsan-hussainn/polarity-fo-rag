@@ -40,6 +40,8 @@ class FitQuery(BaseModel):
     sector_terms: list[str] | None = None
     min_aum_usd: int | None = None
     max_aum_usd: int | None = None
+    state: str | None = None
+    city: str | None = None
     k: int = 10
 
 
@@ -80,6 +82,7 @@ def fit(q: FitQuery):
 
         return fit_rank(q.mandate, sector_terms=q.sector_terms or [],
                         min_aum=q.min_aum_usd, max_aum=q.max_aum_usd,
+                        state=q.state, city=q.city,
                         k=min(max(q.k, 1), 24))
     except Exception:
         logging.getLogger("uvicorn.error").exception("fit failed")

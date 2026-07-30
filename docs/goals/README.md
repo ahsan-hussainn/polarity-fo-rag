@@ -24,28 +24,40 @@ Dataset state at run time: **40 qualifying** (34 SFO+MFO + 6 evidenced practices
 
 | Artifact | File |
 |---|---|
-| Manual retrieval (`POST /fit`, incl. exact request + latency) | `goal1-manual-fit.json` |
-| Agent structured output | `goal1-agent-output.json` (run 46) |
-| Raw run log — `ops.runs` + `ops.agent_messages` + `ops.run_events` | `goal1-run-log.jsonl` (58 rows) |
-| **Superseded first attempt, kept deliberately** | `goal1-agent-run45-FAILED.json`, `goal1-run45-FAILED-run-log.jsonl` |
+| Manual retrieval (both attempts, exact requests + latency) | `goal1-manual-fit.json` |
+| Agent structured output | `goal1-agent-output.json` (**run 47**) |
+| Raw run log — `ops.runs` + `ops.agent_messages` + `ops.run_events` | `goal1-run-log.jsonl` (43 rows) |
+| **Superseded attempt 1, kept deliberately** | `goal1-agent-run45-FAILED.json` + `goal1-run45-FAILED-run-log.jsonl` |
+| **Superseded attempt 2, kept deliberately** | `goal1-agent-run46-PARTIAL.json` + `goal1-run46-PARTIAL-run-log.jsonl` |
 
 ### What the manual path returns
 
-`POST /fit` with the mandate and `sector_terms: ["industrials","manufacturing"]`, k=10: 40 records
-considered, 10 ranked, fit scores 0.34–0.42, **every one tiered `insufficient_evidence`**, all 10
-carrying a named contact. Latency 15.1s.
+Captured against the deployed service. Two attempts, because the difference between them *is* the
+finding.
 
-**Zero Illinois records in the manual top 10.** `/fit` has no geography parameter — it ranks mandate
-fit and cannot honour "out of Chicago" at all. The manual path also cannot answer the freshness half
-of the question. That gap is the point of comparison for this goal.
+**Attempt 1 — mandate only, what a user types first.** 40 considered, 10 ranked, scores 0.34–0.42,
+**every row tiered `insufficient_evidence`**, all 10 with a named contact. Top hits Denver, Naples,
+Atlanta — **zero Illinois records**. The mandate says "out of Chicago" and the ranking cannot honour
+it, because geography was not expressible.
+
+**Attempt 2 — the same mandate with `state: "IL"`**, a filter added to `POST /fit` on 2026-07-30 as
+part of this goal's fix. 40 considered → **1**, returning `BMO FAMILY OFFICE, LLC` (Chicago, IL),
+still `insufficient_evidence` on mandate fit. The record the first attempt could never reach.
+
+Even with the filter, the manual path cannot answer the freshness half of the question. That gap is
+the point of comparison for this goal.
 
 ### What the agent adds, and what it costs
 
-Run 46: 10 model calls, 17 tool calls (`fit_rank` ×1, `get_record` ×9, `record_history` ×6,
-`quarantine_summary` ×1), **$0.01633**, ~65s of model time, slowest single call 39.5s.
-Verification passed with no repair turn. It composes an ordered approach list with a named contact,
-a reachability basis and a per-pick caveat, and it consults the operating ledger via
-`record_history`, which is what the manual path structurally cannot do.
+Run 47: 10 model calls, 9 tool calls (`fit_rank` ×2, `structured_search` ×2, `get_record` ×2,
+`semantic_search` ×1, `record_history` ×1, `quarantine_summary` ×1), **$0.00636**. Verification
+passed with no repair turn.
+
+One pick — BMO Family Office, Chicago — at `weak` confidence with a caveat, a verdict stating the
+industrials evidence is insufficient because the record's stated sectors do not include industrials,
+and an honest outreach line: no decision-maker is established, so general channels only. It reached
+for `structured_search` here, which run 45 never called, and consulted the operating ledger via
+`record_history` — which the manual path structurally cannot do.
 
 ### Run 45 failed the release check's intent, and is kept as evidence
 
@@ -73,22 +85,50 @@ compliant output on its own. `grounding` feeds the gate, not the model, so the f
 better labels; run-to-run variation did. The fix's guarantee is narrower and worth stating exactly:
 a strong-over-insufficient claim can no longer pass **silently**.
 
-### Open limitation, disclosed rather than fixed
+### Run 46 dropped the stated constraint too — fixed in two halves
 
-**The agent drops the stated geography constraint and misses the one record that matches it.**
-`BMO FAMILY OFFICE, LLC` (Chicago, IL) is in the qualifying set. Neither run mentions it; the
-strings "Chicago", "Illinois" and "BMO" appear nowhere in either output, and neither run declared
-the gap in `limitations`.
+Run 46 fixed the confidence problem and kept the geographic one: no mention of Chicago, Illinois or
+BMO anywhere, `limitations` empty. `docs/three-goals.md` pre-registered exactly this ("silently
+relaxing a stated constraint is the failure mode to watch for"), and the uncomfortable part was that
+it was **not** a capability gap — `structured_search` already accepted a `state` filter and the logs
+show the agent simply never called it.
 
-This is **not** a capability gap, which is the uncomfortable part. `structured_search` accepts a
-`state` filter and would have returned BMO. The run logs show it was **never called** in either
-attempt — the agent planned `fit_rank` + `get_record` + `record_history` and never reached for the
-one tool that answers the geography half. So this is an agent-planning failure with an available
-tool, not a missing filter.
+Two things were wrong, so two things changed.
 
-Left open on purpose. Enforcing "honour a stated hard constraint or disclose that you could not"
-means either a prompt instruction — which the brief explicitly does not count as enforced control —
-or a new deterministic gate rule inferring constraints from the goal text. Building an unmeasured
-release rule on day 4 to make one goal look better is the wrong trade; `docs/three-goals.md`
-pre-registered this exact failure mode as the thing to watch for, and it happened, so it is reported
-as found.
+**Capability.** `fit_rank` now accepts `state`/`city` as exact filters, applied before ranking and
+deliberately *not* folded into the weighted score — a firm does not become a better mandate fit by
+being nearby. Plumbed through the tool and `POST /fit`. An empty geographic result now states that
+the constraint held and the answer is genuinely empty, rather than looking like a failed search.
+
+**Enforcement**, because the brief is explicit that prompt instructions do not count as enforced
+control. `_check_output` extracts geographic constraints from the goal and requires each to be
+honoured or disclosed. The constraint vocabulary is read from the corpus itself — distinct city and
+state of qualifying records — so it cannot drift from the data. Conservative by construction: full
+state names mapped to codes, city names ≥5 characters, word-boundary matching only, and **never**
+bare two-letter codes, because `IN`, `OH`, `MA` and `CA` are ordinary words. `ADA` is skipped for the
+same reason; a missed constraint is a disclosure gap, a false one blocks a correct answer.
+
+The rule enforces **disclosure, not judgment.** It does not require that a record in the stated place
+be recommended — the honest answer may well be "we hold one and it is a poor fit." What it forbids is
+silence. Verified three ways: the run-45/46 shape fails, disclosing-without-matching passes, and
+returning a matching record passes. Goals 2 and 3 extract no location, so no false positives.
+
+### Still open: the AUM band is derived from the fund's size
+
+Run 47 called `fit_rank` with `min_aum_usd: 150000000` and `structured_search` with
+`min_aum_usd: 150000000, max_aum_usd: 10000000000`. The $150M is **the fund's size, not a constraint
+on family-office AUM**, and the `min_aum_usd` tool description says so explicitly: *"Never derive
+this from a fund's market segment... A $5B family office writing an LP cheque into a
+lower-middle-market fund is a fit, not a mismatch."* The `max_aum_usd` value is invented outright.
+
+It changed nothing here — Illinois holds exactly one qualifying record at any AUM — but it made the
+prose wrong: `coverage_note` and `limitations` both attribute the narrow result to "the AUM
+criteria" when the actual cause is geography. A customer-facing string crediting the wrong filter is
+a small honesty defect, not a cosmetic one.
+
+Reported rather than fixed, and the reason is the same one this note keeps returning to: the
+guardrail is currently a **tool description**, which is a prompt instruction, and the brief says
+those do not count as enforced control. Doing it properly means a deterministic rule — a size band
+is only legitimate when the goal constrains the family office, not the fund — and that needs
+measuring against goals that legitimately do constrain FO size before it goes in front of a release
+path. Left as a known defect with the run log as evidence.

@@ -1,0 +1,46 @@
+{
+  "answer": {
+    "verdict": "The dataset contains several family offices that may be suitable for a lower-middle-market healthcare services fund seeking limited partners. However, the confidence in their fit is generally low due to insufficient evidence regarding their specific investment interests in healthcare services. Here are the top candidates:",
+    "picks": [
+      {
+        "firm": "CLASS VI FAMILY OFFICE, LLC",
+        "fit_summary": "While they specialize in M&A transactions, there is no specific evidence of interest in healthcare services, leading to a low confidence in fit.",
+        "confidence": "weak",
+        "evidence": [
+          "No stated sectors or thesis in the record; fit cannot be evidenced; ranking rests on document similarity alone."
+        ],
+        "caveats": [
+          "Insufficient evidence regarding specific interest in healthcare services."
+        ],
+        "outreach": "Matt@classvipartners.com (PUB email)"
+      }
+    ],
+    "abstained": [
+      "XCEPTION FAMILY OFFICE",
+      "FIFTH AVENUE FAMILY OFFICE",
+      "CUSTOS FAMILY OFFICE LLC",
+      "EAGLE BAY FAMILY OFFICE",
+      "WELLSPRING FAMILY OFFICE",
+      "MATTER FAMILY OFFICE",
+      "TIMONIER",
+      "CORNERSTONE FAMILY OFFICE, LLC"
+    ],
+    "coverage_note": "The dataset does not provide strong evidence for family offices specifically interested in lower-middle-market healthcare services investments.",
+    "next_steps": [
+      "Consider reaching out to the listed family offices to gauge their interest in healthcare services investments."
+    ],
+    "limitations": [
+      "Many family offices lack specific sector focus in their records, making it difficult to ascertain their fit for healthcare services."
+    ]
+  },
+  "verification": {
+    "passed": true,
+    "failures": [],
+    "repaired": false
+  },
+  "run_id": 48,
+  "steps": 2,
+  "usd": 0.00117,
+  "messages_traced": 6,
+  "trace_note": "raw run log: ops.agent_messages (full message trace, incl. tool results and any repair turn) + ops.run_events (per-call timing, tokens, cost) where run_id=48"
+}

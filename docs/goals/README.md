@@ -132,3 +132,63 @@ those do not count as enforced control. Doing it properly means a deterministic 
 is only legitimate when the goal constrains the family office, not the fund — and that needs
 measuring against goals that legitimately do constrain FO size before it goes in front of a release
 path. Left as a known defect with the run log as evidence.
+
+---
+
+## Goal 2 · Uncertain-data case (verbatim) — run 2026-07-30, day 4
+
+**Exact goal string.** Character-exactness was verified programmatically against
+`docs/brief/Differentiator-Stage-2-v9-2026.txt` itself, not against a transcription:
+
+> Identify the family offices in the dataset that are the best fit for a lower-middle-market
+> healthcare services fund seeking limited partners, and tell me how confident you are in each.
+
+Dataset state at run time: **40 qualifying**, 15 unresolved, 9 quarantined. Per the brief, no
+uncertain record was cleaned away before the run.
+
+| Artifact | File |
+|---|---|
+| Manual retrieval (`POST /fit`, exact request + latency) | `goal2-manual-fit.json` |
+| Agent structured output | `goal2-agent-output.json` (run 48) |
+| Raw run log | `goal2-run-log.jsonl` (10 rows) |
+
+### What the manual path returns
+
+40 considered, 10 ranked, scores 0.33–0.42, and **every single row tiered
+`insufficient_evidence` with an empty evidence list**. That is the honest state of the data: no
+qualifying record carries stated healthcare-sector evidence. The ranking is document similarity and
+says so in `method_note`.
+
+No AUM band was passed, deliberately. "Lower-middle-market" describes the *fund's deals*, not a
+ceiling on how large its LPs may be.
+
+### What the agent produced
+
+Run 48: 2 model calls, 1 tool call (`fit_rank`), **$0.00117**. Verification passed, no repair.
+
+**One pick at `weak`, eight explicit abstentions, and a coverage note saying the dataset does not
+support a confident answer.** This is the behaviour the brief asks for — *"a strong system does not
+confidently launder weak evidence into a clean answer"* — and it is the end of the run-9 → run-10 →
+run-12 progression recorded in architecture note §6: evidence laundering, then an identical-call
+loop, now an honest weak answer. The `fit_confidence` tier ceiling from `fit.py` is doing the work:
+`strong` requires a *stated* sector match, so prose similarity cannot reach it.
+
+It also correctly did **not** derive an AUM band here, which locates the run-47 defect precisely:
+that was triggered by the literal "$150M" in Goal 1's text, not by a systematic bug.
+
+### Two honest weaknesses in this run
+
+**1. `evidence` contains an absence of evidence.** The single pick's evidence list reads *"No stated
+sectors or thesis in the record; fit cannot be evidenced."* That is a caveat, not evidence.
+`Pick.evidence` is declared `min_length=1`, so a record with genuinely no mandate evidence cannot be
+picked without putting *something* in the field — and the model does the least-dishonest thing
+available, which is to invert it. The schema is applying pressure in the wrong direction: it should
+permit an empty evidence list and let the confidence tier carry the weight. Recorded rather than
+changed mid-goal-run.
+
+**2. The excluded population is not disclosed.** The answer never mentions that beyond the 40 ranked
+records the system holds 15 unresolved and 9 quarantined entities. The brief's Goal-2 framing asks
+that unresolved status "remain visible", and while those records are visible on every other
+surface — `/stats`, `reconcile`, the Coverage Desk — this answer does not point at them. A stronger
+answer would name the excluded count and why it is excluded. `abstained` also lists eight firms as
+bare names with no reason, where the schema asks for the reason.

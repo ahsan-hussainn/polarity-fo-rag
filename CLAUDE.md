@@ -6,17 +6,61 @@ Read this first each session. Keep it current.
 
 ## Current phase: Stage 2 operating window (Mon 2026-07-27 12:00 → Sat 2026-08-01 12:00 +05)
 
-**Day 3 (2026-07-29) status.** Day-2 checkpoint email **sent**. Window conditions 2 and 3 met on
-natural evidence; condition 1 (48h across scheduled runs) completes Wed 20:18 PKT. Day 3 was a full
-adversarial review against the brief + Bridge Mandate, then the fixes it found: ADRs **0034–0040**.
-Qualifying **26 → 32** via the measured auto-release band (gate affirms no longer need per-record
-human ratification, but must clear client-mix corroboration — blanket auto-release stayed refused at
-54.8% measured precision). Second source class shipped (**13F**, reaching ADV-exempt SFOs). The ADV
-staleness detector was rebuilt because it could not fire; its write volume exposed and fixed the
-system's real first bottleneck (connection-per-ledger-write). Remaining: run the three goals,
-finish `docs/architecture-notes.md` (drafted), regenerate all `[regen]` figures, build summary,
-final review. **Counts anywhere in docs are stamped, not live — regenerate from `reconcile` /
-`/stats`.**
+**Day numbering: window days run 12:00 → 12:00 PKT, not calendar midnight.** Day 1 Mon 27 12:00 →
+Tue 28 12:00, day 2 → Wed 29 12:00, day 3 → Thu 30 12:00, day 4 → Fri 31 12:00, day 5 → **Sat Aug 1
+12:00 = submission deadline**. This file and `docs/SESSION_LOG.md` label sittings by *calendar* date,
+so their day labels and window-days differ at the edges — read the clock, not the label.
+
+**Status: start of day 4 (stamped 2026-07-30 12:05 PKT).** Day-2 checkpoint email **sent** Wed 29
+12:00, exactly on the day-2 boundary. **All three window conditions met** — 14 scheduled runs
+spanning ≥48h, natural dependency failures, cross-run evidence-based staleness. The remaining work
+is deliverables, not operations. (Scheduler note: GitHub is delivering cron slots 60–190 min late —
+run 43 fired 19:49Z for the 18:23Z slot, run 44 03:37Z for 00:23Z. Nothing is at risk, the
+conditions are already met; it only slows time-to-re-gate.)
+
+Day 3 was a full adversarial review against the brief + Bridge Mandate, then the fixes it found:
+ADRs **0034–0041**. Qualifying **40** as of 2026-07-30 12:05 (**34 SFO+MFO + 6 evidenced practices,
+never summed**; 29 human-ratified + 11 band-released; 14 of 40 carry no contact under ADR-0028's
+entity-strict/field-permissive standard; **zero `single_family_office`** — see the band gap below).
+Queue: 361 candidates gated → 58 affirm / 77 needs_evidence / 226 exclude. Auto-release band
+shipped, so unattended cycles can finally move the count; blanket auto-release stayed refused at
+54.8% measured precision.
+Second source class shipped (**13F**, ADR-0035). The ADV staleness detector was rebuilt because it
+could not fire; its write volume exposed and fixed the system's real first bottleneck
+(connection-per-ledger-write).
+
+**Day-3-night funnel audit (2026-07-30, live-DB measured — read this before planning the climb).**
+- **The binding constraint is not candidate supply.** Measured 2026-07-30 12:05: candidates with a
+  resolved domain affirm at **29/82 (35.4%)**, without at **29/279 (10.4%)** — a 3.4× lift, and half
+  of all affirms now come from the 23% of the queue the resolver rescued.
+  `pipeline/ops/resolve.py`'s own docstring says the same. Do **not** write a shortfall story around
+  exhausted supply — the census
+  (`docs/findings/stage2-source-census.md`) says ~335–570 with 500 in "the aggressive upper half",
+  which is a different claim.
+- **The band's route 2 was misdescribed and the band is channel-skewed** — corrected in ADR-0034
+  (documentation only; thresholds and `BAND_VERSION` unchanged, still 16/16 counted). `hnw_raum`
+  present: **13F 0/20 · state_adv 27/119 · sec_adv 54/222**. No 13F candidate can auto-release at
+  all. Disclosed as a measured blind spot, not patched.
+- **Resolver pool is exhausted, and its payoff proves the band gap.** Manual backfill (runs 41–42,
+  `trigger='manual_backfill'`) proved +21 domains, 61 → 82. All 21 have since been re-gated by
+  scheduled cycles: **+12 affirms (57%)** — double the 28% historical rate for resolved candidates,
+  because many resolved to literal `*familyoffice.com` domains. But **only +2 reached qualifying**
+  (38 → 40); the band held the other 10 for want of client-mix data. That is the channel skew above,
+  measured end-to-end on fresh records rather than argued. Batch 2 returned 0/40: every one of the
+  112 remaining stranded candidates has already been attempted and failed, and `_note_attempt` is
+  deliberately uncapped, so cycles keep re-burning ~5 min/run at 0% until new candidates are seeded.
+- **31 candidates were excluded on fetch failures that will never be retried** — they hold a real
+  domain, no site text was ever captured, and `_stranded()` only targets null/social URLs.
+- **1,374 `client_mix`-tier candidates were never seeded** (150 SEC + 1,224 state). Low expected
+  precision, so probably leave them — but "supply is exhausted" cannot be claimed while they sit.
+
+Remaining: **day 4 — run the three goals** (4 artifacts each, `docs/three-goals.md`; the brief puts
+them on days 3–4 and they have twice surfaced real bugs here, so do not defer them to day 5).
+**Day 5 — documentation only:** finish `docs/architecture-notes.md` (drafted; **6 `[regen]` figures**
++ §6's what-broke list), `reconcile` → all_agree, `ops-export` + force-add, git tag, 2 scheduler
+screenshots, build summary, final review. Needs Ahsan, not code: 3 pending adjudications (CRDs
+324899, 220519, 329496), the MillionVerifier 403 call, the 500-shortfall framing.
+**Counts anywhere in docs are stamped, not live — regenerate from `reconcile` / `/stats`.**
 
 Brief: **`docs/brief/` (in-repo, .docx + greppable .txt) — it outranks this file, the operating
 plan, and every ADR; where they disagree the brief is right.** Mandate: 24 → 500

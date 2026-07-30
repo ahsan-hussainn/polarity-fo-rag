@@ -32,6 +32,42 @@ from pipeline.ops import runlog as rl
 
 OBSERVE_WORKERS = 8       # bounded pool: one home-page fetch per distinct firm domain
 FETCH_TIMEOUT = 15
+
+
+def _reach(status: int | None, error: str | None) -> str:
+    """Classify a home-page fetch for TRUST purposes.
+
+    Measured need (2026-07-30, day 4): the previous rule was `prior == 200 and now != 200`, which
+    called any non-200 "the source may have gone dark". Across the window that produced 20
+    website_dark events of which **16 were HTTP 202** -- a success code -- and 2 were HTTP 429.
+    Records a buyer receives were carrying trust_state='flagged' on the strength of a 2xx response,
+    which is a claim stronger than its evidence, and a Goal-3 run told a user to stop trusting seven
+    records on that basis.
+
+    - 2xx/3xx: the host served us. Not decay. A CONTENT change is still caught by the hash rule.
+    - 429:     we were throttled. Says something about our crawl rate, nothing about the firm.
+    - 4xx/5xx: a real failure from a host that can answer.
+    - error:   timeout or connection reset -- noisy, so it needs to reproduce across cycles.
+    """
+    if error is not None or status is None:
+        return "transient"
+    if 200 <= status < 400:
+        return "reachable"
+    if status == 429:
+        return "throttled"
+    return "unreachable"
+
+
+def _reach_observed(value: str) -> str:
+    """Same classification, recovered from a stored observation (`str(status)` or `error:...`)."""
+    if not value:
+        return "transient"
+    if value.startswith("error:"):
+        return "transient"
+    try:
+        return _reach(int(value), None)
+    except ValueError:
+        return "transient"
 RECLASSIFY_WORKERS = int(os.getenv("OPS_RECLASSIFY_WORKERS", "6"))
 DISCOVER_PER_CYCLE = int(os.getenv("OPS_DISCOVER_PER_CYCLE", "15"))
 RESOLVE_PER_CYCLE = int(os.getenv("OPS_RESOLVE_PER_CYCLE", "40"))
@@ -163,6 +199,18 @@ def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
         if write:
             rl.trust_event(*a, **kw)
 
+    # Which CRDs currently carry a LIVE website_dark flag, i.e. the newest website_dark event for
+    # them was a 'flagged' one. Needed for the recovery branch below: a flag can only be cleared by
+    # a superseding event, so the cycle has to know a flag is standing before it can lift it.
+    with db.get_conn() as _c, _c.cursor() as _cur:
+        _cur.execute(
+            "select crd from (select distinct on (crd) crd, action from ops.trust_events te "
+            "  join ops.runs r using (run_id) "
+            " where te.check_type = 'website_dark' "
+            "   and coalesce(r.config->>'write','false') = 'true' "
+            " order by crd, te.created_at desc) latest where action = 'flagged'")
+        dark_flagged = {r[0] for r in _cur.fetchall()}
+
     with_sites = [f for f in firms if f.get("website")]
     results: dict[str, dict] = {}
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -268,13 +316,45 @@ def _observe_phase(firms: list[dict], workers: int, *, write: bool) -> dict:
 
         # Cross-run comparison -- the evidence-based staleness the mandate's condition 3 requires.
         now_desc = f"HTTP {r['status']}" if r["status"] is not None else (r["error"] or "unreachable")
-        if prior_status and prior_status[0] == "200" and r["status"] != 200:
+        prior_class = _reach_observed(prior_status[0]) if prior_status else None
+        now_class = _reach(r["status"], r["error"])
+        was_flagged_dark = crd in dark_flagged
+
+        if now_class == "throttled":
+            # NOT evidence about the firm. 429 means we were rate-limited, and with a per-host
+            # politeness budget (ADR-0040) the most likely cause is our own crawl rate. Recording
+            # it as decay would let our own behaviour reduce a record's trust.
+            stats["throttled"] = stats.get("throttled", 0) + 1
+            rl.event("observe", "home_throttled", target=r["url"], status="error",
+                     detail={"crd": crd, "http_status": r["status"],
+                             "note": "429 from host; treated as 'could not check', not as decay"})
+        elif now_class == "unreachable" and prior_class == "reachable":
+            # A definitive failure (4xx other than 429, or 5xx) on a host that served us before.
             stats["dark"] += 1
             trust_event(crd, "website_dark", prior_status[0], now_desc,
-                           f"home page was reachable (HTTP 200) at run {prior_status[2]} "
-                           f"({prior_status[1]:%Y-%m-%d %H:%M}Z) and now returns {now_desc}; the "
-                           "source may have gone dark -- trust reduced pending next cycle's re-check",
-                           "flagged")
+                           f"home page was reachable (HTTP {prior_status[0]}) at run "
+                           f"{prior_status[2]} ({prior_status[1]:%Y-%m-%d %H:%M}Z) and now returns "
+                           f"{now_desc}; the source may have gone dark -- trust reduced pending "
+                           "next cycle's re-check", "flagged")
+        elif now_class == "transient" and prior_class == "transient":
+            # Timeouts and connection resets are noisy, so one is not evidence. Two consecutive
+            # cycles is -- the same reproduce-across-cycles rule the materiality classifier already
+            # uses for text changes, applied to reachability.
+            stats["dark"] += 1
+            trust_event(crd, "website_dark", prior_status[0], now_desc,
+                           f"home page failed to load on two consecutive cycles (run "
+                           f"{prior_status[2]} at {prior_status[1]:%Y-%m-%d %H:%M}Z, and again "
+                           f"now: {now_desc}); a single failure is noise, a repeated one is "
+                           "evidence -- trust reduced", "flagged")
+        elif now_class == "reachable" and was_flagged_dark:
+            # RECOVERY. Without this there was no path back: trust_latest takes the newest event per
+            # (crd, check_type), so a website_dark flag stayed forever because nothing ever
+            # superseded it. ADR-0037 says a re-verified firm stops carrying a scar; this is what
+            # actually makes that true.
+            stats["recovered"] = stats.get("recovered", 0) + 1
+            trust_event(crd, "website_dark", "flagged", now_desc,
+                           f"home page is reachable again ({now_desc}); the earlier website_dark "
+                           "flag is superseded by this observation", "noted")
         elif prior_hash and r["hash"] and prior_hash[0] != r["hash"]:
             stats["changed"] += 1
             if not write:

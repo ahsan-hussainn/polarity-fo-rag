@@ -1,0 +1,113 @@
+{
+  "answer": {
+    "verdict": "I have identified several family offices that may be potential LPs for your $150M lower-middle-market industrials buyout fund. However, some records are flagged due to website issues, which may affect their reliability. Here are the recommended contacts:",
+    "picks": [
+      {
+        "firm": "CLASS VI FAMILY OFFICE, LLC",
+        "fit_summary": "They have a significant AUM and focus on M&A transactions, which may align with your fund's objectives.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $1,498M within the requested band"
+        ],
+        "caveats": [
+          "No stated sectors or thesis in the record; fit cannot be evidenced; ranking rests on document similarity alone."
+        ],
+        "outreach": "Email: Matt@classvipartners.com (High reachability)"
+      },
+      {
+        "firm": "CUSTOS FAMILY OFFICE LLC",
+        "fit_summary": "They manage a substantial AUM and focus on asset growth and diversification, which could align with your fund's goals.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $347M within the requested band"
+        ],
+        "caveats": [
+          "No stated sectors or thesis in the record; fit cannot be evidenced; ranking rests on document similarity alone."
+        ],
+        "outreach": "Email: anthony@custosfo.com (High reachability)"
+      },
+      {
+        "firm": "XCEPTION FAMILY OFFICE",
+        "fit_summary": "They focus on asset allocation and diversification, which may align with your fund's investment strategy.",
+        "confidence": "strong",
+        "evidence": [
+          "AUM $189M within the requested band"
+        ],
+        "caveats": [],
+        "outreach": "Email: chaber@xceptionfamilyoffice.com (High reachability)"
+      },
+      {
+        "firm": "FIFTH AVENUE FAMILY OFFICE",
+        "fit_summary": "They provide comprehensive family office services, including investment management, which may be relevant to your fund.",
+        "confidence": "strong",
+        "evidence": [
+          "AUM $1,351M within the requested band"
+        ],
+        "caveats": [],
+        "outreach": "Email: tim@fifthavenuefamily.com (High reachability)"
+      },
+      {
+        "firm": "EAGLE BAY FAMILY OFFICE",
+        "fit_summary": "They focus on preserving and growing wealth, which aligns with your fund's objectives.",
+        "confidence": "strong",
+        "evidence": [
+          "AUM $681M within the requested band"
+        ],
+        "caveats": [],
+        "outreach": "Email: michael@eaglebayadvisors.com (High reachability)"
+      },
+      {
+        "firm": "MATTER FAMILY OFFICE",
+        "fit_summary": "They serve ultra-high-net-worth families and focus on long-term investments, which may align with your fund's strategy.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $3,811M within the requested band"
+        ],
+        "caveats": [
+          "Recent ADV filing indicates potential changes in AUM and client mix."
+        ],
+        "outreach": "Email: jarmstrong@matterfamilyoffice.com (High reachability)"
+      },
+      {
+        "firm": "TIMONIER",
+        "fit_summary": "They provide a multidisciplinary approach to wealth management, which may align with your fund's goals.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $450M within the requested band"
+        ],
+        "caveats": [
+          "No stated sectors or thesis in the record; fit cannot be evidenced; ranking rests on document similarity alone."
+        ],
+        "outreach": "Email: nicholas@timonier.com (High reachability)"
+      },
+      {
+        "firm": "WELLSPRING FAMILY OFFICE",
+        "fit_summary": "They support ultra-high-net-worth families in managing their financial lives, which may align with your fund's objectives.",
+        "confidence": "weak",
+        "evidence": [
+          "AUM $5,055M within the requested band"
+        ],
+        "caveats": [
+          "No stated sectors or thesis in the record; fit cannot be evidenced; ranking rests on document similarity alone."
+        ],
+        "outreach": "Email: rturgeon@wellspringfo.com (High reachability)"
+      }
+    ],
+    "abstained": [
+      "CORNERSTONE FAMILY OFFICE, LLC: AUM not stated in the record; size fit unknown, no stated sectors or thesis in the record."
+    ],
+    "coverage_note": "The dataset includes family offices with varying degrees of fit for your fund, but some records are flagged due to website issues or lack of clear investment thesis.",
+    "next_steps": [],
+    "limitations": []
+  },
+  "verification": {
+    "passed": true,
+    "failures": [],
+    "repaired": false
+  },
+  "run_id": 45,
+  "steps": 10,
+  "usd": 0.01617,
+  "messages_traced": 30,
+  "trace_note": "raw run log: ops.agent_messages (full message trace, incl. tool results and any repair turn) + ops.run_events (per-call timing, tokens, cost) where run_id=45"
+}

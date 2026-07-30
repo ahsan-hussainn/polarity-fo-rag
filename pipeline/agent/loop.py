@@ -250,7 +250,21 @@ def run_goal(goal: str, *, trigger: str = "api", max_steps: int = MAX_STEPS) -> 
                     for r in recs:
                         crd = r.get("crd")
                         if crd:
-                            grounding[crd] = r
+                            # MERGE, never clobber. Different tools return different views of the
+                            # same record: fit_rank carries the measured `fit_confidence` tier,
+                            # get_record does not (there is no such column -- the tier is computed
+                            # per mandate). `_slim` omits absent keys, so a plain assignment let a
+                            # later get_record ERASE the tier, and _check_output's confidence guards
+                            # read `rec.get("fit_confidence")` -> None and skipped. Measured on goal
+                            # run 45: fit_rank ran once, get_record nine times on the same CRDs, and
+                            # three picks shipped `strong` over records fit_rank had measured
+                            # `insufficient_evidence`. A release control that silently stops applying
+                            # is worse than one that is absent, because it still reports "passed".
+                            # Keys present in the newer view win; keys only the older view had
+                            # survive. So a re-rank under a new mandate still updates the tier, and
+                            # a thin lookup can no longer disarm the gate.
+                            prior = grounding.get(crd)
+                            grounding[crd] = {**prior, **r} if prior else r
                             if tool["pickable"]:
                                 pickable.add(crd)
                     # Firms a non-pickable tool merely EXPOSED (quarantined, non-released). The

@@ -15,9 +15,24 @@ What DOES separate them is the regulatory client mix, and not by coincidence: a 
 book is essentially all high-net-worth by definition of what a family office is, while the false
 affirms carry broad retail books (Chilton 39% HNW share and 1,172 non-HNW clients; TFO Wealth 895;
 Superior 431; Stokes 341). So the band requires the registry's own client-mix numbers to be
-CONSISTENT with the entity claim, or -- where a firm files no usable client mix -- requires the
-published evidence to be so concordant that name, site practice, and repeated self-description all
-agree (score >= 100).
+CONSISTENT with the entity claim, or -- where a firm files no usable client mix -- requires
+concordant published evidence scoring >= 100.
+
+CORRECTED 2026-07-30: that second route used to be described here (and in ADR-0034) as "name, site
+practice, and repeated self-description all agree". Those three rules sum to 40+25+20 = 85, BELOW
+this bar. Reaching 100 needs a fourth signal and the only candidates are adv_freetext_fo (+15) or
+structural_fo_shape (+20), both registry-derived -- so route 2 is published evidence WITH registry
+corroboration, not an alternative to the registry. The threshold is right and stays: measured over
+the calibration affirms, >=100 is 12/12 counted-correct while >=85 is 18/19 (it admits a labeled
+wealth manager at 95). Only the description was wrong.
+
+Consequence, measured and disclosed rather than patched: route 1 needs ADV client-mix fields, and
+hnw_raum is present for 13F 0/20, state_adv 27/119, sec_adv 54/222. With route 2 also needing a
+registry signal, NO 13F candidate can auto-release -- max score across all 20 is 85. The channel
+built to reach ADV-exempt single-family offices is structurally closed to this band, which is why
+the qualifying set holds zero single_family_office records. Fixing that needs a release route for
+candidates with no registry data at all, and building one this late could not be measured before
+submission; ADR-0034's correction note records it as a known blind spot instead.
 
 Governance, stated plainly because it matters: the SHAPE of this rule is principled (a family
 office's book is HNW; that is what the term means), but the THRESHOLDS were chosen with the

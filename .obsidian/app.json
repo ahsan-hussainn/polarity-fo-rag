@@ -1,0 +1,20 @@
+{
+  "useMarkdownLinks": true,
+  "newLinkFormat": "relative",
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "docs/assets",
+  "newFileLocation": "current",
+  "showUnsupportedFiles": false,
+  "promptDelete": true,
+  "trashOption": "system",
+  "spellcheck": true,
+  "strictLineBreaks": false,
+  "userIgnoreFilters": [
+    ".claude/",
+    ".github/",
+    "db/",
+    "pipeline/",
+    "scripts/",
+    "data/ops_export/"
+  ]
+}

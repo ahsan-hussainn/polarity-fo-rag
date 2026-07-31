@@ -80,6 +80,22 @@ reason, and email grade + code + plain-English explanation.
   A/B/C addresses are inferred patterns, verified only for deliverability (A) or not at all (C), and
   are labeled as such — never "verified." Converting C's to proven addresses needs a sourced-email
   crawl (a Stage 2 job).
+- **No email grade was re-verified during the operating window, and the system says so every
+  cycle.** The MillionVerifier credential has been out of credits since day 1 of the window and
+  returns HTTP 403. The operating plan claimed three staleness detectors; rotating vendor
+  re-verification of email grades was the third, and it could not run. **Every grade in the shipped
+  set therefore carries its original pre-window basis and date — a grade is a statement about when
+  it was checked, and none of them were checked again.** The consequence for a buyer is narrow but
+  real: an address graded A (vendor-reported deliverable) in July could have lapsed since, and
+  nothing in the window would have caught it.
+
+  What the system does instead of dropping the claim quietly: `pipeline/ops/cycle.py::_vendor_preflight`
+  calls the vendor on **every** cycle purely to record the answer, and writes the vendor's actual
+  response plus the consequence ("held grades keep their original basis and are NOT re-asserted as
+  current") into `ops.run_events` as a ledger event. The gap is evidence in the run history rather
+  than an absence a reader has to notice. The cycle also still writes `email_grades` observations
+  that no code reads — 1,780 of them as of 2026-07-31, with zero consumers — which is dead weight
+  kept visible rather than deleted, because it is the shape the detector would have used.
 - **Some authority rests on ownership, not an investment title** (e.g. a sole owner ADV-titled CCO);
   where "runs the investment process" is inferred rather than stated, the record says so.
 - **Time-sensitive signals** (recent investments, hires, news): the fields and an initial

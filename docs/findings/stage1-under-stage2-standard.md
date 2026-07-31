@@ -101,5 +101,17 @@ human reading of the same site clears it comfortably. Recorded as calibration da
 change — the gate never overrides a human adjudication in either direction.
 
 **Who decided.** These three were adjudicated in-session by the assistant at Ahsan's direction, and
-`decided_by` says exactly that, including *pending Ahsan's final-review confirmation*. The mandate's
-final-review pass covers them; the record does not claim a human ratification that has not happened.
+`decided_by` said exactly that, including *pending Ahsan's final-review confirmation* — the record
+did not claim a human ratification that had not happened.
+
+**Ratified 2026-07-31 (final review).** Ahsan confirmed all three on his own reading of the site
+text and ADV Item 5.G evidence above. `decided_by` now records both facts — the human ratification
+*and* the agent-assisted route that produced the proposal — because how a decision was reached is
+part of the decision. `decided_at` is stamped by `entity-apply`; before this it was null on all
+three, which is what made the pending state machine-checkable rather than a note in prose.
+
+One caveat stays on the record rather than being resolved by the ratification: **329496's book is
+13 HNW against 263 non-HNW.** Category 3 counts an *evidenced practice*, not a family office, so a
+majority-retail firm is in scope by design — but this is the weakest of the three on client mix and
+a reviewer sampling the file is most likely to press here. It is disclosed on the record, never
+summed into the family-office count, and would be the first of the six to withdraw if challenged.

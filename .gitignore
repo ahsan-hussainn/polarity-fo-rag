@@ -31,6 +31,17 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Obsidian vault (repo root is the vault). Shared config is committed so the link/attachment
+# conventions travel with the repo; per-machine UI state and vendored community code are not.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/plugins/
+.obsidian/themes/
+.obsidian/snippets/
+.obsidian/hotkeys.json
+.trash/
+
 # The operating-ledger export is a GENERATED deliverable (python -m pipeline.cli ops-export).
 # It is regenerated fresh at submission and committed then, rather than churning ~1.5MB of JSONL
 # into history on every run. The ledger itself lives in Postgres; this is a dump of it.

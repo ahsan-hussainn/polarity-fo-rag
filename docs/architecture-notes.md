@@ -34,12 +34,9 @@ in the output with pre-registered weights, so a user can see *why* a firm ranks 
 ranking is unsellable to a buyer who must justify an approach list); an LLM-as-judge scorer
 (ADR-0023's objection — a release-relevant judgement that can be talked out of a failure);
 sector-classification of every record up front (would have manufactured labels where the source text
-supports none, which is the same laundering in a different place).
-
-**Two measured failures shaped it.** A generic-token stoplist exists because `"services"` matched
-15+ records and promoted generic firms to "strong fit" for a *healthcare* mandate. And on day 3,
-`"lower-middle-market"` was found to reduce to `["lower","middle"]`, where `"middle"` substring-
-matched stated sectors and re-opened the same path — on the verbatim Goal 2 mandate itself.
+supports none, which is the same laundering in a different place). Two measured failures shaped the
+scorer — a generic-token stoplist and the `"lower-middle-market"` → `["lower","middle"]` regression
+on the verbatim Goal 2 mandate; both are detailed under §6 rather than repeated here.
 
 ### Source classes: what each can and cannot establish
 
@@ -50,7 +47,7 @@ matched stated sectors and re-opened the same path — on the verbatim Goal 2 ma
 | **Firm websites** | what the firm says about itself: FO practice, thesis, team, published contacts | truth of the claim — a wealth manager publishes the same words a family office does | ~49% of queued candidates carry no usable firm domain; bot-shielding rising |
 | **SEC 13F** (ADR-0035) | entity existence, exact registered name, CIK/EIN, address, phone, institutional scale | anything about what the firm is — no client mix, no self-description, **no website** | reaches ADV-exempt SFOs (Duquesne), but proof rate is low: the privacy that exempts them also keeps them off the web |
 | **IAPD live** (ADR-0036) | current filing date, registration scope, registered name | anything historical beyond the current record | CRD-keyed only; 13F candidates are outside its reach by construction |
-| **MillionVerifier** | deliverability of an address | whether an address belongs to the named person | **credential dead since day 1 (HTTP 403)** — the cycle records this every run rather than claiming the capability |
+| **MillionVerifier** | deliverability of an address — the `VERIFIED_API` grades in the shipped set were produced pre-window (Stage 1), while the credential was live | whether an address belongs to the named person | **credential has returned HTTP 403 on every operating-window run** — the cycle records the 403 each run rather than re-claiming the capability, so no address was (re)graded during the window |
 
 The load-bearing split, and it is the brief's own framing: **ADV surfaces a candidate; the firm's
 own site establishes identity.** That is exactly how the inclusion gate scores, and why an affirm

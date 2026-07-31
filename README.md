@@ -22,6 +22,12 @@ office, 6 unresolved). Every high-value cell carries its basis; a validation res
 field unsafe changes what the product may release. No single-family offices appear — true SFOs are
 exempt from SEC registration, so the SEC-derived method structurally cannot reach them.
 
+> **The 24 above is the pre-window baseline, not the current count.** By the operating window the
+> qualifying set had grown (stamped 2026-07-31, regenerate with `reconcile` to confirm): **40
+> qualifying = 34 multi-family offices + 6 evidenced FO practices**, counted under ADR-0028 and never
+> summed with the non-FO rows above. The set is far below the 500 bar; the shortfall is disclosed and
+> framed as measured yield in `docs/architecture-notes.md` §7, not as exhausted supply.
+
 Three things are true of every part of this repo:
 
 1. **The dataset is the product.** The pipeline is the delivery mechanism. A great RAG on a thin or

@@ -298,6 +298,18 @@ def cmd_agent_goal(args):
     print(json.dumps(out, indent=2, ensure_ascii=False))
 
 
+def cmd_band_review(args):
+    """ADR-0034: the mandatory sampled review of records the band released with no human."""
+    from pipeline.gold import band_review
+
+    if args.measure:
+        print(json.dumps(band_review.measure(args.verdicts), indent=2))
+        return
+    out = band_review.sheet(args.out)
+    out.update(band_review.render(args.out))
+    print(json.dumps(out, indent=2))
+
+
 def cmd_queue_seed(args):
     """ADR-0029: load discovery candidates into the cycle-advanced queue."""
     from pipeline.ops import discovery
@@ -550,6 +562,14 @@ def main():
     ag = sub.add_parser("agent-goal", help="Stage 2 (ADR-0031): run a natural-language goal through the agent")
     ag.add_argument("goal", help="the goal, in plain English")
     ag.set_defaults(func=cmd_agent_goal)
+
+    br = sub.add_parser("band-review",
+                        help="ADR-0034: sampled human review of band-released records (out-of-sample)")
+    br.add_argument("--out", default="data/curation/band_review_sheet.json")
+    br.add_argument("--verdicts", default="data/curation/band_review_verdicts.json")
+    br.add_argument("--measure", action="store_true",
+                    help="compute out-of-sample precision from recorded verdicts")
+    br.set_defaults(func=cmd_band_review)
 
     qs = sub.add_parser("queue-seed", help="Stage 2 (ADR-0029): seed the discovery queue from a candidates JSONL")
     qs.add_argument("path", help="candidates JSONL (from discover-adv)")

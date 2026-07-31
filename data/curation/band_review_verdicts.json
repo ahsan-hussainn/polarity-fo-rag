@@ -1,0 +1,567 @@
+{
+  "note": "Sampled human review of band-released records, per ADR-0034. Set counted_ok (does it belong in the qualifying set) and category_ok (is the band's category right) to true/false, add a note, then run `band-review --measure`. Leave a record null to exclude it from the sample; partial samples are fine and the measurement says how many were reviewed.",
+  "band_released_total": 11,
+  "records": [
+    {
+      "crd": "313190",
+      "firm": "AIONIOS CAPITAL PARTNERS, LLC",
+      "band_category": "embedded_fo_practice",
+      "band_basis": "client mix consistent with the entity claim: 100% of regulatory AUM from high-net-worth clients, 0 non-HNW clients (band requires >=90% and <=15)",
+      "location": "NEWPORT BEACH, CA",
+      "aum_usd": 2520010,
+      "website": "https://aionios.us",
+      "client_mix": {
+        "raum_total": 2520010,
+        "hnw_raum": 2520010,
+        "hnw_raum_share": 1.0,
+        "hnw_clients": 1,
+        "nonhnw_clients": null,
+        "total_employees": 1
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/313190/PDF/313190.pdf",
+      "adv_filing_date": "2026-03-30",
+      "gate": {
+        "score": 80,
+        "category": "embedded_fo_practice",
+        "rules": [
+          "site_fo_practice",
+          "site_fo_selfdesc",
+          "adv_freetext_fo",
+          "structural_fo_shape"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 9,
+      "site_self_description": [
+        {
+          "url": "https://www.aionios.us/",
+          "signal": "ria_with_fo_practice",
+          "span": "Aionios Capital Partners | Wealth Management And Family Office Services top of pageAionios Capital PartnersHomeAboutTeamServicesStrategiesClient Portal"
+        },
+        {
+          "url": "https://www.aionios.us/services",
+          "signal": "ria_with_fo_practice",
+          "span": "anning Core needs Aspirational & Legacy Driven objectives​​ Investment Advisory Family Office Services​ ​ Aionios will work directly with clients incorporating existing relationships"
+        },
+        {
+          "url": "https://www.aionios.us/services",
+          "signal": "ria_with_fo_practice",
+          "span": "efficiency strategies with liquidity needs or events Philanthropic placements ​​Family Office Services: Family Office Services Banking and Credit Strategy Family Governance & Educati"
+        },
+        {
+          "url": "https://www.aionios.us/services",
+          "signal": "ria_with_fo_practice",
+          "span": "th liquidity needs or events Philanthropic placements ​​Family Office Services: Family Office Services Banking and Credit Strategy Family Governance & Education Wealth Strategy Famil"
+        },
+        {
+          "url": "https://www.aionios.us/team",
+          "signal": "ria_with_fo_practice",
+          "span": "he perpetually changing landscape of financial advisory, wealth management, and family office services. ​ Rick earned his undergraduate degree at the University of Southern Californi"
+        }
+      ],
+      "extracted_sectors": [
+        "Investment Management",
+        "Wealth Management",
+        "Private Equity",
+        "Venture Capital",
+        "Real Estate",
+        "Alternative Investments"
+      ],
+      "extracted_thesis": "Aionios Capital Partners employs an institutional approach to investment management and advisory services, focusing on comprehensive strategies for generational wealth transfer and optimal tax efficiency.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "338266",
+      "firm": "ANGELES FAMILY OFFICE",
+      "band_category": "multi_family_office",
+      "band_basis": "concordant published evidence, gate score 100 >= 100 [name_fo_strong+site_fo_practice+site_fo_selfdesc+adv_freetext_fo]",
+      "location": "SANTA MONICA, CA",
+      "aum_usd": 181973559,
+      "website": "https://angelesinvestments.com",
+      "client_mix": {
+        "raum_total": 181973559,
+        "hnw_raum": 142910383,
+        "hnw_raum_share": 0.7853,
+        "hnw_clients": 18,
+        "nonhnw_clients": null,
+        "total_employees": 5
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338266/PDF/338266.pdf",
+      "adv_filing_date": "2026-06-03",
+      "gate": {
+        "score": 100,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_practice",
+          "site_fo_selfdesc",
+          "adv_freetext_fo"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 48,
+      "site_self_description": [
+        {
+          "url": "https://www.angelesinvestments.com/insights/press/angeles-wealth-management-acquires-xo-capital-launches-angeles-family-office",
+          "signal": "ria_with_fo_practice",
+          "span": "titutional investment expertise, holistic estate and wealth advice, and bespoke family office services to support generationally wealthy families Santa Monica, CA – January 13, 2026"
+        },
+        {
+          "url": "https://www.angelesinvestments.com/insights/press/angeles-wealth-management-acquires-xo-capital-launches-angeles-family-office",
+          "signal": "ria_with_fo_practice",
+          "span": "With the launch of AFO, the firm will integrate these core strengths with XO's family office services, creating a comprehensive in-house offering that enables AFO to address the ful"
+        },
+        {
+          "url": "https://www.angelesinvestments.com/insights/press/angeles-wealth-management-acquires-xo-capital-launches-angeles-family-office",
+          "signal": "ria_with_fo_practice",
+          "span": "ment and inorganic growth efforts across the firm's private wealth and emerging family office services. \"Launching AFO is about building on a strong foundation and expanding what we"
+        },
+        {
+          "url": "https://www.angelesinvestments.com/insights/press/angeles-wealth-management-acquires-xo-capital-launches-angeles-family-office",
+          "signal": "wealth_manager",
+          "span": "anuary 13, 2026 — Angeles Wealth Management, LLC (\"Angeles Wealth\"), a national wealth management firm serving generationally wealthy families, today announced the acquisition of XO"
+        },
+        {
+          "url": "https://www.angelesinvestments.com/insights/press/angeles-wealth-management-acquires-xo-capital-launches-angeles-family-office",
+          "signal": "wealth_manager",
+          "span": "geles Wealth Management Angeles Wealth Management is a national, SEC-registered wealth management firm serving generationally wealthy families. Providing high-net-worth and ultra-hig"
+        }
+      ],
+      "extracted_sectors": [
+        "Multi-asset",
+        "Private Wealth",
+        "Institutional OCIO",
+        "Advisory"
+      ],
+      "extracted_thesis": "Angeles Investments builds customized portfolios for institutional and private wealth investors, acting as a seamless extension of their clients' investment offices.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "167174",
+      "firm": "BILTMORE FAMILY OFFICE, LLC",
+      "band_category": "multi_family_office",
+      "band_basis": "client mix consistent with the entity claim: 98% of regulatory AUM from high-net-worth clients, 14 non-HNW clients (band requires >=90% and <=15)",
+      "location": "CHARLOTTE, NC",
+      "aum_usd": 3467117434,
+      "website": "https://biltmorefamilyoffice.com",
+      "client_mix": {
+        "raum_total": 3467117434,
+        "hnw_raum": 3412626557,
+        "hnw_raum_share": 0.9843,
+        "hnw_clients": 71,
+        "nonhnw_clients": 14,
+        "total_employees": 24
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/167174/PDF/167174.pdf",
+      "adv_filing_date": "2026-03-23",
+      "gate": {
+        "score": 75,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_selfdesc",
+          "adv_freetext_fo"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 29,
+      "site_self_description": [
+        {
+          "url": "https://www.biltmorefamilyoffice.com/",
+          "signal": "multi_family_office",
+          "span": "t Generation℠ Learn more → We're always growing. Meet our team → Some call it a Multi-Family Office. We call it a Collaborative Family Office Governance & Education Investment Ser"
+        }
+      ],
+      "extracted_sectors": [
+        "Wealth Management",
+        "Investment Services",
+        "Estate Planning"
+      ],
+      "extracted_thesis": "Biltmore Family Office focuses on a collaborative approach to investing, planning, and education for families with generational wealth, utilizing a proprietary due diligence process to create customized portfolios.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "110264",
+      "firm": "BMO FAMILY OFFICE, LLC",
+      "band_category": "multi_family_office",
+      "band_basis": "client mix consistent with the entity claim: 98% of regulatory AUM from high-net-worth clients, 0 non-HNW clients (band requires >=90% and <=15)",
+      "location": "CHICAGO, IL",
+      "aum_usd": 9989953619,
+      "website": "https://uswealth.bmo.com:443",
+      "client_mix": {
+        "raum_total": 9989953619,
+        "hnw_raum": 9822408877,
+        "hnw_raum_share": 0.9832,
+        "hnw_clients": 70,
+        "nonhnw_clients": 0,
+        "total_employees": 130
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/110264/PDF/110264.pdf",
+      "adv_filing_date": "2026-01-28",
+      "gate": {
+        "score": 85,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_practice",
+          "site_fo_selfdesc"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 123,
+      "site_self_description": [
+        {
+          "url": "https://uswealth.bmo.com:443/our-services/bmo-family-office-wealth-owners/",
+          "signal": "ria_with_fo_practice",
+          "span": "products and services through BMO Bank N.A., a national bank with trust powers; family office services and investment advisory services through BMO Family Office, LLC, an SEC-registe"
+        },
+        {
+          "url": "https://uswealth.bmo.com:443/our-services/bmo-family-office-wealth-owners/",
+          "signal": "ria_with_fo_practice",
+          "span": "ed. Not all products and services are available in every state and/or location. Family Office Services are not fiduciary services and are not subject to the Investment Advisers Act o"
+        },
+        {
+          "url": "https://uswealth.bmo.com:443/our-services/bmo-family-office-wealth-owners/",
+          "signal": "wealth_manager",
+          "span": "ervices and investment advisory services through BMO Family Office, LLC, an SEC-registered investment adviser; investment advisory services through Stoker Ostler Wealth Advisors, Inc., an S"
+        },
+        {
+          "url": "https://uswealth.bmo.com:443/our-services/bmo-family-office-wealth-owners/",
+          "signal": "wealth_manager",
+          "span": "nvestment advisory services through Stoker Ostler Wealth Advisors, Inc., an SEC-registered investment adviser; and trust and investment management services through BMO Delaware Trust Compan"
+        },
+        {
+          "url": "https://uswealth.bmo.com:443/bmo-investment-services/insurance-risk-management/",
+          "signal": "ria_with_fo_practice",
+          "span": "products and services through BMO Bank N.A., a national bank with trust powers; family office services and investment advisory services through BMO Family Office, LLC, an SEC-registe"
+        },
+        {
+          "url": "https://uswealth.bmo.com:443/bmo-investment-services/insurance-risk-management/",
+          "signal": "ria_with_fo_practice",
+          "span": "ed. Not all products and services are available in every state and/or location. Family Office Services are not fiduciary services and are not subject to the Investment Advisers Act o"
+        }
+      ],
+      "extracted_sectors": [
+        "Wealth Management",
+        "Investment Management",
+        "Trust & Estate",
+        "Philanthropy",
+        "Tax Planning"
+      ],
+      "extracted_thesis": "We design and manage bespoke investment strategies supported by extensive research and detailed performance reporting.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "307727",
+      "firm": "CONSCIENTIA FAMILY OFFICE, LLC",
+      "band_category": "multi_family_office",
+      "band_basis": "client mix consistent with the entity claim: 100% of regulatory AUM from high-net-worth clients, 0 non-HNW clients (band requires >=90% and <=15)",
+      "location": "MIAMI, FL",
+      "aum_usd": 97284414,
+      "website": "https://conscientiafo.com",
+      "client_mix": {
+        "raum_total": 97284414,
+        "hnw_raum": 97284414,
+        "hnw_raum_share": 1.0,
+        "hnw_clients": 10,
+        "nonhnw_clients": 0,
+        "total_employees": 4
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/307727/PDF/307727.pdf",
+      "adv_filing_date": "2026-03-30",
+      "gate": {
+        "score": 80,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_selfdesc",
+          "structural_fo_shape"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 8,
+      "site_self_description": [
+        {
+          "url": "https://www.conscientiafo.com/what-we-do-for-you.html",
+          "signal": "multi_family_office",
+          "span": "TIC APPROACH PERSONALIZED SERVICE TRANSPARENCY ALIGNMENT OF INTERESTSAND VALUES MULTI-FAMILY OFFICE INFRASTRUCTURE SINGLE-FAMILYOFFICE APPROACH 24/7 SUPPORTAND GUIDANCE MAKE US YO"
+        }
+      ],
+      "extracted_sectors": [
+        "wealth management",
+        "family business management",
+        "financial planning",
+        "investment decisions",
+        "family governance"
+      ],
+      "extracted_thesis": "We invest our family wealth alongside our customers, ensuring that decisions are made based on the best interest of the client and best outcome.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "157266",
+      "firm": "HARBOUR CAPITAL ADVISORS, LLC",
+      "band_category": "embedded_fo_practice",
+      "band_basis": "client mix consistent with the entity claim: 100% of regulatory AUM from high-net-worth clients, 0 non-HNW clients (band requires >=90% and <=15)",
+      "location": "TYSONS CORNER, VA",
+      "aum_usd": 701078839,
+      "website": "https://harbourcapitaladvisors.com",
+      "client_mix": {
+        "raum_total": 701078839,
+        "hnw_raum": 701078839,
+        "hnw_raum_share": 1.0,
+        "hnw_clients": 55,
+        "nonhnw_clients": null,
+        "total_employees": 11
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/157266/PDF/157266.pdf",
+      "adv_filing_date": "2026-02-27",
+      "gate": {
+        "score": 60,
+        "category": "embedded_fo_practice",
+        "rules": [
+          "site_fo_practice",
+          "site_fo_selfdesc",
+          "adv_freetext_fo"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 7,
+      "site_self_description": [],
+      "extracted_sectors": [],
+      "extracted_thesis": "Harbour Capital Advisors employs an active investment approach based on broad market research, focusing on tactical investments and customized solutions for clients' unique goals.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "317000",
+      "firm": "HONOR FAMILY OFFICE, LLC",
+      "band_category": "multi_family_office",
+      "band_basis": "client mix consistent with the entity claim: 98% of regulatory AUM from high-net-worth clients, 2 non-HNW clients (band requires >=90% and <=15)",
+      "location": "SANTA BARBARA, CA",
+      "aum_usd": 54695335,
+      "website": "https://honorfamilyoffice.com",
+      "client_mix": {
+        "raum_total": 54695335,
+        "hnw_raum": 53838618,
+        "hnw_raum_share": 0.9843,
+        "hnw_clients": 4,
+        "nonhnw_clients": 2,
+        "total_employees": 1
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/317000/PDF/317000.pdf",
+      "adv_filing_date": "2026-03-18",
+      "gate": {
+        "score": 80,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_selfdesc",
+          "structural_fo_shape"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 7,
+      "site_self_description": [],
+      "extracted_sectors": [
+        "ESG investing",
+        "Socially responsible investing"
+      ],
+      "extracted_thesis": "Investing with a focus on Environmental, Social, and Governance (ESG) criteria to align wealth with values while balancing risk and return.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "338355",
+      "firm": "KOIOS PRIVATE FAMILY OFFICES, LLC",
+      "band_category": "multi_family_office",
+      "band_basis": "client mix consistent with the entity claim: 100% of regulatory AUM from high-net-worth clients, 1 non-HNW clients (band requires >=90% and <=15)",
+      "location": "DES MOINES, IA",
+      "aum_usd": 1458719,
+      "website": "https://koiospfo.com",
+      "client_mix": {
+        "raum_total": 1458719,
+        "hnw_raum": 1457806,
+        "hnw_raum_share": 0.9994,
+        "hnw_clients": 4,
+        "nonhnw_clients": 1,
+        "total_employees": 2
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/338355/PDF/338355.pdf",
+      "adv_filing_date": "2026-06-11",
+      "gate": {
+        "score": 80,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_selfdesc",
+          "structural_fo_shape"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 13,
+      "site_self_description": [],
+      "extracted_sectors": [
+        "equities",
+        "fixed income",
+        "currencies",
+        "precious metals",
+        "commodities",
+        "digital assets"
+      ],
+      "extracted_thesis": "Koios focuses on strategic asset allocation and risk-aware portfolio positioning to adapt thoughtfully across economic cycles and market conditions.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "323305",
+      "firm": "ONEASCENT FAMILY OFFICES",
+      "band_category": "multi_family_office",
+      "band_basis": "concordant published evidence, gate score 100 >= 100 [name_fo_strong+site_fo_practice+site_fo_selfdesc+adv_freetext_fo]",
+      "location": "BIRMINGHAM, AL",
+      "aum_usd": 544486722,
+      "website": "https://oneascent.com",
+      "client_mix": {
+        "raum_total": 544486722,
+        "hnw_raum": 232110401,
+        "hnw_raum_share": 0.4263,
+        "hnw_clients": 35,
+        "nonhnw_clients": 43,
+        "total_employees": 14
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/323305/PDF/323305.pdf",
+      "adv_filing_date": "2026-04-28",
+      "gate": {
+        "score": 100,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_practice",
+          "site_fo_selfdesc",
+          "adv_freetext_fo"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 31,
+      "site_self_description": [],
+      "extracted_sectors": [
+        "Public Markets",
+        "Private Markets",
+        "Philanthropy"
+      ],
+      "extracted_thesis": "OneAscent provides faith-aligned planning, investing, and giving solutions to empower advisors and investors.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "266787",
+      "firm": "WEALTH DIMENSIONS FAMILY OFFICE, INC",
+      "band_category": "multi_family_office",
+      "band_basis": "client mix consistent with the entity claim: 100% of regulatory AUM from high-net-worth clients, 0 non-HNW clients (band requires >=90% and <=15)",
+      "location": "CINCINNATI, OH",
+      "aum_usd": 625928679,
+      "website": "https://wealthdimensions.com",
+      "client_mix": {
+        "raum_total": 625928679,
+        "hnw_raum": 625356253,
+        "hnw_raum_share": 0.9991,
+        "hnw_clients": 13,
+        "nonhnw_clients": 0,
+        "total_employees": 16
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/266787/PDF/266787.pdf",
+      "adv_filing_date": "2025-09-25",
+      "gate": {
+        "score": 100,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_practice",
+          "adv_freetext_fo",
+          "structural_fo_shape"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 1,
+      "site_self_description": [
+        {
+          "url": "https://www.wealthdimensions.com/about/",
+          "signal": "ria_with_fo_practice",
+          "span": "te READ BIO Lisa Bruewer Client Services and Office Manager READ BIO Julie Ring Family Office Services READ BIO Michelle Roth Receptionist READ BIO Bethany Satchell Client Services R"
+        }
+      ],
+      "extracted_sectors": [
+        "Financial Planning",
+        "Investment Management",
+        "Insurance",
+        "Tax Planning",
+        "Education Funding",
+        "Estate & Legacy Planning",
+        "Charitable Planning",
+        "401k Management",
+        "Business Planning",
+        "Business Exit/Succession",
+        "Navigating Divorce",
+        "Navigating Death of a Loved One"
+      ],
+      "extracted_thesis": "to help clients achieve what matters most to them by simplifying the complexities in their financial lives",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    },
+    {
+      "crd": "315566",
+      "firm": "WPA FAMILY OFFICE, LLC",
+      "band_category": "multi_family_office",
+      "band_basis": "client mix consistent with the entity claim: 99% of regulatory AUM from high-net-worth clients, 0 non-HNW clients (band requires >=90% and <=15)",
+      "location": "DALLAS, TX",
+      "aum_usd": 175198734,
+      "website": "https://wpafamilyoffice.com",
+      "client_mix": {
+        "raum_total": 175198734,
+        "hnw_raum": 174104386,
+        "hnw_raum_share": 0.9938,
+        "hnw_clients": 21,
+        "nonhnw_clients": null,
+        "total_employees": 5
+      },
+      "adv_source_url": "https://reports.adviserinfo.sec.gov/reports/ADV/315566/PDF/315566.pdf",
+      "adv_filing_date": "2026-07-02",
+      "gate": {
+        "score": 85,
+        "category": "multi_family_office",
+        "rules": [
+          "name_fo_strong",
+          "site_fo_practice",
+          "site_fo_selfdesc"
+        ],
+        "contradictions": []
+      },
+      "site_fo_phrase_count": 8,
+      "site_self_description": [],
+      "extracted_sectors": [
+        "Wealth Management",
+        "Private Equity",
+        "Tax Planning",
+        "Estate Guidance"
+      ],
+      "extracted_thesis": "Expertly managing complexity for families and professionals with investable assets ranging from $5M to $1B through sophisticated investment strategies and comprehensive family office solutions.",
+      "counted_ok": null,
+      "category_ok": null,
+      "reviewer_note": ""
+    }
+  ]
+}

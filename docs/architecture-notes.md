@@ -150,8 +150,21 @@ inspected exactly but not deterministically re-run, because the model is not pin
 | refresh 1 record, changed | ~$0.0009 (re-fetch + re-extract + diff) |
 | refresh all 500, one cycle at the measured ~11.4% change rate | **~$0.05** |
 | refresh all 500, forced full re-extract | ~$0.47 |
-| one agent goal session | $0.0014–0.0064, 3–5 steps |
-| whole window to date | `[regen]` |
+| one agent goal session | per goal below |
+| whole window to date | `[regen]` — sum of `usd_est` over all `ops.runs` via `ops-export` |
+
+**Per-goal cost and latency** — from the committed run logs (`docs/goals/goal*-run-log.jsonl`, the
+`ops.runs` row for each goal's canonical run):
+
+| goal | run | wall-clock | cost | steps | grounded records |
+|---|---|---|---|---|---|
+| **Goal 1** — multi-step commercial search | 47 | 43.9 s | $0.0064 | 10 | 5 |
+| **Goal 2** — uncertain-data (verbatim) | 48 | 11.4 s | $0.0012 | 2 | 10 |
+| **Goal 3** — paid-tier trust/staleness | 56 | 27.0 s | $0.0064 | 7 | 4 |
+
+Cost tracks input-context volume, not step count: Goals 1 and 3 cost the same (~40k input tokens
+each) despite Goal 3 running fewer steps, while Goal 2 answers in 2 steps on 6.5k tokens for a fifth
+of the cost. Latency is model-bound and scales with steps and grounding-set size, not dataset size.
 
 Broken out: **model calls** dominate cost entirely (extraction, embedding, agent turns);
 **retrieval calls** are Postgres queries with no per-call fee; **external API calls** (ADV, IAPD,
@@ -244,7 +257,8 @@ records. Goal 3 is built to expose exactly that gap, and the manual-retrieval ar
 beside it is expected to be visibly unable to answer.
 
 **Where we would not charge.** For the raw record count, at its current size. The set is far below
-the 500 bar (`[regen]`), and a buyer paying per-record would be right to feel short-changed. What is
+the 500 bar (40 qualifying, stamped 2026-07-31; regenerate with `reconcile`), and a buyer paying
+per-record would be right to feel short-changed. What is
 sellable today is the *evidence discipline* — per-cell basis, honest blanks, trust state with
 reasons, and a system that says "I can't support that" instead of guessing. That is a product for a
 buyer who has been burned by a confidently wrong list, which is most of them.

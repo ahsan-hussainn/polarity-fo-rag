@@ -30,17 +30,21 @@ could not fire; its write volume exposed and fixed the system's real first bottl
 (connection-per-ledger-write).
 
 **Day-3-night funnel audit (2026-07-30, live-DB measured — read this before planning the climb).**
-- **The binding constraint is not candidate supply.** Measured 2026-07-30 12:05: candidates with a
+- **Domain resolution is the highest-yield lever.** Measured 2026-07-30 12:05: candidates with a
   resolved domain affirm at **29/82 (35.4%)**, without at **29/279 (10.4%)** — a 3.4× lift, and half
   of all affirms now come from the 23% of the queue the resolver rescued.
-  `pipeline/ops/resolve.py`'s own docstring says the same. Do **not** write a shortfall story around
-  exhausted supply — the census
-  (`docs/findings/stage2-source-census.md`) says ~335–570 with 500 in "the aggressive upper half",
-  which is a different claim.
-- **The band's route 2 was misdescribed and the band is channel-skewed** — corrected in ADR-0034
-  (documentation only; thresholds and `BAND_VERSION` unchanged, still 16/16 counted). `hnw_raum`
-  present: **13F 0/20 · state_adv 27/119 · sec_adv 54/222**. No 13F candidate can auto-release at
-  all. Disclosed as a measured blind spot, not patched.
+  `pipeline/ops/resolve.py`'s docstring says the same. Its addressable pool is now exhausted.
+- **The band's route 2 was misdescribed** — corrected in ADR-0034 (documentation only; thresholds
+  and `BAND_VERSION` unchanged, still 16/16 counted). **No 13F candidate can auto-release at all**:
+  a 13F filer has no ADV client mix by construction, and route 2 needs a registry signal, so the
+  max score across all 20 is 85 against a bar of 100. Disclosed as a measured blind spot, not
+  patched. This is why the set holds **zero** `single_family_office` records.
+- **CORRECTED 2026-07-31 — do not repeat the withdrawn figures.** An earlier version of this block
+  claimed `hnw_raum` coverage of "state_adv 27/119 · sec_adv 54/222", i.e. that the band was starved
+  of registry data. **Wrong** — a query artifact that read the newest `bronze.captures` row per
+  entity (usually a `website` capture) instead of the ADV row `gate.assemble()` reads. Re-measured
+  2026-07-31 06:27Z: **sec_adv 155/222 (70%) · state_adv 64/119 (54%) · 13F 0/20** — about **64% of
+  ADV candidates**, not a quarter.
 - **Resolver pool is exhausted, and its payoff proves the band gap.** Manual backfill (runs 41–42,
   `trigger='manual_backfill'`) proved +21 domains, 61 → 82. All 21 have since been re-gated by
   scheduled cycles: **+12 affirms (57%)** — double the 28% historical rate for resolved candidates,
@@ -53,6 +57,37 @@ could not fire; its write volume exposed and fixed the system's real first bottl
   domain, no site text was ever captured, and `_stranded()` only targets null/social URLs.
 - **1,374 `client_mix`-tier candidates were never seeded** (150 SEC + 1,224 state). Low expected
   precision, so probably leave them — but "supply is exhausted" cannot be claimed while they sit.
+
+### The 500 shortfall: the framing to use (settled 2026-07-31)
+
+**Do not write "supply was exhausted", and do not write "the band lacked registry data".** Both are
+contradicted by our own artifacts — the census says ~335–570 with 500 in "the aggressive upper half",
+and ADV client-mix coverage is 64%, not a quarter. Write the **measured yield**, which is stronger
+than either because every number regenerates:
+
+| Stage | Measured (stamped 2026-07-31 06:27Z) |
+|---|---|
+| Candidates gated | **361** |
+| Gate affirms | **58** (16.1%) |
+| Band releases | **14** (24.1% of affirms) |
+| End-to-end automated yield | **3.9%** of gated candidates |
+| Qualifying today | **40** |
+
+The load-bearing sentence: **the gate over-affirms and the band is what catches it.** Of the 44 held
+affirms, **32 are held because the client mix contradicts the entity claim** — firms with hundreds of
+non-HNW clients — and only 12 for want of usable mix. That 55% contradiction rate matches the gate's
+independently measured 54.8% precision. So the shortfall is not a plumbing failure; it is what
+happens when a real inclusion standard meets a candidate pool where roughly half the plausible-
+looking firms are wealth managers marketing themselves as family offices.
+
+**The arithmetic, stated plainly.** 460 more records at a 3.9% yield needs ~11,800 gated candidates.
+Everything still unseeded totals roughly 3,558 (1,374 ADV `client_mix`-tier + the 13F pool), which
+yields **~139 more** — landing near **150–200**, not 500.
+
+**And say what would have closed it, honestly:** human ratification, which is how 29 of the current
+40 were qualified. It works and it does not scale to 500 in five days, which is precisely why
+ADR-0029 built the gate. Releasing the 32 contradicted affirms would reach the number by shipping
+~45% non-family-offices — Stage 1's named failure, and the one move the brief calls disqualifying.
 
 Remaining: **day 4 — run the three goals** (4 artifacts each, `docs/three-goals.md`; the brief puts
 them on days 3–4 and they have twice surfaced real bugs here, so do not defer them to day 5).

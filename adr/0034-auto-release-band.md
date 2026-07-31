@@ -25,16 +25,29 @@
 > *after* seeing which records it would admit is the bar-moving this project forbids. So 100 stands
 > and the sentence is corrected instead.
 >
-> **2. The band's coverage across source channels was never measured, and it is uneven.** Route 1
-> needs ADV client-mix fields. Measured presence of `hnw_raum` on queued candidates:
-> **13F 0/20 · state_adv 27/119 · sec_adv 54/222.** The 13F channel therefore cannot use route 1 at
-> all — ADV-exempt is the entire point of that channel (ADR-0035) — and with route 2 needing a
-> registry signal, **no 13F candidate can auto-release**: max gate score observed across all 20 is
-> **85**, and none reach 100. This is disclosed as a measured blind spot rather than patched, since
-> a new release route built this late would be unmeasurable before submission. It is the honest
-> reading of the band: it releases well on SEC-registered firms whose registry data is complete,
-> and is structurally closed to the channel built to reach single-family offices. The dataset
-> holding **zero** `single_family_office` records is the shape that predicts.
+> **2. The band cannot release a 13F candidate at all.** Route 1 needs ADV client-mix fields, and a
+> 13F filer has no ADV filing — being ADV-exempt is the entire point of that channel (ADR-0035).
+> With route 2 also needing a registry signal, **no 13F candidate can auto-release**: the maximum
+> gate score observed across all 20 is **85**, and none reach 100. Disclosed as a measured blind
+> spot rather than patched, since a new release route built this late would be unmeasurable before
+> submission. The dataset holding **zero** `single_family_office` records is the shape that
+> predicts.
+>
+> **Correction to this correction (2026-07-31).** The paragraph above originally also claimed the
+> band was starved of client-mix data on the ADV channels, citing "13F 0/20 · state_adv 27/119 ·
+> sec_adv 54/222". **Those two ADV figures were wrong.** They came from a query that selected the
+> most recent `bronze.captures` row per entity, which is often a `website` capture carrying no ADV
+> fields, rather than the ADV row the gate actually reads. Re-measured with `gate.assemble()`'s own
+> selection, stamped 2026-07-31 06:27Z: **`hnw_raum` > 0 for sec_adv 155/222 (70%), state_adv 64/119
+> (54%), 13F 0/20.** Roughly **64% of ADV candidates carry usable client mix**, not a quarter.
+>
+> This matters because it changes what the band *is*. It is not a data-availability filter that
+> happens to exclude most candidates; it is a substantive rejection filter. Measured across all 58
+> current gate affirms: the band releases 14 and holds 44, and **32 of those 44 are held because the
+> client mix contradicts the entity claim** — firms carrying hundreds of non-HNW clients — while only
+> 12 are held for want of usable mix (3 of them 13F). The hold rate tracks the gate's measured 54.8%
+> precision almost exactly, which is the band doing the job it was built for rather than a coverage
+> gap.
 
 ## Context
 
@@ -136,11 +149,13 @@ against, which is evidence but not proof, and the out-of-sample number does not 
 
 Assumes the client-mix fields are populated and honest in the registry; firms filing no usable mix
 fall back to the concordance route or stay in review (measured: 1 of 15 pending affirms).
-*(Corrected 2026-07-30: both halves of that sentence were too optimistic. The fallback does not
-function as described — route 2 needs a registry signal of its own, per the correction note above —
-and the incidence was far understated: of 37 affirms the band has now evaluated, **28 are held and 9
-of those for "no usable client mix on file"**, including every 13F candidate. The measured
-per-channel coverage of `hnw_raum` is 13F 0/20, state_adv 27/119, sec_adv 54/222.)* Assumes
+*(Corrected 2026-07-30, revised 2026-07-31: the fallback does not function as described — route 2
+needs a registry signal of its own, per the correction note above. Re-measured across all 58 current
+affirms, stamped 2026-07-31 06:27Z: **14 released, 44 held — 32 because the client mix contradicts
+the entity claim, 12 for want of usable mix**, 3 of those 12 being 13F candidates that structurally
+cannot have any. Per-channel `hnw_raum` > 0: sec_adv 155/222, state_adv 64/119, 13F 0/20. An earlier
+version of this note cited 27/119 and 54/222 for the ADV channels; those were a query artifact and
+are withdrawn.)* Assumes
 the calibration set represents the mass — state-channel and 990-PF candidates may distribute
 differently, and the sampled review exists to catch that. **Known and disclosed:** the band's
 *category* label is weaker than its *release* decision (14/16) — two released records the gate calls

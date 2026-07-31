@@ -26,13 +26,23 @@ corroboration, not an alternative to the registry. The threshold is right and st
 the calibration affirms, >=100 is 12/12 counted-correct while >=85 is 18/19 (it admits a labeled
 wealth manager at 95). Only the description was wrong.
 
-Consequence, measured and disclosed rather than patched: route 1 needs ADV client-mix fields, and
-hnw_raum is present for 13F 0/20, state_adv 27/119, sec_adv 54/222. With route 2 also needing a
-registry signal, NO 13F candidate can auto-release -- max score across all 20 is 85. The channel
-built to reach ADV-exempt single-family offices is structurally closed to this band, which is why
-the qualifying set holds zero single_family_office records. Fixing that needs a release route for
+Consequence, measured and disclosed rather than patched: route 1 needs ADV client-mix fields, and a
+13F filer has none -- being ADV-exempt is the point of that channel. With route 2 also needing a
+registry signal, NO 13F candidate can auto-release: max score across all 20 is 85. The channel built
+to reach ADV-exempt single-family offices is structurally closed to this band, which is why the
+qualifying set holds zero single_family_office records. Fixing that needs a release route for
 candidates with no registry data at all, and building one this late could not be measured before
 submission; ADR-0034's correction note records it as a known blind spot instead.
+
+CORRECTED 2026-07-31: an earlier version of this docstring also claimed thin client-mix coverage on
+the ADV channels ("state_adv 27/119, sec_adv 54/222"). Those figures were a query artifact -- they
+read the newest bronze.captures row per entity, which is usually a `website` capture with no ADV
+fields, instead of the ADV row gate.assemble() actually reads. Re-measured 2026-07-31 06:27Z:
+hnw_raum > 0 for sec_adv 155/222 (70%), state_adv 64/119 (54%), 13F 0/20 -- about 64% of ADV
+candidates, not a quarter. So this band is NOT a coverage filter that happens to exclude most
+candidates. Across all 58 current affirms it releases 14 and holds 44, and 32 of those holds are
+because the client mix CONTRADICTS the entity claim, against only 12 for want of usable mix. That
+hold rate tracks the gate's measured 54.8% precision, which is the band working as designed.
 
 Governance, stated plainly because it matters: the SHAPE of this rule is principled (a family
 office's book is HNW; that is what the term means), but the THRESHOLDS were chosen with the

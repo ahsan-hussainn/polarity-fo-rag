@@ -95,11 +95,12 @@ artifacts; architecture notes (all `[regen]` filled, §6 complete); `reconcile` 
 `ops-export` force-added (74 runs); agent tool schemas emitted; git tag; MillionVerifier 403 written
 up as a stated limit; 500-shortfall framing settled. **Open, Ahsan only:** (1) **two scheduler
 screenshots** — full run list + one run detail page, `docs/assets/` is still empty and the brief
-names them explicitly; (2) **`BUILD_SESSION_SUMMARY_STAGE2.md` has three `[AHSAN — …]` blanks** —
-final unpadded hours (needs the four `[AHSAN]` time cells in `docs/SESSION_LOG.md`), confirmation of
-the least-trusted claim, and the review attestation only he can sign; (3) **send the submission
-email** to optimize@falconscaling.com, single email, request receipt confirmation. Keep cron running
-and links live 7 days.
+names them explicitly — **DONE 2026-08-02**, 3 shots + README in `docs/assets/`; (2) build summary
+blanks — **DONE**: hours closed at **42.7 h** across eleven sittings (all times Ahsan-supplied),
+least-trusted claim set to the qualifying count of 40 and its 11 band-released records, attestation
+walked and signed. **Only remaining: send the submission email** to optimize@falconscaling.com —
+single email, request receipt confirmation, attach the 3 screenshots. Draft is written. Keep cron
+running and links live 7 days.
 **Counts anywhere in docs are stamped, not live — regenerate from `reconcile` / `/stats`.**
 
 Brief: **`docs/brief/` (in-repo, .docx + greppable .txt) — it outranks this file, the operating

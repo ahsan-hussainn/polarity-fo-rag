@@ -13,11 +13,12 @@
 2026-07-27T15:19Z → 2026-08-01T16:09Z (32 ok, 1 failed). The scheduler's own history and our ledger
 agree on count and span.
 
-**Build time (unpadded): ~[AHSAN: 30.5 + day 4/5/wrap] h.** 30.5 h is firm across six closed sittings
-through day 3, each start and end supplied by hand. Days 4, 5 and the wrap are **not** estimated from
-commit timestamps — the log's rule is that times are supplied, never inferred, and a rule applied
-only when it flatters the total is not a rule. **[AHSAN — fill the four `[AHSAN]` cells in
-`docs/SESSION_LOG.md`, then put the sum here.]**
+**Build time (unpadded): 42.7 h** across eleven sittings — 30.5 h through day 3, plus the day-3 night
+audit (3.0), day 4 (4.0), day 5 (4.0), a 40-minute phone sitting, and the wrap. Every start and end
+was supplied by hand; none were reconstructed from commit timestamps, even where that would have
+raised the number. Two disagreements between supplied times and the commit record are recorded rather
+than reconciled in `docs/SESSION_LOG.md` — **both point downward**, so 42.7 h is likelier an
+under-count than a padded one.
 
 **Main sessions.** Day 1 — plan, ops layer, run ledger, scheduler live; the tiered-ontology decision
 (ADR-0028) taken *before* mass discovery, once the census showed FO-only 500 was aggressive. Day 2 —
@@ -53,6 +54,12 @@ success, absence, uncertainty, partial data, failure — on the deployed system,
 by row (schema, manifest totals and investigated runs only); every cell of all 40 records (three
 validation chains end to end, adjudicated rows, remainder sampled).
 
-> **[AHSAN — the attestation above is in your name and only you can make it true. Walk the live UI's
-> failure and empty states since the last deploy before signing (~10 min; it is the one claim here a
-> reviewer can trivially falsify), and cut anything you have not personally done.]**
+The customer-facing states were walked on the deployed system on 2026-08-02, after the final push:
+success, absence ("there are no family offices based in Alaska", stated before alternatives are
+offered), uncertainty (emails labelled inline as inferred on a catch-all domain, unconfirmable),
+out-of-scope refusal with no sources, the withheld-answer state ("answer withheld — could not be
+fully grounded in the dataset"), and service-unreachable. Two rough edges found and judged
+non-blocking, both off the normal customer path: an unknown URL returns a raw `{"detail":"Not Found"}`,
+and the query page renders a raw exception message into its error line.
+
+— Ahsan Hussain, 2026-08-02

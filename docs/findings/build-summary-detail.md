@@ -24,24 +24,32 @@ never run separation but the five-day submission ceiling. The scheduler kept fir
 of the window, so the last scheduled cycle lands *after* the point at which deliverables were frozen
 — the export is the state at freeze.
 
-## 2 · Build time: why days 4–5 are not estimated
+## 2 · Build time: 42.7 h, and where it disagrees with itself
 
-`docs/SESSION_LOG.md`'s standing rule is that every start and end time is supplied by hand and none
-inferred. Applying that rule only when it flatters the total would make the log worthless, so the
-unlogged sittings are left blank rather than reconstructed.
+All times supplied by hand; none reconstructed from commit timestamps, per `docs/SESSION_LOG.md`'s
+standing rule. Total **42.7 h** across eleven sittings: 30.5 h through day 3, plus day-3 night (3.0),
+day 4 (4.0), day 5 (4.0), the phone sitting (0.67) and the wrap (0.5).
 
-For calibration only, the commit spans — a **lower bound on a sitting, not the sitting**:
+Supplied times against the commit record:
 
-| sitting | first → last commit | span |
-|---|---|---|
-| day 4 (07-30) | 12:02 → 15:43 | 3 h 41 m |
-| day 5 (07-31) | 11:31 → 18:29 | 6 h 58 m — see note |
-| day 5, phone dispatch (08-01) | 01:10 → 01:50 | 40 m |
-| wrap (08-02) | 00:12 → — | open |
+| sitting | supplied | commit span | agrees? |
+|---|---|---|---|
+| day 4 (07-30) | 12:00 – 16:00 | 12:02 → 15:43 | yes |
+| day 5 (07-31) | 11:00 – 15:00 | 11:31 → **18:29** | **no — see below** |
+| phone (08-01) | 01:10 – 01:50 | 01:10 → 01:50 | yes |
+| wrap (08-02) | 30 m engaged | 00:01 → past 01:07 | **wall-clock is longer** |
 
-**The day-5 span is the one not to trust.** There is a 6 h 45 m gap with no commits between 11:44 and
-18:29, so 6 h 58 m is almost certainly two sittings with a long break in it, not seven hours of work.
-Reporting it as seven would be exactly the padding the brief asks against.
+**The day-5 disagreement.** Commit `6e40b22` is stamped 18:29, three and a half hours after the
+supplied 15:00 end, and it is not a trivial commit — the architecture-notes rewrite, `what-broke.md`,
+and three entity ratifications. Either the sitting ran past 15:00 or there is an unlogged sitting.
+Recorded rather than resolved by moving the end time, because inventing a time to close a gap is the
+opposite of what the log is for.
+
+**The wrap disagreement.** 0.5 h is Ahsan's supplied engaged time; the sitting's wall-clock span is
+more than double it. The supplied figure is the one counted, per the rule.
+
+**Both errors point downward.** 42.7 h is likelier an under-count than a padded one, which is the
+safer direction for this number to be wrong given the brief asks for no padding.
 
 ## 3 · The least-trusted number, in full
 

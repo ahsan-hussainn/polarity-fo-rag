@@ -11,12 +11,13 @@ Tue 28 12:00, day 2 → Wed 29 12:00, day 3 → Thu 30 12:00, day 4 → Fri 31 1
 12:00 = submission deadline**. This file and `docs/SESSION_LOG.md` label sittings by *calendar* date,
 so their day labels and window-days differ at the edges — read the clock, not the label.
 
-**Status: start of day 4 (stamped 2026-07-30 12:05 PKT).** Day-2 checkpoint email **sent** Wed 29
-12:00, exactly on the day-2 boundary. **All three window conditions met** — 14 scheduled runs
-spanning ≥48h, natural dependency failures, cross-run evidence-based staleness. The remaining work
-is deliverables, not operations. (Scheduler note: GitHub is delivering cron slots 60–190 min late —
-run 43 fired 19:49Z for the 18:23Z slot, run 44 03:37Z for 00:23Z. Nothing is at risk, the
-conditions are already met; it only slows time-to-re-gate.)
+**Status: window CLOSED, packaging late (stamped 2026-08-02 00:30 PKT).** The submission ceiling was
+**Sat 2026-08-01 12:00 (+05)** and it passed; the wrap sitting started ~Sun 00:00, so **submission
+runs ~half a day late**. That is a packaging overrun, not an operating one — see
+`docs/SESSION_LOG.md` for the plain statement. Day-2 checkpoint email **sent** Wed 29 12:00, on the
+boundary. **All three window conditions met since day 3.** Measured window, end to end
+(`data/ops_export/runs.jsonl`): **33 scheduled runs** (32 ok, 1 failed) from 2026-07-27 15:19Z to
+2026-08-01 16:09Z = **5d 0h 51m**; 74 runs total, $0.4344. The scheduler was still firing at wrap.
 
 Day 3 was a full adversarial review against the brief + Bridge Mandate, then the fixes it found:
 ADRs **0034–0041**. Qualifying **40** as of 2026-07-30 12:05 (**34 SFO+MFO + 6 evidenced practices,
@@ -89,13 +90,16 @@ yields **~139 more** — landing near **150–200**, not 500.
 ADR-0029 built the gate. Releasing the 32 contradicted affirms would reach the number by shipping
 ~45% non-family-offices — Stage 1's named failure, and the one move the brief calls disqualifying.
 
-Remaining: **day 4 — run the three goals** (4 artifacts each, `docs/three-goals.md`; the brief puts
-them on days 3–4 and they have twice surfaced real bugs here, so do not defer them to day 5).
-**Day 5 — documentation only:** finish `docs/architecture-notes.md` (drafted; **6 `[regen]` figures**
-+ §6's what-broke list), `reconcile` → all_agree, `ops-export` + force-add, git tag, 2 scheduler
-screenshots, build summary, final review. Needs Ahsan, not code: the MillionVerifier 403 call, the
-500-shortfall framing. (CRDs 324899, 220519, 329496 all adjudicated `affirmed` —
-`data/curation/entity_adjudications.json`, embedded_fo_practice — resolved 2026-07-31, no longer pending.)
+**Remaining — all of it needs Ahsan, none of it needs code.** Done at wrap: three goals × 4
+artifacts; architecture notes (all `[regen]` filled, §6 complete); `reconcile` 26/26 all_agree;
+`ops-export` force-added (74 runs); agent tool schemas emitted; git tag; MillionVerifier 403 written
+up as a stated limit; 500-shortfall framing settled. **Open, Ahsan only:** (1) **two scheduler
+screenshots** — full run list + one run detail page, `docs/assets/` is still empty and the brief
+names them explicitly; (2) **`BUILD_SESSION_SUMMARY_STAGE2.md` has three `[AHSAN — …]` blanks** —
+final unpadded hours (needs the four `[AHSAN]` time cells in `docs/SESSION_LOG.md`), confirmation of
+the least-trusted claim, and the review attestation only he can sign; (3) **send the submission
+email** to optimize@falconscaling.com, single email, request receipt confirmation. Keep cron running
+and links live 7 days.
 **Counts anywhere in docs are stamped, not live — regenerate from `reconcile` / `/stats`.**
 
 Brief: **`docs/brief/` (in-repo, .docx + greppable .txt) — it outranks this file, the operating

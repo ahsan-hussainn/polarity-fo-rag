@@ -4,6 +4,19 @@
 > the brief's Final Deliverables. Counts are stamped, not live — regenerate with
 > `python -m pipeline.cli reconcile`. Full per-sitting time record: `docs/SESSION_LOG.md`.
 
+**How long the operating window took (measured, not reported).** From the run ledger, not from
+memory — regenerate from `data/ops_export/runs.jsonl`:
+
+- **Scheduled cycles only:** first fired `2026-07-27T15:19:07Z`, last finished `2026-08-01T16:09:48Z`
+  — **5 days, 0 hours, 51 minutes**, across **33 scheduled runs** (32 completed, 1 failed).
+- **Every run, including local tests and manual dispatches:** `2026-07-27T09:03:12Z` →
+  `2026-08-01T19:05:11Z` — **5 days, 10 hours, 2 minutes**, 74 runs.
+
+The 48-hour separation condition was met many times over; the binding constraint on the window was
+never run separation but the five-day submission ceiling. The scheduler kept firing through the end
+of the window, so the last scheduled cycle lands *after* the point at which the deliverables were
+frozen — the export above is the state at freeze.
+
 **Approximate build time (unpadded):** **30.5 h** logged across six closed sittings through day 3,
 reconciled against the commit history (`docs/SESSION_LOG.md`). The day-3-night funnel audit, day-4
 goals, and day-5 documentation sittings are not yet totalled. **[AHSAN — finalize the total after

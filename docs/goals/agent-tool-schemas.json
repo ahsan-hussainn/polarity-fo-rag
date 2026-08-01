@@ -1,0 +1,144 @@
+{
+  "note": "Emitted from pipeline/agent/tools.py TOOLS at end of window. Regenerate: python -c \"import json;from pipeline.agent.tools import TOOLS;...\" -- these are the exact schemas handed to the model, not a hand-written copy.",
+  "tool_count": 6,
+  "tools": [
+    {
+      "name": "structured_search",
+      "description": "Exact SQL search over qualifying family-office records by state, AUM band, and/or sector keyword. Returns the TRUE total matching count plus records.",
+      "pickable": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "2-letter US state code"
+          },
+          "min_aum_usd": {
+            "type": "integer"
+          },
+          "max_aum_usd": {
+            "type": "integer"
+          },
+          "sector_term": {
+            "type": "string",
+            "description": "single sector keyword (approximate match)"
+          },
+          "limit": {
+            "type": "integer",
+            "default": 15
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "semantic_search",
+      "description": "Hybrid semantic+lexical retrieval over qualifying records for a natural-language query. Use for thematic matching beyond exact filters.",
+      "pickable": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string"
+          },
+          "k": {
+            "type": "integer",
+            "default": 5
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "fit_rank",
+      "description": "Rank qualifying records for an investor mandate. Deterministic weighted scoring with per-record component breakdown, evidence list, caveats, and an evidence-based fit_confidence tier (strong/moderate/weak/insufficient_evidence). The primary tool for LP-fit goals. Ranks the WHOLE qualifying set unless you pass state/city, which filter it exactly.",
+      "pickable": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "mandate": {
+            "type": "string",
+            "description": "the investor mandate in plain words"
+          },
+          "sector_terms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "sector/strategy keywords to evidence against"
+          },
+          "state": {
+            "type": "string",
+            "description": "2-letter US state code. Pass this whenever the goal states a geographic constraint on the family offices ('out of Chicago' -> state=IL). EXACT filter, applied before ranking. An empty result means no record matches that geography, which is a real answer to report, not a reason to drop the constraint and rank the whole country instead."
+          },
+          "city": {
+            "type": "string",
+            "description": "exact city name, for a tighter constraint than state"
+          },
+          "min_aum_usd": {
+            "type": "integer",
+            "description": "ONLY when the goal constrains the size of the FAMILY OFFICE itself ('family offices over $1B'). Never derive this from a fund's market segment: 'lower-middle-market' or 'small-cap' describes the FUND's deals, not its investors. A $5B family office writing an LP cheque into a lower-middle-market fund is a fit, not a mismatch. Omit if unsure -- a wrong band makes good matches look unsuitable."
+          },
+          "max_aum_usd": {
+            "type": "integer",
+            "description": "Same rule as min_aum_usd: the TARGET FIRM's size only, never the fund's deal size. Omit if unsure."
+          },
+          "k": {
+            "type": "integer",
+            "default": 10
+          }
+        },
+        "required": [
+          "mandate"
+        ]
+      }
+    },
+    {
+      "name": "get_record",
+      "description": "Full record for a named firm (name or domain match).",
+      "pickable": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "record_history",
+      "description": "Cross-cycle history from the operating ledger -- the ONLY tool that sees anything but the current state. Call with NO arguments to list every RELEASED record whose evidence has moved and now needs re-checking (use this for 'what changed / what should I not trust / what went stale' -- NOT quarantine_summary, which is the never-released set). Call with a firm name for that firm's full run-by-run history. Evidence and timestamps only, never contact data.",
+      "pickable": true,
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "firm name (partial match)"
+          },
+          "crd": {
+            "type": "string",
+            "description": "CRD if known; takes precedence over name"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "quarantine_summary",
+      "description": "Status + evidence-based reason for every firm the system holds but does not release (reclassified non-FOs, quarantined). Use to report coverage honestly; these firms cannot be recommended and carry no contact data.",
+      "pickable": false,
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}

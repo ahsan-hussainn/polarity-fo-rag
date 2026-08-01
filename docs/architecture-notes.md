@@ -124,17 +124,18 @@ exactly but not deterministically re-run, because the model is not pinned to a s
 
 ## 5 · Cost and latency
 
-Measured over the **25 scheduled cycles** run between 2026-07-27 09:15Z and 2026-07-31 09:20Z.
+Measured over the **32 completed scheduled cycles** run between 2026-07-27 15:19Z and 2026-08-01
+16:09Z (33 fired; one failed). Regenerated from `data/ops_export/runs.jsonl` at end of window.
 
 | | measured |
 |---|---|
-| one operating cycle | 15.2–34.5 min (mean **23.6**), $0.000–$0.0266 (mean **$0.0104**) |
+| one scheduled operating cycle | 15.1–34.5 min (mean **22.3**), $0.0020–$0.0180 (mean **$0.0085**) |
 | refresh 1 record, unchanged | ~$0.000 (HTTP fetch + hash compare, no model call) |
 | refresh 1 record, changed | ~$0.0009 (re-fetch + re-extract + diff) |
 | refresh all 500, one cycle at the measured ~11.4% change rate | **~$0.05** |
 | refresh all 500, forced full re-extract | ~$0.47 |
-| one agent goal session | $0.000–$0.0163 over 23 sessions, **$0.109** total |
-| **whole window to date** | **62 runs, 2,033,488 tokens in / 139,565 out, $0.3881** (2026-07-27 09:03Z → 2026-07-31 09:20Z) |
+| one agent goal session | $0.0007–$0.0163 over 22 sessions, **$0.1149** total |
+| **whole window, every run** | **74 runs, 2,282,143 tokens in / 154,700 out, $0.4344** (2026-07-27 09:03Z → 2026-08-01 19:05Z) |
 
 Per goal, for the submitted runs:
 
@@ -148,9 +149,14 @@ Per goal, for the submitted runs:
 stopped after three calls rather than working harder against evidence that could not support a
 confident answer. A system that spent *more* on Goal 2 would be laundering weak evidence.
 
-The cycle range is wide because a cycle that finds no changed pages makes no model call at all: a
-**$0.000 cycle is not a failed cycle**, it is the common case, and it is why the loop is affordable
-unattended.
+**A claim we had to withdraw at end of window.** An earlier draft of this section said a $0.000
+cycle "is the common case" — a cycle finding no changed pages makes no model call, so it costs
+nothing. The mechanism is real, but the end-of-window ledger does not support the frequency claim.
+Of 48 cycles, 8 cost exactly $0.000, and **every one of those 8 is a local test or manual dispatch**
+(`local-test-*`, `local-smoke`, `local-regate-v3`, `workflow_dispatch`). **No scheduled cycle ever
+cost $0.000** — the cheapest was $0.0020. At this dataset size some page always changes, so the
+free-cycle case never fired in unattended operation. The affordability claim survives on the
+measured mean of **$0.0085 per scheduled cycle**, not on free cycles.
 
 Broken out: **model calls** dominate cost entirely; **retrieval calls** are Postgres queries with no
 per-call fee; **external API calls** (ADV, IAPD, 13F, websites) are free and dominate *wall-clock*,

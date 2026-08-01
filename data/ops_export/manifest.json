@@ -1,0 +1,123 @@
+{
+  "exported_at": "2026-08-02T00:13:27.647684+05:00",
+  "out_dir": "data/ops_export",
+  "tables": {
+    "runs": {
+      "rows": 74,
+      "file": "runs.jsonl"
+    },
+    "run_events": {
+      "rows": 4827,
+      "file": "run_events.jsonl"
+    },
+    "observations": {
+      "rows": 11009,
+      "file": "observations.jsonl"
+    },
+    "trust_events": {
+      "rows": 387,
+      "file": "trust_events.jsonl"
+    },
+    "query_log": {
+      "rows": 28,
+      "file": "query_log.jsonl"
+    },
+    "agent_messages": {
+      "rows": 244,
+      "file": "agent_messages.jsonl"
+    }
+  },
+  "window": {
+    "first_run_started": "2026-07-27T09:03:12.880438+00:00",
+    "last_run_finished": "2026-08-01T19:05:11.319222+00:00",
+    "runs_total": 74,
+    "runs_by_trigger_and_status": [
+      {
+        "trigger": "api",
+        "status": "ok",
+        "runs": 6
+      },
+      {
+        "trigger": "cli",
+        "status": "ok",
+        "runs": 16
+      },
+      {
+        "trigger": "local",
+        "status": "ok",
+        "runs": 4
+      },
+      {
+        "trigger": "local-detector-fix",
+        "status": "failed",
+        "runs": 1
+      },
+      {
+        "trigger": "local-promote-v1",
+        "status": "ok",
+        "runs": 1
+      },
+      {
+        "trigger": "local-regate-v3",
+        "status": "ok",
+        "runs": 1
+      },
+      {
+        "trigger": "local-smoke",
+        "status": "ok",
+        "runs": 1
+      },
+      {
+        "trigger": "local-test-observe",
+        "status": "ok",
+        "runs": 2
+      },
+      {
+        "trigger": "local-test-registry",
+        "status": "abandoned",
+        "runs": 1
+      },
+      {
+        "trigger": "local-test-registry",
+        "status": "ok",
+        "runs": 1
+      },
+      {
+        "trigger": "local-test-resolve",
+        "status": "ok",
+        "runs": 1
+      },
+      {
+        "trigger": "local-test-vendor",
+        "status": "ok",
+        "runs": 1
+      },
+      {
+        "trigger": "manual_backfill",
+        "status": "ok",
+        "runs": 2
+      },
+      {
+        "trigger": "manual_detector_correction",
+        "status": "ok",
+        "runs": 2
+      },
+      {
+        "trigger": "schedule",
+        "status": "failed",
+        "runs": 1
+      },
+      {
+        "trigger": "schedule",
+        "status": "ok",
+        "runs": 32
+      },
+      {
+        "trigger": "workflow_dispatch",
+        "status": "ok",
+        "runs": 1
+      }
+    ],
+    "note": "uncurated: failed runs, dry runs and manual dispatches are all included. Runs with trigger='schedule' are the platform-fired cycles."
+  }
+}

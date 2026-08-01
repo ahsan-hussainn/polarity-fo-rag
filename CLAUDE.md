@@ -66,13 +66,19 @@ contradicted by our own artifacts — the census says ~335–570 with 500 in "th
 and ADV client-mix coverage is 64%, not a quarter. Write the **measured yield**, which is stronger
 than either because every number regenerates:
 
-| Stage | Measured (stamped 2026-07-31 06:27Z) |
+| Stage | Measured (regenerated 2026-08-02 from the live DB) |
 |---|---|
 | Candidates gated | **361** |
 | Gate affirms | **58** (16.1%) |
-| Band releases | **14** (24.1% of affirms) |
-| End-to-end automated yield | **3.9%** of gated candidates |
+| **Band-released into the product** | **11** (19.0% of affirms) |
+| End-to-end automated yield | **3.0%** of gated candidates |
 | Qualifying today | **40** |
+
+**CORRECTED 2026-08-02 — the earlier "14 band releases / 3.9% yield" was wrong; do not reuse it.**
+Tracing all 58 affirms into gold: **11 gate_released, 2 human_ratified, 1 quarantined, 44 held.** The
+14 summed the band's 11 with 2 records a human ratified and 1 that was withdrawn — counting a human
+path as automated. `reconcile` and the release tag always read `gate_released: 11`; the 14 was the
+outlier. Regenerate with the queue-joined latest-decision query, not from a stamped note.
 
 The load-bearing sentence: **the gate over-affirms and the band is what catches it.** Of the 44 held
 affirms, **32 are held because the client mix contradicts the entity claim** — firms with hundreds of
@@ -81,9 +87,11 @@ independently measured 54.8% precision. So the shortfall is not a plumbing failu
 happens when a real inclusion standard meets a candidate pool where roughly half the plausible-
 looking firms are wealth managers marketing themselves as family offices.
 
-**The arithmetic, stated plainly.** 460 more records at a 3.9% yield needs ~11,800 gated candidates.
+**The arithmetic, stated plainly.** 460 more records at a 3.0% yield needs ~15,100 gated candidates.
 Everything still unseeded totals roughly 3,558 (1,374 ADV `client_mix`-tier + the 13F pool), which
-yields **~139 more** — landing near **150–200**, not 500.
+yields **~109 more** — landing near **150**, not 500. (The conclusion is unchanged by the correction
+above; only the path to it moved.) This arithmetic now also lives in `docs/architecture-notes.md` §7,
+because it was previously only here — in a file that is context, not a deliverable.
 
 **And say what would have closed it, honestly:** human ratification, which is how 29 of the current
 40 were qualified. It works and it does not scale to 500 in five days, which is precisely why

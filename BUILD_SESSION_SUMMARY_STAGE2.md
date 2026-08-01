@@ -32,8 +32,8 @@ detail in `docs/SESSION_LOG.md`; the reasoning in 41 ADRs.
 the architecture and every judgment call: the ontology that refuses to blend FO categories; a
 deterministic gate with **human** release rather than blanket auto-release, kept refused at 54.8%
 measured precision; the entity and decision-maker evidence standards; and the 500-shortfall framing —
-3.9% measured yield stated honestly rather than releasing the 32 contradicted affirms to hit the
-number. AI-proposed figures I corrected rather than shipped: a wrong ADV coverage figure, a
+3.0% measured end-to-end yield stated honestly rather than releasing the 32 contradicted affirms to
+hit the number. AI-proposed figures I corrected rather than shipped: a wrong ADV coverage figure, a
 "~103 stranded never attempted" miscount, and the claim that a $0.000 cycle "is the common case",
 which the end-of-window ledger falsified.
 

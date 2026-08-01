@@ -43,11 +43,20 @@
 >
 > This matters because it changes what the band *is*. It is not a data-availability filter that
 > happens to exclude most candidates; it is a substantive rejection filter. Measured across all 58
-> current gate affirms: the band releases 14 and holds 44, and **32 of those 44 are held because the
+> current gate affirms: the band clears 14 and holds 44, and **32 of those 44 are held because the
 > client mix contradicts the entity claim** — firms carrying hundreds of non-HNW clients — while only
 > 12 are held for want of usable mix (3 of them 13F). The hold rate tracks the gate's measured 54.8%
 > precision almost exactly, which is the band doing the job it was built for rather than a coverage
 > gap.
+>
+> **Correction, 2026-08-02.** "Releases 14" was loose and is corrected here rather than left to be
+> found. Traced end to end, those 14 are **11 band-released into the product, 2 that reached
+> qualifying by human ratification, and 1 quarantined** — so the band itself delivered 11, and the
+> end-to-end *automated* yield is 11/361 = **3.0%**, not the 3.9% an earlier draft computed off 14.
+> `reconcile` and the `stage2-end-of-window` tag both read `gate_released: 11`; this line was the
+> outlier. The substantive claim above is unaffected — the band is a rejection filter, and 32 of 44
+> holds are contradictions — but a headline number that quietly counted a human path as automated is
+> exactly the error class this project keeps catching, so it is corrected in place.
 
 ## Context
 

@@ -1,10 +1,17 @@
 # Architecture notes
 
-**Figures stamped 2026-07-31 12:55Z** from `ops.runs` / `ops.run_events` / `ops.query_log` and a
-`reconcile` pass (26/26, `all_agree`), never hand-carried. Scheduled cycles are still firing, so the
-submission build re-runs these queries and re-stamps this line — a figure here is a measurement with
-a timestamp, not a constant. The brief caps these sections at two to three pages, so each claim is
-stated once and points at the ADR, finding or run that carries its evidence.
+**Figures stamped 2026-08-02** from `ops.runs` / `ops.run_events` / `ops.query_log`, the end-of-window
+`data/ops_export/`, and a `reconcile` pass (26/26, `all_agree`) — never hand-carried. A figure here is
+a measurement with a timestamp, not a constant.
+
+**Length, stated rather than hoped past.** The brief caps these sections at two to three pages; this
+runs to about four. It was cut from ~3,400 words by relocating the full defect narrative, the runs
+that did not end clean, and the scale reasoning into `docs/findings/what-broke.md`, which ships in
+the repo and is not page-capped. What remains is content the brief names directly in these sections —
+the source-class table, the agentic/deterministic boundary, the two cost tables, the 5,000-record
+bottleneck analysis, and the 500-shortfall arithmetic — so cutting further would trade the page rule
+for unanswered questions. Each claim is stated once and points at the ADR, finding or run carrying
+its evidence.
 
 ---
 
@@ -232,8 +239,29 @@ Tuesday, here is what changed, and here is why we trust them less" — that is n
 record, it is a property of the *history* of records. Goal 3 exposes exactly that gap, and the
 manual-retrieval artifact submitted beside it is visibly unable to answer.
 
+**The shortfall, as measured yield rather than an excuse.** Regenerated 2026-08-02 from the live DB
+(`ops.candidate_queue` joined to the latest `gold.entity_gate` decision per entity):
+
+| stage | measured |
+|---|---|
+| candidates gated | **361** |
+| gate affirms | **58** (16.1%) |
+| of those, band-released into the product | **11** (19.0% of affirms) |
+| end-to-end automated yield | **3.0%** of gated candidates |
+
+The other 47 affirms: 44 held, 2 reached qualifying by human ratification, 1 quarantined. **The load-
+bearing fact is that the gate over-affirms and the band is what catches it** — of the 44 held, 32 are
+held because the client mix contradicts the entity claim, a 55% contradiction rate matching the
+gate's independently measured 54.8% precision. So 460 more records at a 3.0% yield would need
+~15,100 gated candidates; everything still unseeded totals roughly 3,558, which yields **~109 more**
+and lands near **150**, not 500. What would have closed it is human ratification — how 29 of the
+current 40 were qualified — which works and does not scale to 500 in five days, which is precisely
+why ADR-0029 built the gate. Releasing the 32 contradicted affirms would reach the number by
+shipping ~45% non-family-offices: Stage 1's named failure, and the one move the brief calls
+disqualifying.
+
 **Where we would not charge.** For the raw record count. The set stands at **40 qualifying records
-against a 500 bar** (34 family offices + 6 evidenced practices, never summed; stamped 2026-07-31,
+against a 500 bar** (34 family offices + 6 evidenced practices, never summed; stamped 2026-08-02,
 regenerate with `reconcile`), and a buyer paying per-record would be right to feel short-changed.
 What is sellable today is the *evidence discipline* — per-cell basis, honest blanks, trust state
 with reasons, and a system that says "I can't support that" instead of guessing: a product for a

@@ -1,5 +1,8 @@
 # Build session summary
 
+> **This is the Stage 1 summary.** The Stage 2 build summary required by the Stage 2 brief is
+> `BUILD_SESSION_SUMMARY_STAGE2.md`.
+
 > **Correction note (2026-07-20, Bridge Mandate pass).** This is the **Stage 1** build summary, kept
 > as a point-in-time record. Two figures below were over-stated and are corrected by the pre-window
 > pass: "exactly 50 defensible records" was 50 SEC-discovered firms of which **24 are affirmed family

@@ -42,10 +42,11 @@ failure mode to watch for.
 
 ## Goal 2 · Uncertain-data case (verbatim, as required)
 
-> **Identify the family offices in the dataset that are the best fit for a lower-middle-market
-> healthcare services fund seeking limited partners, and tell me how confident you are in each.**
+> Identify the family offices in the dataset that are the best fit for a lower-middle-market
+> healthcare services fund seeking limited partners, and tell me how confident you are in each.
 
-Character-exact against the brief; verified against runs 9–12, which already exercised it four
+Quoted verbatim, character-exact against the brief (no added emphasis — the blockquote holds the
+exact string the agent was given); verified against runs 9–12, which already exercised it four
 times. The run-9 → run-10 → run-12 progression (evidence laundering → identical-call loop → honest
 weak-picks-plus-abstentions) is in the ledger and is the substance of architecture note §6.
 

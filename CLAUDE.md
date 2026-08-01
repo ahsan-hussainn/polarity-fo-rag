@@ -93,8 +93,9 @@ Remaining: **day 4 — run the three goals** (4 artifacts each, `docs/three-goal
 them on days 3–4 and they have twice surfaced real bugs here, so do not defer them to day 5).
 **Day 5 — documentation only:** finish `docs/architecture-notes.md` (drafted; **6 `[regen]` figures**
 + §6's what-broke list), `reconcile` → all_agree, `ops-export` + force-add, git tag, 2 scheduler
-screenshots, build summary, final review. Needs Ahsan, not code: 3 pending adjudications (CRDs
-324899, 220519, 329496), the MillionVerifier 403 call, the 500-shortfall framing.
+screenshots, build summary, final review. Needs Ahsan, not code: the MillionVerifier 403 call, the
+500-shortfall framing. (CRDs 324899, 220519, 329496 all adjudicated `affirmed` —
+`data/curation/entity_adjudications.json`, embedded_fo_practice — resolved 2026-07-31, no longer pending.)
 **Counts anywhere in docs are stamped, not live — regenerate from `reconcile` / `/stats`.**
 
 Brief: **`docs/brief/` (in-repo, .docx + greppable .txt) — it outranks this file, the operating

@@ -8,6 +8,11 @@ Reconciled against `data/gold/family_office_dataset.csv` at the pre-window sign-
 re-checked 2026-07-29 against the current regenerated CSV — all three chains still hold (Custos
 PUB, Wellspring grade A, JFG blank with the vendor rejection quarantined).
 
+**On the deliverability grades below:** they were produced by the MillionVerifier API during the
+pre-window Stage 1 pass, while the credential was live. That credential has since returned HTTP 403
+on every operating-window run (see `docs/architecture-notes.md` §1), so no address was re-graded
+during the window — the grades read as-of the pre-window check, not a live-window verification.
+
 ---
 
 ## Record 1 — Custos Family Office (strongest: firm-published contact email)
@@ -27,7 +32,7 @@ PUB, Wellspring grade A, JFG blank with the vendor rejection quarantined).
 | **Discovery** | SEC Form ADV feed, CRD **143112**; name match | [ADV filing](https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf) |
 | **Entity (ADR-0020)** | Affirmed **multi-family office**: self-identifies "a true multi-family office" **and** BusinessWire rebrand press (Wellspring Financial Advisors → Wellspring Family Office, 2025), predominantly-HNW ADV book (118/21) | wellspringfo.com + businesswire.com |
 | **Decision-maker (ADR-0021/0022)** | Primary **Richard (Rich) Turgeon, CFA, CAIA — CIO, Senior Managing Director**. Authority `stated`: named CIO **and** ADV Schedule A officer/owner (10–25%). **Correction to Stage 1**, which led with founder Michael Novak by title rule; Novak is the secondary (Founder/CEO, 25–50% owner) | wellspringfo.com/team + [ADV Schedule A](https://reports.adviserinfo.sec.gov/reports/ADV/143112/PDF/143112.pdf) |
-| **Email** | Firm publishes no individual address (only `info@`). The inferred pattern for Turgeon was vendor-reported deliverable and graded honestly — **not** presented as verified, and **not** the guessed founder address Stage 1 shipped (`mnovak@…`, which was neither published nor his role) | inferred + MillionVerifier API; `gold.contact_adjudications` |
+| **Email** | Firm publishes no individual address (only `info@`). The inferred pattern for Turgeon was vendor-reported deliverable and graded honestly — **not** presented as verified, and **not** the guessed founder address Stage 1 shipped (`mnovak@…`, which was neither published nor his role) | inferred + MillionVerifier API (pre-window, ADR-0010); `gold.contact_adjudications` |
 | **Confidence** | **High on entity + person, partial on email.** The pitch contact is proven; the address is an inferred pattern labeled exactly as such. Reach via the firm line / LinkedIn where the email is unconfirmed. |
 
 ## Record 3 — JFG Family Office (proven person, no shippable email — the honest blank)
@@ -37,7 +42,7 @@ PUB, Wellspring grade A, JFG blank with the vendor rejection quarantined).
 | **Discovery** | SEC Form ADV feed, CRD **125101**; name match | [ADV filing](https://reports.adviserinfo.sec.gov/reports/ADV/125101/PDF/125101.pdf) |
 | **Entity (ADR-0020)** | Affirmed **multi-family office**: "One of the Nation's Premier Integrated Family Offices", history as a single family office serving 154 HNW client families (SmartAsset corroboration) | jfgfamilyoffice.com + smartasset.com |
 | **Decision-maker (ADR-0021/0022)** | Primary **Brandon C. Johnson, CFA — CEO & controlling owner** (indirect 50–75% via B&W Holdings, Schedule A control person); secondary **Eric S. Adams — Co-CIO**. De-duplicated from a **58-person** over-extraction down to the two real investment leads | jfgfamilyoffice.com/team + [ADV Schedule A/B](https://reports.adviserinfo.sec.gov/reports/ADV/125101/PDF/125101.pdf) |
-| **Email** | The firm publishes no individual address; the inferred pattern (`first.last@jfgfamilyoffice.com`) was **vendor-rejected as undeliverable** for both contacts — so it is **quarantined to `gold.contact_audit` and no email ships**. Outreach routes to the SEC-filed phone | MillionVerifier API (INVALID_API); `gold.contact_audit` |
+| **Email** | The firm publishes no individual address; the inferred pattern (`first.last@jfgfamilyoffice.com`) was **vendor-rejected as undeliverable** for both contacts — so it is **quarantined to `gold.contact_audit` and no email ships**. Outreach routes to the SEC-filed phone | MillionVerifier API (INVALID_API, pre-window); `gold.contact_audit` |
 | **Confidence** | **High on entity + person, zero on email — and stated as zero.** Fabricating a plausible-looking address here would pass a glance and fail a send; the honest blank + phone routing is the product. |
 
 ---

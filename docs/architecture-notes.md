@@ -40,7 +40,7 @@ is the same laundering moved elsewhere).
 | **Firm websites** | what the firm says about itself: FO practice, thesis, team, published contacts | truth of the claim — a wealth manager publishes the same words a family office does | ~49% of queued candidates carry no usable firm domain; bot-shielding rising |
 | **SEC 13F** (ADR-0035) | entity existence, exact registered name, CIK/EIN, address, phone, institutional scale | anything about what the firm is — no client mix, no self-description, **no website** | reaches ADV-exempt SFOs (Duquesne), but proof rate is low: the privacy that exempts them also keeps them off the web |
 | **IAPD live** (ADR-0036) | current filing date, registration scope, registered name | anything historical beyond the current record | CRD-keyed only; 13F candidates are outside its reach by construction |
-| **MillionVerifier** | deliverability of an address | whether an address belongs to the named person | **credential dead since day 1 (HTTP 403)** — the cycle records this every run rather than claiming the capability |
+| **MillionVerifier** | deliverability of an address — the `VERIFIED_API` grades in the shipped set were produced pre-window (Stage 1), while the credential was live | whether an address belongs to the named person | **credential has returned HTTP 403 on every operating-window run** — the cycle records the 403 each run rather than re-claiming the capability, so no address was (re)graded during the window |
 
 The load-bearing split, and it is the brief's own framing: **ADV surfaces a candidate; the firm's
 own site establishes identity.** That is exactly how the inclusion gate scores, and why an affirm
@@ -227,8 +227,8 @@ record, it is a property of the *history* of records. Goal 3 exposes exactly tha
 manual-retrieval artifact submitted beside it is visibly unable to answer.
 
 **Where we would not charge.** For the raw record count. The set stands at **40 qualifying records
-against a 500 bar** (34 family offices + 6 evidenced practices, never summed), and a buyer paying
-per-record would be right to feel short-changed. What is sellable today is the *evidence
-discipline* — per-cell basis, honest blanks, trust state with reasons, and a system that says "I
-can't support that" instead of guessing: a product for a buyer who has been burned by a confidently
-wrong list, which is most of them.
+against a 500 bar** (34 family offices + 6 evidenced practices, never summed; stamped 2026-07-31,
+regenerate with `reconcile`), and a buyer paying per-record would be right to feel short-changed.
+What is sellable today is the *evidence discipline* — per-cell basis, honest blanks, trust state
+with reasons, and a system that says "I can't support that" instead of guessing: a product for a
+buyer who has been burned by a confidently wrong list, which is most of them.
